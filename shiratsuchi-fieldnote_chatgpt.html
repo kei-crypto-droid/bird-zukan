@@ -634,7 +634,7 @@
   }
 
   function getFilteredRecords() {
-    var q = els.searchInput.value.trim().toLowerCase();
+    var q = '';
     return records.filter(function (r) {
       var matchesCategory = !activeCategoryFilter || r.category === activeCategoryFilter;
       var matchesQuery = !q ||
