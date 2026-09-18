@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node API/identify.js"
+    "start": "node api/identify.js"
   },
   "dependencies": {
     "express": "^4.21.2"
