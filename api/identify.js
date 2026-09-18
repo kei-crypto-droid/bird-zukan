@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 
 const app = express();
@@ -178,7 +179,7 @@ app.post('/api/identify', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.status(200).send('Bird Zukan API is running.');
+  res.sendFile(path.join(__dirname, '..', 'shiratsuchi-fieldnote_chatgpt.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {
