@@ -6,6 +6,10 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.json({ limit: '15mb' }));
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ ok: true, service: 'bird-zukan-api' });
+});
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -107,7 +111,10 @@ app.post('/api/identify', async (req, res) => {
             }
           ],
           generationConfig: {
-            responseMimeType: 'application/json'
+            responseMimeType: 'application/json',
+            thinkingConfig: {
+              thinkingLevel: 'low'
+            }
           }
         })
       }
