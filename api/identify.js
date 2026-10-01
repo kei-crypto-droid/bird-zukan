@@ -185,8 +185,28 @@ app.post('/api/identify', async (req, res) => {
   }
 });
 
+const frontendPath = path.resolve(
+  __dirname,
+  '..',
+  'shiratsuchi-fieldnote_chatgpt.html'
+);
+
+app.get('/version', (req, res) => {
+  res.status(200).json({
+    service: 'bird-zukan-api',
+    revision: '2026-10-01-root-check'
+  });
+});
+
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'shiratsuchi-fieldnote_chatgpt.html'));
+  res.sendFile(frontendPath, (error) => {
+    if (error && !res.headersSent) {
+      console.error('Frontend file error:', error);
+      res.status(500).json({
+        error: 'Frontend file could not be served.'
+      });
+    }
+  });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
