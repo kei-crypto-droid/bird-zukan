@@ -557,6 +557,11 @@
 
 
   function confidenceLabel(c) {
+    if (typeof c === 'number' && Number.isFinite(c)) {
+      if (c >= 0.8) return '高 ' + Math.round(c * 100) + '%';
+      if (c >= 0.5) return '中 ' + Math.round(c * 100) + '%';
+      return '低 ' + Math.round(c * 100) + '%';
+    }
     if (c === 'high') return '高';
     if (c === 'medium') return '中';
     if (c === 'low') return '低';
