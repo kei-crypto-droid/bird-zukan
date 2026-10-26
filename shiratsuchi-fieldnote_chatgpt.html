@@ -296,6 +296,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
     els.photoBox.innerHTML = '<div class="photo-placeholder"><span aria-hidden="true">📷</span><b>写真を追加</b><small>端末の写真から選べます</small></div>';
     els.aiStatus.textContent = '';
     els.aiStatus.classList.remove('error');
+    els.recognize.disabled = false;
     chooseCategory('bird');
   }
   function showHome() {
@@ -383,6 +384,8 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
     if (!alreadyEditing) showEntry();
     const runId = ++identificationRun;
     confidenceValue = null;
+    els.recognize.disabled = false;
+    els.aiStatus.classList.remove('error');
     els.aiStatus.textContent = '写真を読み込んでいます…';
     try {
       photoData = await compressImage(file);
