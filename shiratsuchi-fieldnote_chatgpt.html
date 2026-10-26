@@ -76,7 +76,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
 .bottom-inner{width:min(100%,644px);margin:auto;display:flex;gap:9px}
 .bottom button,.bottom .ai-btn{height:48px;border:0;border-radius:999px;font-weight:650}.bottom .ai-btn{display:flex;align-items:center;justify-content:center;text-align:center}
 .add-btn{flex:1;background:var(--surface-2);border:1px solid #38513d!important;color:var(--text)}
-.ai-btn{flex:1.2;background:linear-gradient(135deg,#699363,#47774e);color:#fff;box-shadow:0 7px 22px #244c2b66}
+.ai-btn{position:relative;overflow:hidden;flex:1.2;background:linear-gradient(135deg,#699363,#47774e);color:#fff;box-shadow:0 7px 22px #244c2b66}.ai-btn input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:auto;cursor:pointer;z-index:2}
 #photo-input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .toast{position:fixed;z-index:10;left:50%;bottom:78px;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:#e8f0e4;color:#1c2c1e;padding:10px 15px;border-radius:12px;box-shadow:var(--shadow);font-size:12px;transition:.2s;max-width:calc(100% - 36px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -126,7 +126,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
 </div>
 <div class="bottom" id="bottom-bar"><div class="bottom-inner">
   <button id="new-record-btn" class="add-btn" type="button">＋ 手入力で追加</button>
-  <label id="ai-photo-label" class="ai-btn" for="photo-input" role="button" tabindex="0">📷 写真からAI判定</label>
+  <label id="ai-photo-label" class="ai-btn">📷 写真からAI判定<input id="home-photo-input" type="file" accept="image/*" aria-label="写真からAI判定"></label>
 </div></div>
 <input id="photo-input" type="file" accept="image/*" aria-label="判定する写真を選択">
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -144,7 +144,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
   const els = {
     home:$('home-view'), entry:$('entry-view'), bottom:$('bottom-bar'),
     list:$('records-list'), filters:$('filters'), search:$('search-input'),
-    photoInput:$('photo-input'), photoBox:$('photo-box'), aiStatus:$('ai-status'), recognize:$('recognize-photo-btn'),
+    photoInput:$('photo-input'), homePhotoInput:$('home-photo-input'), photoBox:$('photo-box'), aiStatus:$('ai-status'), recognize:$('recognize-photo-btn'),
     species:$('species-input'), date:$('date-input'), location:$('location-input'),
     memo:$('memo-input'), toast:$('toast')
   };
@@ -458,7 +458,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
     flash('観察記録を書き出しました。');
   }
   $('new-record-btn').addEventListener('click',showEntry);
-  $('ai-photo-label').addEventListener('keydown',event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); els.photoInput.click(); } });
+  els.homePhotoInput.addEventListener('change',onPhotoSelected);
   $('choose-photo-btn').addEventListener('click',() => els.photoInput.click());
   $('recognize-photo-btn').addEventListener('click',recognizeSelectedPhoto);
   $('back-btn').addEventListener('click',showHome);
