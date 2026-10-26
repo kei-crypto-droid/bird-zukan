@@ -55,7 +55,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
 .entry-top h2{font-size:19px;margin:0}
 .entry-top p{font-size:11px;color:var(--muted);margin:0}
 .photo-box{position:relative;display:grid;place-items:center;min-height:190px;border:1px dashed #4c6650;border-radius:18px;background:linear-gradient(145deg,#1a291d,#142018);overflow:hidden;text-align:center;color:var(--muted)}
-.photo-box img{display:block;width:100%;max-height:320px;object-fit:contain;background:#0d130f}
+.photo-box img{display:block;width:100%;max-height:320px;object-fit:contain;background:#0d130f}.photo-replace{display:block;width:100%;margin:0 0 8px;border:0;background:none;color:var(--green);font-size:12px;padding:5px}
 .photo-placeholder{padding:28px 18px}
 .photo-placeholder b{display:block;color:#dce8d8;font-size:14px;margin:5px 0}
 .photo-placeholder small{font-size:11px}
@@ -111,6 +111,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
       <div class="photo-placeholder"><span aria-hidden="true">📷</span><b>写真を追加</b><small>端末の写真から選べます</small></div>
     </div>
     <div id="ai-status" role="status" aria-live="polite"></div>
+    <button id="replace-photo-btn" class="photo-replace" type="button">写真を選び直す・AI判定をやり直す</button>
     <div class="field"><label for="species-input">種名</label><input id="species-input" autocomplete="off" placeholder="例：コサメビタキ"></div>
     <div class="field"><label>分類</label><div class="category-options" id="category-options">
       <button class="category-option selected" type="button" data-category="bird">鳥</button>
@@ -151,6 +152,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
   let activeFilter = 'all';
   let selectedCategory = 'bird';
   let photoData = null;
+  let confidenceValue = null;
   let toastTimer = null;
   let identificationRun = 0;
 
@@ -282,7 +284,6 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
     } catch (_) { records = []; }
   }
   function showEntry() {
-    els.home.hidden = true;
     els.home.style.display = 'none';
     els.entry.style.display = 'block';
     els.bottom.style.display = 'none';
@@ -291,6 +292,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
     els.memo.value = '';
     els.date.value = today();
     photoData = null;
+    confidenceValue = null;
     els.photoBox.innerHTML = '<div class="photo-placeholder"><span aria-hidden="true">📷</span><b>写真を追加</b><small>端末の写真から選べます</small></div>';
     els.aiStatus.textContent = '';
     els.aiStatus.classList.remove('error');
@@ -348,7 +350,9 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
       els.species.value = result.species;
       els.memo.value = result.note || '';
       chooseCategory(result.category || 'bird');
-      const percent = Number.isFinite(Number(result.confidence)) ? Math.round(Number(result.confidence) * 100) : null;
+      const confidence = Number(result.confidence);
+      confidenceValue = Number.isFinite(confidence) ? Math.max(0,Math.min(1,confidence)) : null;
+      const percent = confidenceValue === null ? null : Math.round(confidenceValue * 100);
       els.aiStatus.textContent = '判定結果：' + result.species + (percent === null ? '' : ' ・ 確信度 ' + percent + '%') + '。内容を確認して記録してください。';
     } catch (error) {
       if (runId !== identificationRun) return;
@@ -359,7 +363,8 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
   async function onPhotoSelected(event) {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
-    showEntry();
+    const alreadyEditing = els.entry.style.display === 'block';
+    if (!alreadyEditing) showEntry();
     const runId = ++identificationRun;
     els.aiStatus.textContent = '写真を読み込んでいます…';
     try {
@@ -395,6 +400,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
       date:els.date.value || today(),
       location:els.location.value.trim(),
       memo:els.memo.value.trim(),
+      confidence:confidenceValue,
       image:photoData,
       createdAt:new Date().toISOString()
     };
@@ -428,6 +434,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
   }
   $('new-record-btn').addEventListener('click',showEntry);
   $('ai-photo-btn').addEventListener('click',() => els.photoInput.click());
+  $('replace-photo-btn').addEventListener('click',() => els.photoInput.click());
   $('back-btn').addEventListener('click',showHome);
   $('cancel-btn').addEventListener('click',showHome);
   $('save-btn').addEventListener('click',saveRecord);
