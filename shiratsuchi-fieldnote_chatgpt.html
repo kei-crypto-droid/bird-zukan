@@ -55,7 +55,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
 .entry-top h2{font-size:19px;margin:0}
 .entry-top p{font-size:11px;color:var(--muted);margin:0}
 .photo-box{position:relative;display:grid;place-items:center;min-height:190px;border:1px dashed #4c6650;border-radius:18px;background:linear-gradient(145deg,#1a291d,#142018);overflow:hidden;text-align:center;color:var(--muted)}
-.photo-box img{display:block;width:100%;max-height:320px;object-fit:contain;background:#0d130f}.photo-replace{display:block;width:100%;margin:0 0 8px;border:0;background:none;color:var(--green);font-size:12px;padding:5px}
+.photo-box img{display:block;width:100%;max-height:320px;object-fit:contain;background:#0d130f}.photo-actions{display:flex;gap:8px;margin:0 0 10px}.photo-actions .secondary{flex:.8}.photo-actions .primary{flex:1}
 .photo-placeholder{padding:28px 18px}
 .photo-placeholder b{display:block;color:#dce8d8;font-size:14px;margin:5px 0}
 .photo-placeholder small{font-size:11px}
@@ -111,7 +111,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
       <div class="photo-placeholder"><span aria-hidden="true">📷</span><b>写真を追加</b><small>端末の写真から選べます</small></div>
     </div>
     <div id="ai-status" role="status" aria-live="polite"></div>
-    <button id="replace-photo-btn" class="photo-replace" type="button">写真を選び直す・AI判定をやり直す</button>
+    <div class="photo-actions"><button id="choose-photo-btn" class="secondary" type="button">写真を選ぶ</button><button id="recognize-photo-btn" class="primary" type="button">AI判定して入力</button></div>
     <div class="field"><label for="species-input">種名</label><input id="species-input" autocomplete="off" placeholder="例：コサメビタキ"></div>
     <div class="field"><label>分類</label><div class="category-options" id="category-options">
       <button class="category-option selected" type="button" data-category="bird">鳥</button>
@@ -144,7 +144,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
   const els = {
     home:$('home-view'), entry:$('entry-view'), bottom:$('bottom-bar'),
     list:$('records-list'), filters:$('filters'), search:$('search-input'),
-    photoInput:$('photo-input'), photoBox:$('photo-box'), aiStatus:$('ai-status'),
+    photoInput:$('photo-input'), photoBox:$('photo-box'), aiStatus:$('ai-status'), recognize:$('recognize-photo-btn'),
     species:$('species-input'), date:$('date-input'), location:$('location-input'),
     memo:$('memo-input'), toast:$('toast')
   };
@@ -360,6 +360,22 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
       els.aiStatus.classList.add('error');
     }
   }
+  async function recognizeSelectedPhoto() {
+    if (!photoData) {
+      els.aiStatus.textContent = '先に写真を選んでください。';
+      els.aiStatus.classList.add('error');
+      return;
+    }
+    const runId = ++identificationRun;
+    els.recognize.disabled = true;
+    els.aiStatus.classList.remove('error');
+    els.aiStatus.textContent = 'AIが写真を判定しています…';
+    try {
+      await identify(photoData,runId);
+    } finally {
+      if (runId === identificationRun) els.recognize.disabled = false;
+    }
+  }
   async function onPhotoSelected(event) {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
@@ -375,8 +391,13 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
       img.src = photoData;
       img.alt = '選択した観察写真';
       els.photoBox.replaceChildren(img);
-      els.aiStatus.textContent = 'AIが写真を判定しています…';
-      await identify(photoData,runId);
+      els.aiStatus.classList.remove('error');
+      if (alreadyEditing) {
+        els.aiStatus.textContent = '写真を読み込みました。「AI判定して入力」を押してください。';
+      } else {
+        els.aiStatus.textContent = 'AIが写真を判定しています…';
+        await identify(photoData,runId);
+      }
     } catch (error) {
       if (runId === identificationRun) {
         els.aiStatus.textContent = error.message || '画像を処理できませんでした。';
@@ -435,7 +456,8 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
   }
   $('new-record-btn').addEventListener('click',showEntry);
   $('ai-photo-btn').addEventListener('click',() => els.photoInput.click());
-  $('replace-photo-btn').addEventListener('click',() => els.photoInput.click());
+  $('choose-photo-btn').addEventListener('click',() => els.photoInput.click());
+  $('recognize-photo-btn').addEventListener('click',recognizeSelectedPhoto);
   $('back-btn').addEventListener('click',showHome);
   $('cancel-btn').addEventListener('click',showHome);
   $('save-btn').addEventListener('click',saveRecord);
