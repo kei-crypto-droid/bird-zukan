@@ -366,6 +366,7 @@ h1{font-size:25px;line-height:1.25;margin:2px 0 0;letter-spacing:.03em}
     const alreadyEditing = els.entry.style.display === 'block';
     if (!alreadyEditing) showEntry();
     const runId = ++identificationRun;
+    confidenceValue = null;
     els.aiStatus.textContent = '写真を読み込んでいます…';
     try {
       photoData = await compressImage(file);
