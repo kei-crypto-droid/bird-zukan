@@ -3,194 +3,222 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090b0d">
 <title>白神 巣立ちの森</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<link rel="icon" href="icon.jpg">
 <style>
-:root{
-  --bg:#13241a; --bg2:#1c3324; --card:#22402c; --card2:#2b4f37; --line:#3d6b4b;
-  --text:#f3f0dc; --muted:#b9c7a8; --accent:#f2c14e; --accent2:#e9783c;
-  --water:#6cc3e8; --food:#e9a23c; --good:#8fd16a; --bad:#e86a5a;
-  --sprite:url(bird-sprites.png);
-}
+:root{color-scheme:dark;
+  --bg:#090b0d;--surface:#121619;--surface-2:#1a201e;--line:#303631;
+  --text:#f3f4ee;--muted:#a4a89f;--green:#75bd73;--green-soft:#9ae68b;--gold:#e9ca76;--danger:#e1a29a;
+  --water:#7cc4e4;--food:#e0a656;--love:#e79ab8;--shadow:0 16px 42px #000a;
+  --sprite:url(bird-sprites.png)}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--text)}
-body{font-family:"DotGothic16",system-ui,sans-serif;font-size:15px;line-height:1.5;
-  padding:0 0 84px;min-height:100vh;
-  background:linear-gradient(180deg,#0f1f16 0,#13241a 240px) fixed}
-button{font:inherit;color:inherit;cursor:pointer}
-.wrap{max-width:560px;margin:0 auto;padding:0 16px}
-header{padding:14px 0 6px}
-.title{display:flex;align-items:center;justify-content:space-between;gap:8px}
-h1{font-size:20px;margin:0;letter-spacing:.06em}
-.season{font-size:12px;padding:3px 10px;border-radius:999px;background:var(--card2);border:1px solid var(--line);white-space:nowrap}
-.wallet{margin-top:10px;display:flex;align-items:flex-end;justify-content:space-between;
-  background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 14px}
-.wallet .num{font-size:30px;color:var(--accent);line-height:1}
-.wallet small{color:var(--muted);font-size:12px}
-.pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)}
+html{background:var(--bg)}
+body{margin:0;color:var(--text);min-height:100vh;
+  font:400 15px/1.6 system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;
+  background:radial-gradient(ellipse at 50% -16%,#273128 0%,#121411 34%,#090b0d 73%) fixed,var(--bg)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+#app{width:min(100%,720px);margin:auto;padding:0 20px calc(108px + env(safe-area-inset-bottom))}
 
-section{margin-top:14px}
-h2{font-size:15px;margin:0 0 8px;color:var(--muted);letter-spacing:.08em}
-.card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px}
+/* header（図鑑と同じ構成） */
+header{position:relative;padding:30px 4px 19px;border-bottom:1px solid #ffffff12}
+header:after{content:"";position:absolute;inset:0 -20px auto;height:1px;background:linear-gradient(90deg,transparent,#8ac87966,transparent)}
+.brand{display:flex;align-items:center;gap:14px}
+.mark{width:58px;height:58px;flex:0 0 58px;border-radius:50%;background:#e8ebe6 url(icon.jpg) center/cover no-repeat;border:2px solid #f1f4eb;box-shadow:0 7px 22px #000a}
+.eyebrow{color:#a3d68a;font-size:10px;letter-spacing:.24em;font-weight:700}
+h1{font-size:clamp(27px,7vw,40px);letter-spacing:.015em;margin:1px 0 0;font-weight:780;line-height:1.16;text-shadow:0 2px 0 #000}
+.subtitle{font-size:13px;line-height:1.6;color:#c3c7be;margin:18px 0 14px}
+.stats{display:flex;gap:8px;overflow:auto;padding:2px 0;scrollbar-width:none}
+.stats::-webkit-scrollbar{display:none}
+.stat{display:flex;align-items:baseline;gap:7px;white-space:nowrap;padding:9px 13px;border-radius:999px;background:#161a18cc;border:1px solid #ffffff18}
+.stat:first-child{border-color:#79b97666}
+.stat strong{font-size:16px;color:#f7f8f2;font-variant-numeric:tabular-nums}
+.stat:first-child strong{color:var(--green-soft)}
+.stat span{font-size:11px;color:#c0c4bb}
+.stat.season strong{font-size:13px;color:var(--gold)}
 
-/* forest scene with 3 nests */
-.scene{position:relative;border-radius:16px;overflow:hidden;border:2px solid var(--line);
+/* section */
+section{margin-top:18px}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 1px 8px}
+.section-head h2{font-size:17px;letter-spacing:.04em;margin:0;font-weight:600}
+.section-head h2:before{content:"●";color:#84c976;font-size:11px;margin-right:7px}
+.section-head span{font-size:11px;color:var(--muted)}
+.card{border:1px solid #ffffff14;border-radius:17px;background:linear-gradient(145deg,#181c19,#111412);box-shadow:0 8px 24px #0004;padding:14px}
+.note{font-size:11px;color:var(--muted);margin:6px 0 0}
+
+/* 巣の情景 */
+.scene{position:relative;border:1px solid #ffffff18;border-radius:20px;overflow:hidden;padding:14px 10px 12px;
   background:
-   linear-gradient(180deg,rgba(0,0,0,0) 60%,rgba(0,0,0,.25)),
-   repeating-linear-gradient(90deg,transparent 0 58px,rgba(255,255,255,.035) 58px 66px),
-   linear-gradient(180deg,#5f9a63 0,#3e7a4b 45%,#2c5a37 100%);
-  padding:12px 8px 10px}
+    linear-gradient(180deg,#0000 55%,#0008),
+    repeating-linear-gradient(90deg,#0000 0 52px,#ffffff08 52px 58px,#0000 58px 96px),
+    radial-gradient(ellipse at 50% 0%,#3b5a3a 0%,#1c2b1d 55%,#101611 100%)}
 .scene.winter{background:
-   linear-gradient(180deg,rgba(0,0,0,0) 60%,rgba(0,0,0,.2)),
-   repeating-linear-gradient(90deg,transparent 0 58px,rgba(255,255,255,.06) 58px 66px),
-   linear-gradient(180deg,#a9c3cf 0,#7f9fae 50%,#5d7c86 100%)}
-.nests{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.nest{position:relative;background:none;border:2px solid transparent;border-radius:12px;padding:4px 2px 6px;
-  display:flex;flex-direction:column;align-items:center;min-height:178px;justify-content:flex-end}
-.nest.sel{border-color:var(--accent);background:rgba(0,0,0,.15)}
-.nest .stage{height:118px;display:flex;align-items:flex-end;justify-content:center;position:relative}
-.nest .bowl{width:96px;height:22px;margin-top:-6px;border-radius:0 0 48px 48px;
-  background:repeating-linear-gradient(135deg,#7a5230 0 4px,#5b3b20 4px 8px);border-top:3px solid #9b6b3e;
-  image-rendering:pixelated}
-.nest .name{font-size:12px;margin-top:4px;text-align:center;min-height:18px;text-shadow:0 1px 0 #0008}
-.bars{width:92%;margin-top:3px;display:grid;gap:2px}
-.bar{height:6px;background:rgba(0,0,0,.35);border-radius:3px;overflow:hidden}
-.bar i{display:block;height:100%}
-.bar.w i{background:var(--water)} .bar.f i{background:var(--food)} .bar.g i{background:var(--good)} .bar.h i{background:#f08bb0}
-.empty-mark{color:#ffffffa0;font-size:12px;padding-bottom:10px}
+    linear-gradient(180deg,#0000 55%,#0008),
+    repeating-linear-gradient(90deg,#0000 0 52px,#ffffff0d 52px 58px,#0000 58px 96px),
+    radial-gradient(ellipse at 50% 0%,#4b5a62 0%,#232c31 55%,#121618 100%)}
+.nests{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.nest{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:186px;
+  padding:6px 4px 8px;border:1px solid #ffffff10;border-radius:15px;background:#0a0d0b66}
+.nest.sel{border-color:#87cd7d;background:linear-gradient(180deg,#1e382455,#0a0d0b88);box-shadow:inset 0 0 0 1px #b5eea933}
+.nest .stage{height:118px;display:flex;align-items:flex-end;justify-content:center;position:relative;width:100%}
+.nest .bowl{width:88px;height:20px;margin-top:-6px;border-radius:0 0 44px 44px;border-top:3px solid #8a6a44;
+  background:repeating-linear-gradient(135deg,#6b4a2c 0 4px,#4c331d 4px 8px)}
+.nest .name{font-size:12px;margin-top:5px;text-align:center;min-height:19px;line-height:1.3;font-weight:600}
+.nest .name small{display:block;font-weight:400;color:var(--muted);font-size:10px}
+.bars{width:90%;margin-top:4px;display:grid;gap:3px}
+.bar{height:5px;background:#ffffff14;border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px}
+.bar.w i{background:var(--water)}.bar.f i{background:var(--food)}.bar.g i{background:var(--green)}.bar.h i{background:var(--love)}
+.empty-mark{color:#ffffff70;font-size:12px;padding-bottom:10px}
+.hungry{position:absolute;top:0;left:50%;transform:translateX(-50%);font-size:10px;white-space:nowrap;background:#000c;color:var(--danger);padding:1px 7px;border-radius:999px;border:1px solid #e1a29a55}
 
 .sprite{background-image:var(--sprite);background-repeat:no-repeat;image-rendering:pixelated;flex:none}
 .bob{animation:bob 1.6s steps(2) infinite}
 @keyframes bob{50%{transform:translateY(-3px)}}
-.egg{animation:none}
 .egg.warm{animation:wobble 1s ease-in-out infinite}
 @keyframes wobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
-.zzz{position:absolute;top:2px;right:8px;font-size:12px;background:#000a;padding:0 6px;border-radius:8px}
 
-/* action panel */
-.panel h3{margin:0 0 4px;font-size:16px}
-.panel p{margin:4px 0;color:var(--muted);font-size:13px}
-.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.btn{border:2px solid var(--line);background:var(--card2);border-radius:10px;padding:8px 12px;font-size:14px;
-  display:inline-flex;align-items:center;gap:6px;min-height:40px}
-.btn:active{transform:translateY(1px)}
-.btn.primary{background:var(--accent);color:#2a1d05;border-color:#c99a2e}
-.btn.warn{background:var(--accent2);color:#2a1205;border-color:#b85a28}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn .cnt{font-size:11px;background:#0005;border-radius:8px;padding:0 6px}
-.muted{color:var(--muted)}
+/* 選んだ巣の詳細 */
+.panel h3{margin:0;font-size:18px;color:#fff;font-weight:650}
+.panel .meta{color:var(--muted);font-size:11px;margin-top:2px}
+.panel p{margin:8px 0 0;color:#d0d4ca;font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;background:#1d2320;border:1px solid #ffffff14;color:#d8dcd2;padding:2px 9px;font-size:11px}
+.chip.ok{background:#284d2d;color:#c9f0bd;border-color:#8bcf7a55}
+.chip.warn{background:#3a2422;color:var(--danger);border-color:#e1a29a44}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.primary,.secondary,.small{min-height:46px;border-radius:12px;padding:10px 15px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.primary{border:0;background:linear-gradient(135deg,#67ad67,#3a7d48);color:#fff;box-shadow:0 8px 22px #1f593866}
+.secondary{border:1px solid #3b453e;background:#141916;color:var(--text)}
+.small{min-height:40px;padding:6px 12px;font-size:13px;border:1px solid #3b453e;background:#141916;font-weight:500}
+.small .cnt{font-size:10px;background:#ffffff14;border-radius:999px;padding:0 6px;color:var(--muted)}
+button:disabled{opacity:.4;cursor:not-allowed}
 
-/* shop */
+/* お店 */
 .shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.item{display:flex;align-items:center;gap:8px;background:var(--card2);border:2px solid var(--line);border-radius:12px;padding:8px}
-.item .ico{font-size:24px;width:32px;text-align:center}
-.item .meta{flex:1;min-width:0}
-.item .meta b{display:block;font-weight:400}
-.item .meta small{color:var(--muted);font-size:11px}
-.item button{border:2px solid #c99a2e;background:var(--accent);color:#2a1d05;border-radius:8px;padding:4px 8px;font-size:12px}
+.item{display:flex;align-items:center;gap:10px;border:1px solid #ffffff14;border-radius:15px;background:linear-gradient(145deg,#181c19,#111412);padding:10px}
+.item .ico{width:38px;height:38px;flex:none;border-radius:11px;background:#202820;border:1px solid #ffffff1a;display:grid;place-items:center;font-size:20px}
+.item .m{flex:1;min-width:0;line-height:1.35}
+.item .m b{display:block;font-weight:600;font-size:14px}
+.item .m small{color:var(--muted);font-size:10px}
+.item button{border:1px solid #87cd7d77;background:#1e4026;color:#c9f0bd;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;white-space:nowrap}
 
-input[type=number]{font:inherit;background:#0c1a11;color:var(--text);border:2px solid var(--line);border-radius:8px;padding:6px 8px;width:120px}
+input[type=number]{background:#141916;border:1px solid #3b453e;border-radius:13px;padding:10px 12px;width:140px;color:var(--text)}
 
-/* zukan + forest grids */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
-.zk{background:var(--card2);border:2px solid var(--line);border-radius:12px;padding:6px;text-align:center;font-size:12px;
-  display:flex;flex-direction:column;align-items:center;gap:2px}
-.zk.locked .sprite{filter:brightness(0) opacity(.45)}
-.zk .tag{font-size:10px;padding:0 6px;border-radius:6px;background:#0005;color:var(--muted)}
-.zk .tag.on{background:var(--good);color:#132}
-.zk .tag.v{background:var(--water);color:#123}
-.forestScene{min-height:160px;display:flex;flex-wrap:wrap;gap:4px;align-items:flex-end;justify-content:center}
-.ring{font-size:10px;color:#fff;background:#0007;border-radius:6px;padding:0 4px}
+/* 森・図鑑 */
+.forestScene{min-height:170px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;justify-content:center}
 .fb{display:flex;flex-direction:column;align-items:center}
+.ring{font-size:10px;color:#e8ebe6;background:#000a;border:1px solid #ffffff22;border-radius:999px;padding:0 6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:9px}
+.zk{border:1px solid #ffffff14;border-radius:17px;background:linear-gradient(145deg,#181c19,#111412);padding:8px 6px 10px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:3px;box-shadow:0 8px 24px #0004}
+.zk .thumb{width:84px;height:84px;border-radius:13px;background:#202820;border:1px solid #ffffff1a;display:grid;place-items:center;overflow:hidden}
+.zk b{font-size:13px;font-weight:650}
+.zk.locked .sprite{filter:brightness(0) opacity(.5)}
+.zk.locked b{color:var(--muted)}
+.zk .chip{font-size:10px;padding:0 7px}
+.log{font-size:12px;color:#c3c7be;max-height:180px;overflow:auto;margin:0;padding-left:18px}
+.log li{margin:2px 0}
+details summary{cursor:pointer;color:var(--muted);font-size:13px}
 
-.log{font-size:12px;color:var(--muted);max-height:160px;overflow:auto;margin:0;padding-left:18px}
-
-nav.tabs{position:fixed;left:0;right:0;bottom:0;background:#0d1a12f0;border-top:2px solid var(--line);
-  display:flex;justify-content:center;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:5}
-nav.tabs button{flex:1;max-width:180px;background:none;border:0;padding:6px;font-size:13px;color:var(--muted);border-radius:10px}
-nav.tabs button.on{color:var(--text);background:var(--card)}
+/* 下のバー（図鑑と同じ） */
+.bottom{position:fixed;z-index:4;bottom:0;left:0;right:0;padding:22px 18px calc(11px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,#090b0d00,#090b0df2 28%,#090b0d)}
+.bottom-inner{width:min(100%,644px);margin:auto;display:flex;gap:8px}
+.bottom button{flex:1;height:50px;border-radius:999px;border:1px solid #465247;background:#1a201d;color:#d8dcd2;font-weight:650;font-size:14px}
+.bottom button.on{border:0;background:linear-gradient(135deg,#67ad67,#3a7d48);color:#fff;box-shadow:0 10px 26px #1f59388a}
 .tab{display:none}.tab.on{display:block}
 
-dialog{border:2px solid var(--line);border-radius:16px;background:var(--card);color:var(--text);max-width:340px;width:calc(100% - 32px);text-align:center;padding:18px}
-dialog::backdrop{background:#000a}
-dialog h3{margin:6px 0}
-dialog p{color:var(--muted);font-size:13px;margin:6px 0}
-.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#000d;color:#fff;padding:8px 14px;border-radius:10px;font-size:13px;z-index:9;max-width:90vw;text-align:center;pointer-events:none;opacity:0;transition:opacity .2s}
-.toast.on{opacity:1}
-details summary{cursor:pointer;color:var(--muted);font-size:13px}
-.note{font-size:11px;color:var(--muted)}
+.toast{position:fixed;z-index:10;left:50%;bottom:86px;transform:translate(-50%,12px);opacity:0;pointer-events:none;
+  background:#e8f0e4;color:#1c2c1e;padding:10px 15px;border-radius:12px;box-shadow:var(--shadow);font-size:12px;transition:.2s;max-width:calc(100% - 36px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+dialog{border:1px solid #ffffff1f;border-radius:20px;background:linear-gradient(145deg,#1a1f1b,#111412);color:var(--text);
+  max-width:340px;width:calc(100% - 36px);text-align:center;padding:22px 18px 18px;box-shadow:var(--shadow)}
+dialog::backdrop{background:#000b}
+dialog h3{margin:8px 0 4px;font-size:19px}
+dialog p{color:#c3c7be;font-size:13px;margin:6px 0}
+dialog .row{justify-content:center}
+dialog .primary{min-width:140px}
+
+@media(min-width:600px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:min(100%,720px)}}
+@media(max-width:380px){#app{padding-left:14px;padding-right:14px}.mark{width:50px;height:50px;flex-basis:50px}h1{font-size:27px}.nest{min-height:176px}}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div id="app">
   <header>
-    <div class="title"><h1>白神 巣立ちの森</h1><span class="season" id="season"></span></div>
-    <div class="wallet">
-      <div><small>つかえる歩数</small><div class="num" id="wallet">0</div></div>
-      <div style="text-align:right"><small>きょう歩いた</small><div id="today" style="font-size:18px">0歩</div><small id="pedoState" class="pill"></small></div>
+    <div class="brand"><div class="mark" aria-label="鳥のアイコン"></div><div><div class="eyebrow">SHIRAKAMI NEST WALK</div><h1>白神<br>巣立ちの森</h1></div></div>
+    <p class="subtitle">歩いて卵を温め、育てた鳥を白神の森へ還そう。</p>
+    <div class="stats">
+      <div class="stat"><strong id="wallet">0</strong><span>つかえる歩数</span></div>
+      <div class="stat"><strong id="today">0</strong><span>きょう歩いた</span></div>
+      <div class="stat"><strong id="forestCount">0</strong><span>森へ還した</span></div>
+      <div class="stat season"><strong id="season"></strong></div>
     </div>
   </header>
 
   <!-- 巣 -->
   <div class="tab on" id="tab-nest">
     <section>
+      <div class="section-head"><h2>3つの巣</h2><span>タップして選ぶ</span></div>
       <div class="scene" id="scene"><div class="nests" id="nests"></div></div>
     </section>
     <section class="card panel" id="panel"></section>
 
     <section>
-      <h2>歩数でかう</h2>
+      <div class="section-head"><h2>歩数でかう</h2><span id="pedoState"></span></div>
       <div class="shop" id="shop"></div>
     </section>
 
-    <section class="card">
-      <h2 style="margin-bottom:4px">歩く</h2>
-      <div class="row">
-        <button class="btn" id="pedoBtn">📱 歩数計をON</button>
+    <section>
+      <div class="section-head"><h2>歩く</h2></div>
+      <div class="card">
+        <div class="row" style="margin-top:0"><button class="secondary" id="pedoBtn" type="button">📱 歩数計をON</button></div>
+        <p class="note">画面を開いたまま歩くと、スマホの動きから歩数を数えます。</p>
+        <div class="row" style="align-items:center">
+          <input type="number" id="manual" min="0" inputmode="numeric" placeholder="今日の歩数" aria-label="今日の合計歩数">
+          <button class="secondary" id="manualBtn" type="button">ヘルスケアの歩数を反映</button>
+        </div>
+        <p class="note">ヘルスケアやGoogle Fitの「今日の合計歩数」を入れると、前回からふえた分だけ加算されます。</p>
       </div>
-      <p class="note">画面を開いたまま歩くと、スマホの動きから歩数を数えます。</p>
-      <div class="row" style="align-items:center">
-        <input type="number" id="manual" min="0" inputmode="numeric" placeholder="今日の歩数">
-        <button class="btn" id="manualBtn">ヘルスケアの歩数を反映</button>
-      </div>
-      <p class="note">ヘルスケアやGoogle Fitの「今日の合計歩数」を入れると、前回からふえた分だけ加算されます。</p>
     </section>
 
-    <section class="card">
-      <h2 style="margin-bottom:4px">白神山地でチェックイン</h2>
-      <p class="muted" style="font-size:13px;margin:0">ビジターセンターの近くでチェックインすると、白神の特別な卵がもらえます（1日1回）。</p>
-      <div class="row"><button class="btn primary" id="checkinBtn">📍 チェックイン</button></div>
+    <section>
+      <div class="section-head"><h2>白神山地でチェックイン</h2><span>1日1回</span></div>
+      <div class="card">
+        <p class="note" style="margin:0;font-size:12px;color:#c3c7be">ビジターセンターの近くでチェックインすると、白神の特別な卵がもらえます。</p>
+        <div class="row"><button class="primary" id="checkinBtn" type="button">📍 チェックイン</button></div>
+      </div>
     </section>
   </div>
 
   <!-- 森 -->
   <div class="tab" id="tab-forest">
     <section>
-      <h2>白神の森（還した鳥）</h2>
+      <div class="section-head"><h2>白神の森</h2><span id="forestInfo"></span></div>
       <div class="scene" id="forestScene"><div class="forestScene" id="forestBirds"></div></div>
-      <p class="note" id="forestInfo"></p>
     </section>
-    <section class="card">
-      <h2>森のしくみ</h2>
-      <p class="muted" style="font-size:13px;margin:0">
-        ・還した鳥は図鑑に足環つきで残ります。<br>
+    <section>
+      <div class="section-head"><h2>森のしくみ</h2></div>
+      <div class="card"><p class="note" style="margin:0;font-size:12px;color:#c3c7be;line-height:1.8">
+        ・還した鳥は、足環つきで図鑑に残ります。<br>
         ・留鳥と夏鳥は、次の繁殖期（4月）にペアで戻って卵を産みます。<br>
         ・クマゲラを還すと森に巣穴ができ、フクロウの卵が見つかるようになります。<br>
         ・10羽還して森がにぎやかになると、チェックインでイヌワシの卵が出ることがあります。<br>
-        ・冬鳥は北へ見送ると、次の冬にまた餌台へ来てくれます。
-      </p>
+        ・冬鳥は北へ見送ると、次の冬にまた餌台へ来てくれます。</p></div>
     </section>
-    <section class="card">
-      <h2>できごと</h2>
-      <ul class="log" id="log"></ul>
+    <section>
+      <div class="section-head"><h2>観察ノート</h2></div>
+      <div class="card"><ul class="log" id="log"></ul></div>
     </section>
   </div>
 
   <!-- 図鑑 -->
   <div class="tab" id="tab-zukan">
     <section>
-      <h2>図鑑 <span id="zkCount"></span></h2>
+      <div class="section-head"><h2>巣立ち図鑑</h2><span id="zkCount"></span></div>
       <div class="grid" id="zukan"></div>
       <p class="note">絵と種名の対応は仮のものです。</p>
     </section>
@@ -198,12 +226,12 @@ details summary{cursor:pointer;color:var(--muted);font-size:13px}
       <details>
         <summary>テスト用の操作</summary>
         <div class="row">
-          <button class="btn" data-dbg="steps500">+500歩 歩く</button>
-          <button class="btn" data-dbg="steps3000">+3000歩 歩く</button>
-          <button class="btn" data-dbg="day1">1日すすめる</button>
-          <button class="btn" data-dbg="day30">30日すすめる</button>
-          <button class="btn" data-dbg="checkin">チェックインしたことにする</button>
-          <button class="btn warn" data-dbg="reset">データを消す</button>
+          <button class="small" type="button" data-dbg="steps500">+500歩 歩く</button>
+          <button class="small" type="button" data-dbg="steps3000">+3000歩 歩く</button>
+          <button class="small" type="button" data-dbg="day1">1日すすめる</button>
+          <button class="small" type="button" data-dbg="day30">30日すすめる</button>
+          <button class="small" type="button" data-dbg="checkin">チェックインしたことにする</button>
+          <button class="small" type="button" data-dbg="reset" style="color:var(--danger)">データを消す</button>
         </div>
         <p class="note" id="dbgDate"></p>
       </details>
@@ -211,14 +239,14 @@ details summary{cursor:pointer;color:var(--muted);font-size:13px}
   </div>
 </div>
 
-<nav class="tabs">
-  <button data-tab="nest" class="on">🪺 巣</button>
-  <button data-tab="forest">🌳 森</button>
-  <button data-tab="zukan">📖 図鑑</button>
-</nav>
+<div class="bottom"><div class="bottom-inner">
+  <button type="button" data-tab="nest" class="on">巣</button>
+  <button type="button" data-tab="forest">森</button>
+  <button type="button" data-tab="zukan">図鑑</button>
+</div></div>
 
-<dialog id="dlg"><div id="dlgBody"></div><div class="row" style="justify-content:center"><button class="btn primary" id="dlgOk">OK</button></div></dialog>
-<div class="toast" id="toast"></div>
+<dialog id="dlg"><div id="dlgBody"></div><div class="row"><button class="primary" id="dlgOk" type="button">OK</button></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // ---------- データ ----------
@@ -266,6 +294,7 @@ const SPOTS = [
 const CHECKIN_KM = 5;
 
 // ---------- 状態 ----------
+// 図鑑アプリ（shiratsuchi_sightings_v1）とは別の保存場所を使う
 const KEY='shirakami-nest-v1';
 function fresh(){return{wallet:500,todayDate:'',today:0,manual:{date:'',total:0},
   inv:{water:2,bug:2,berry:2,fish:0,mouse:0},
@@ -283,9 +312,9 @@ const month=()=>gdate().getMonth()+1;
 const breeding=()=>month()>=4&&month()<=8;
 const summerOK=()=>month()>=5&&month()<=7;
 function seasonLabel(){const m=month();
-  if(m>=4&&m<=5)return'🌱 春・繁殖期'; if(m<=8&&m>=6)return'☀️ 夏・繁殖期';
-  if(m>=9&&m<=11)return'🍂 秋・冬鳥がくる'; return'❄️ 冬・冬鳥の季節'}
-function addLog(t){S.log.unshift(`${gdate().getMonth()+1}/${gdate().getDate()} ${t}`);S.log=S.log.slice(0,60)}
+  if(m>=4&&m<=5)return'春・繁殖期'; if(m>=6&&m<=8)return'夏・繁殖期';
+  if(m>=9&&m<=11)return'秋・冬鳥がくる'; return'冬・冬鳥の季節'}
+function addLog(t){S.log.unshift(`${gdate().getMonth()+1}/${gdate().getDate()}　${t}`);S.log=S.log.slice(0,60)}
 function zk(sp){return S.zukan[sp]||(S.zukan[sp]={raised:0,friend:0})}
 
 // ---------- 時間経過 ----------
@@ -304,7 +333,7 @@ function tick(){
       f.back=true;
       S.inbox.push({sp:f.sp,gen:f.gen+1,parent:f.ring});
       addLog(`足環No.${f.ring}の${SP[f.sp].n}がペアで戻り、卵を産みました`);
-      toast(`🥚 No.${f.ring}の${SP[f.sp].n}が戻ってきた！`);
+      toast(`No.${f.ring}の${SP[f.sp].n}が戻ってきた！`);
     }
   }
 }
@@ -356,7 +385,7 @@ function pick(keys){
 
 // ---------- 行動 ----------
 function buy(id){const it=ITEMS[id];if(S.wallet<it.cost)return toast('歩数が足りません');
-  S.wallet-=it.cost;S.inv[id]++;save();render();toast(`${it.n}をかった`)}
+  S.wallet-=it.cost;S.inv[id]++;save();render();toast(`${it.n}をかいました`)}
 function feed(id){
   const s=S.slots[S.sel];if(!S.inv[id])return toast(`${ITEMS[id].n}がありません`);
   tick();
@@ -367,11 +396,10 @@ function feed(id){
       s.hunger=Math.min(100,s.hunger+FOOD[id]+(fav?10:0));
       if(s.stage<2)grow(s,fav?150:60)}
   }else if(s.k==='visitor'){
-    if(id==='water'){toast('水浴びをした');}
-    else{s.hunger=Math.min(100,s.hunger+FOOD[id]);s.friend=Math.min(FRIEND_NEED,s.friend+(fav?30:15))}
+    if(id!=='water'){s.hunger=Math.min(100,s.hunger+FOOD[id]);s.friend=Math.min(FRIEND_NEED,s.friend+(fav?30:15))}
   }
   S.inv[id]--;
-  toast(fav?`♥ ${SP[s.sp].n}の大好物！`:`${ITEMS[id].n}をあげた`);
+  toast(fav?`♥ ${SP[s.sp].n}の大好物！`:`${ITEMS[id].n}をあげました`);
   save();render();
 }
 function searchEgg(){
@@ -387,7 +415,7 @@ function searchEgg(){
   const sp=pick(pool);
   S.slots[S.sel]={k:'egg',sp,gen:1,prog:0,need:HATCH[SP[sp].rar]};
   addLog('森で卵を見つけた');
-  save();render();toast('🥚 卵を見つけた！歩いて温めよう');
+  save();render();toast('卵を見つけた！歩いて温めよう');
 }
 function placeInbox(i){const e=S.inbox[i];const s=S.slots[S.sel];if(s.k!=='empty')return;
   S.slots[S.sel]={k:'egg',sp:e.sp,gen:e.gen,prog:0,need:HATCH[SP[e.sp].rar],parent:e.parent};
@@ -395,29 +423,29 @@ function placeInbox(i){const e=S.inbox[i];const s=S.slots[S.sel];if(s.k!=='empty
 function setFeeder(){
   if(breeding())return toast('冬鳥が来るのは9〜3月です');
   if(!S.inv.berry)return toast('木の実が1つ必要です');
-  S.inv.berry--;S.slots[S.sel]={k:'feeder',prog:0};save();render();toast('餌台に木の実を置いた');
+  S.inv.berry--;S.slots[S.sel]={k:'feeder',prog:0};save();render();toast('餌台に木の実を置きました');
 }
 function release(){
   const s=S.slots[S.sel];const b=SP[s.sp];const ring=S.nextRing++;
-  const z=zk(s.sp);z.raised++;
+  zk(s.sp).raised++;
   S.forest.push({sp:s.sp,ring,gen:s.gen||1,at:now(),returnAt:nextApril(),back:false});
   S.slots[S.sel]={k:'empty'};
   addLog(`${b.n}に足環No.${ring}をつけて白神の森へ還した`);
   let extra='';
-  if(s.sp==='kumagera'&&S.forest.filter(f=>f.sp==='kumagera').length===1)extra='<p>🌳 森に大きな巣穴ができた！<br>フクロウの卵が見つかるようになりました。</p>';
-  if(S.forest.length===10)extra+='<p>🦅 森がにぎやかになってきた。<br>チェックインでイヌワシの卵が出るかも。</p>';
+  if(s.sp==='kumagera'&&S.forest.filter(f=>f.sp==='kumagera').length===1)extra='<p>森に大きな巣穴ができた！<br>フクロウの卵が見つかるようになりました。</p>';
+  if(S.forest.length===10)extra+='<p>森がにぎやかになってきた。<br>チェックインでイヌワシの卵が出るかも。</p>';
   showDlg(`<div class="sprite bob" style="${spriteStyle(s.sp,.8)};margin:0 auto"></div><h3>巣立ち！</h3><p>${b.n}は足環No.${ring}をつけて森へ飛んでいきました。</p><p>${b.type==='夏鳥'?'秋には南へ渡り、':''}次の春（4月）にペアで戻って卵を産みます。</p>${extra}`);
   save();render();
 }
 function seeOff(){
-  const s=S.slots[S.sel];const z=zk(s.sp);z.friend++;
+  const s=S.slots[S.sel];zk(s.sp).friend++;
   S.visitors.push({sp:s.sp,returnAt:nextOctober(),back:false});
   S.slots[S.sel]={k:'empty'};
   addLog(`${SP[s.sp].n}を北へ見送った`);
   showDlg(`<div class="sprite bob" style="${spriteStyle(s.sp,.8)};margin:0 auto"></div><h3>またね！</h3><p>${SP[s.sp].n}は北の国へ帰っていきました。<br>次の冬（10月〜）にまた餌台へ来てくれます。</p>`);
   save();render();
 }
-function letGo(){const s=S.slots[S.sel];
+function letGo(){
   if(!confirm('この卵を森に戻しますか？'))return;
   S.slots[S.sel]={k:'empty'};save();render()}
 
@@ -436,17 +464,17 @@ function checkin(force){
 }
 function checkinReward(where){
   S.checkin=ymd(gdate());S.wallet+=500;
-  let msg=`<h3>📍 チェックイン</h3><p>${where}<br>ボーナス +500歩</p>`;
+  let msg=`<h3>チェックイン</h3><p>${where}<br>ボーナス +500歩</p>`;
   if(breeding()){
     const sp=(S.forest.length>=10&&Math.random()<.3)?'inuwashi':'kumagera';
     S.inbox.push({sp,gen:1,special:true});
     msg+=`<div class="sprite" style="${spriteStyle(sp,.6)};margin:0 auto;filter:brightness(0) opacity(.5)"></div><p>白神の特別な卵をもらいました！<br>空いている巣に置こう。</p>`;
-  }else{S.inv.berry+=5;msg+='<p>🫐 木の実×5 をもらいました。<br>（特別な卵は繁殖期にもらえます）</p>'}
+  }else{S.inv.berry+=5;msg+='<p>木の実×5 をもらいました。<br>（特別な卵は繁殖期にもらえます）</p>'}
   addLog(`${where}でチェックイン`);save();render();showDlg(msg);
 }
 
 // ---------- 歩数計（加速度センサー） ----------
-let pedoOn=false,lastStep=0,avg=9.8,above=false;
+let pedoOn=false,lastStep=0,avg=9.8,above=false,pending=0;
 function onMotion(e){
   const a=e.accelerationIncludingGravity;if(!a||a.x==null)return;
   const m=Math.hypot(a.x,a.y,a.z);avg=avg*.9+m*.1;
@@ -454,7 +482,7 @@ function onMotion(e){
   if(!above&&m>avg+1.8&&t-lastStep>300){above=true;lastStep=t;pending++}
   else if(above&&m<avg)above=false;
 }
-let pending=0;setInterval(()=>{if(pending){const n=pending;pending=0;walk(n)}},1500);
+setInterval(()=>{if(pending){const n=pending;pending=0;walk(n)}},1500);
 async function togglePedo(){
   if(pedoOn){window.removeEventListener('devicemotion',onMotion);pedoOn=false;render();return}
   try{
@@ -473,8 +501,8 @@ function manualSync(){
 // ---------- 描画 ----------
 function spriteStyle(sp,s){const b=SP[sp];
   return `width:${160*s}px;height:${200*s}px;background-size:${1600*s}px ${1000*s}px;background-position:${-(b.c-1)*160*s}px ${-(b.r-1)*200*s}px`}
-function eggSVG(sp,special){
-  const base=special?'#f4e3a1':'#f3eedd', dot=special?'#b8862c':'#9a8f73';
+function eggSVG(special){
+  const base=special?'#f1dfa0':'#eeebdf', dot=special?'#b8862c':'#8f8a78';
   const rows=['....XXXX....','...XXXXXX...','..XXXXXXXX..','..XXXXXXXX..','.XXXXXXXXXX.','.XXXXXXXXXX.','.XXXXXXXXXX.','.XXXXXXXXXX.','..XXXXXXXX..','...XXXXXX...'];
   const spots=[[5,2],[3,5],[8,4],[6,7],[4,8],[8,7]];
   let r='';rows.forEach((row,y)=>[...row].forEach((ch,x)=>{if(ch==='X')r+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${base}"/>`}));
@@ -483,83 +511,85 @@ function eggSVG(sp,special){
 }
 const pct=(a,b)=>Math.max(0,Math.min(100,a/b*100)).toFixed(0);
 const stageName=['ヒナ','若鳥','成鳥'];
+const $=id=>document.getElementById(id);
 
 function render(){
-  document.getElementById('wallet').textContent=Math.floor(S.wallet).toLocaleString();
-  document.getElementById('today').textContent=S.today.toLocaleString()+'歩';
-  document.getElementById('season').textContent=seasonLabel();
-  document.getElementById('pedoBtn').textContent=pedoOn?'⏸ 歩数計をOFF':'📱 歩数計をON';
-  document.getElementById('pedoState').textContent=pedoOn?'● 歩数計うごいてます':'';
-  document.getElementById('scene').classList.toggle('winter',!breeding());
-  document.getElementById('forestScene').classList.toggle('winter',!breeding());
-  const d=gdate();document.getElementById('dbgDate').textContent=`ゲーム内の日付：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+  $('wallet').textContent=Math.floor(S.wallet).toLocaleString();
+  $('today').textContent=S.today.toLocaleString();
+  $('forestCount').textContent=S.forest.length;
+  $('season').textContent=seasonLabel();
+  $('pedoBtn').textContent=pedoOn?'⏸ 歩数計をOFF':'📱 歩数計をON';
+  $('pedoState').textContent=pedoOn?'● 歩数計うごいています':'';
+  $('scene').classList.toggle('winter',!breeding());
+  $('forestScene').classList.toggle('winter',!breeding());
+  const d=gdate();$('dbgDate').textContent=`ゲーム内の日付：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
 
-  // nests
-  document.getElementById('nests').innerHTML=S.slots.map((s,i)=>{
+  // 巣
+  $('nests').innerHTML=S.slots.map((s,i)=>{
     let stage='',name='',bars='';
     if(s.k==='empty'){stage=`<div class="empty-mark">からっぽ</div>`}
     else if(s.k==='egg'){const p=s.prog/s.need;
-      stage=`<div class="egg ${p>.7?'warm':''}">${eggSVG(s.sp,SP[s.sp].rar===4)}</div>`;
+      stage=`<div class="egg ${p>.7?'warm':''}">${eggSVG(SP[s.sp].rar===4)}</div>`;
       name=s.parent?`No.${s.parent}の卵`:(SP[s.sp].rar===4?'白神の特別な卵':'？の卵');
       bars=`<div class="bar g"><i style="width:${pct(s.prog,s.need)}%"></i></div>`}
     else if(s.k==='bird'){const sc=[.42,.56,.66][s.stage];const hungry=s.hunger<=20||s.thirst<=20;
-      stage=`<div class="sprite bob" style="${spriteStyle(s.sp,sc)}"></div>${hungry?'<span class="zzz">おなかすいた</span>':''}`;
-      name=`${SP[s.sp].n} <span class="muted">${stageName[s.stage]}</span>`;
+      stage=`<div class="sprite bob" style="${spriteStyle(s.sp,sc)}"></div>${hungry?'<span class="hungry">おなかすいた</span>':''}`;
+      name=`${SP[s.sp].n}<small>${stageName[s.stage]}</small>`;
       bars=`<div class="bar w"><i style="width:${pct(s.thirst,100)}%"></i></div><div class="bar f"><i style="width:${pct(s.hunger,100)}%"></i></div><div class="bar g"><i style="width:${pct(s.growth,GROW[SP[s.sp].rar])}%"></i></div>`}
-    else if(s.k==='feeder'){stage=`<div style="font-size:34px;padding-bottom:6px">🪵🫐</div>`;name='餌台';
+    else if(s.k==='feeder'){stage=`<div style="font-size:32px;padding-bottom:6px">🪵🫐</div>`;name='餌台<small>冬鳥を待っています</small>';
       bars=`<div class="bar g"><i style="width:${pct(s.prog,FEEDER_NEED)}%"></i></div>`}
-    else if(s.k==='visitor'){stage=`<div class="sprite bob" style="${spriteStyle(s.sp,.6)}"></div>`;name=`${SP[s.sp].n} <span class="muted">冬鳥</span>`;
+    else if(s.k==='visitor'){stage=`<div class="sprite bob" style="${spriteStyle(s.sp,.6)}"></div>`;name=`${SP[s.sp].n}<small>冬鳥</small>`;
       bars=`<div class="bar h"><i style="width:${pct(s.friend,FRIEND_NEED)}%"></i></div><div class="bar f"><i style="width:${pct(s.hunger,100)}%"></i></div>`}
-    return `<button class="nest ${S.sel===i?'sel':''}" data-slot="${i}"><div class="stage">${stage}</div>${s.k==='feeder'?'':'<div class="bowl"></div>'}<div class="name">${name}</div><div class="bars">${bars}</div></button>`;
+    return `<button type="button" class="nest ${S.sel===i?'sel':''}" data-slot="${i}" aria-label="${i+1}番目の巣"><div class="stage">${stage}</div>${s.k==='feeder'?'':'<div class="bowl"></div>'}<div class="name">${name}</div><div class="bars">${bars}</div></button>`;
   }).join('');
 
-  // panel
+  // 選んだ巣の詳細
   const s=S.slots[S.sel];let h='';
-  const feedBtns=(ids)=>ids.map(id=>`<button class="btn" data-feed="${id}" ${S.inv[id]?'':'disabled'}>${ITEMS[id].ico} ${ITEMS[id].n}<span class="cnt">${S.inv[id]}</span></button>`).join('');
+  const feedBtns=ids=>ids.map(id=>`<button type="button" class="small" data-feed="${id}" ${S.inv[id]?'':'disabled'}>${ITEMS[id].ico} ${ITEMS[id].n}<span class="cnt">${S.inv[id]}</span></button>`).join('');
   if(s.k==='empty'){
-    h=`<h3>${S.sel+1}番目の巣：からっぽ</h3>`;
-    if(S.inbox.length){h+=`<p>届いている卵があります。この巣に置けます。</p><div class="row">${S.inbox.map((e,i)=>`<button class="btn primary" data-inbox="${i}">🥚 ${e.special?'白神の特別な卵':e.parent?`No.${e.parent}の${SP[e.sp].n}の卵（${e.gen}世）`:'卵'}</button>`).join('')}</div>`}
-    if(breeding()){h+=`<p>森で卵をさがします（${EGG_COST}歩）。${summerOK()?'今は夏鳥の卵も見つかります。':''}</p><div class="row"><button class="btn primary" id="eggBtn" ${S.wallet<EGG_COST?'disabled':''}>🔍 卵をさがす（${EGG_COST}歩）</button></div>`}
-    else{h+=`<p>今は繁殖期ではないので卵は見つかりません。<br>木の実を置いて餌台にすると、北の国から冬鳥が来ます（${FEEDER_NEED}歩で到着）。</p><div class="row"><button class="btn primary" id="feederBtn" ${S.inv.berry?'':'disabled'}>🫐 餌台を置く（木の実×1）</button></div>`}
+    h=`<h3>${S.sel+1}番目の巣</h3><div class="meta">からっぽ</div>`;
+    if(S.inbox.length){h+=`<p>届いている卵があります。この巣に置けます。</p><div class="row">${S.inbox.map((e,i)=>`<button type="button" class="primary" data-inbox="${i}">🥚 ${e.special?'白神の特別な卵':e.parent?`No.${e.parent}の${SP[e.sp].n}の卵（${e.gen}世）`:'卵'}</button>`).join('')}</div>`}
+    if(breeding()){h+=`<p>森で卵をさがします。${summerOK()?'今は夏鳥の卵も見つかります。':''}</p><div class="row"><button type="button" class="primary" id="eggBtn" ${S.wallet<EGG_COST?'disabled':''}>卵をさがす（${EGG_COST}歩）</button></div>`}
+    else{h+=`<p>今は繁殖期ではないので卵は見つかりません。木の実を置いて餌台にすると、北の国から冬鳥が来ます（${FEEDER_NEED}歩で到着）。</p><div class="row"><button type="button" class="primary" id="feederBtn" ${S.inv.berry?'':'disabled'}>餌台を置く（木の実×1）</button></div>`}
   }else if(s.k==='egg'){
-    h=`<h3>${s.parent?`足環No.${s.parent}の子どもの卵`:SP[s.sp].rar===4?'白神の特別な卵':'なにかの卵'}</h3><p>歩くと温まります。あと <b style="color:var(--accent)">${Math.max(0,s.need-s.prog).toLocaleString()}歩</b> で孵ります。</p><div class="row"><button class="btn" id="letgoBtn">森に戻す</button></div>`;
+    h=`<h3>${s.parent?`足環No.${s.parent}の子どもの卵`:SP[s.sp].rar===4?'白神の特別な卵':'なにかの卵'}</h3><div class="meta">${S.sel+1}番目の巣</div><p>歩くと温まります。あと <b style="color:var(--green-soft)">${Math.max(0,s.need-s.prog).toLocaleString()}歩</b> で孵ります。</p><div class="row"><button type="button" class="secondary" id="letgoBtn">森に戻す</button></div>`;
   }else if(s.k==='bird'){
-    const b=SP[s.sp],need=GROW[b.rar];
-    h=`<h3>${b.n}（${stageName[s.stage]}${s.gen>1?`・${s.gen}世`:''}）</h3><p>${b.d}</p>
-      <p>💧のど ${pct(s.thirst,100)}%　🐛おなか ${pct(s.hunger,100)}%　🌱成長 ${pct(s.growth,need)}%</p>
-      <p>大好物：${ITEMS[b.fav].ico}${ITEMS[b.fav].n}${s.hunger<=20||s.thirst<=20?'<br><span style="color:var(--bad)">おなかがすいていると、歩いても育ちません。</span>':''}</p>`;
-    if(s.stage===2)h+=`<div class="row"><button class="btn primary" id="releaseBtn">🕊 足環をつけて森へ還す</button></div><p class="note">還すと図鑑に残り、次の春にペアで戻って卵を産みます。</p>`;
+    const b=SP[s.sp],need=GROW[b.rar],hungry=s.hunger<=20||s.thirst<=20;
+    h=`<h3>${b.n}</h3><div class="meta">${stageName[s.stage]} ・ ${b.type}${s.gen>1?` ・ ${s.gen}世`:''}</div><p>${b.d}</p>
+      <div class="chips"><span class="chip">💧 のど ${pct(s.thirst,100)}%</span><span class="chip">🐛 おなか ${pct(s.hunger,100)}%</span><span class="chip ok">成長 ${pct(s.growth,need)}%</span><span class="chip">大好物 ${ITEMS[b.fav].ico}${ITEMS[b.fav].n}</span>${hungry?'<span class="chip warn">おなかがすくと、歩いても育ちません</span>':''}</div>`;
+    if(s.stage===2)h+=`<div class="row"><button type="button" class="primary" id="releaseBtn">足環をつけて森へ還す</button></div><p class="note">還すと図鑑に残り、次の春にペアで戻って卵を産みます。</p>`;
     h+=`<div class="row">${feedBtns(['water','bug','berry','fish','mouse'])}</div>`;
   }else if(s.k==='feeder'){
-    h=`<h3>餌台</h3><p>北の国から冬鳥がやって来るのを待っています。あと <b style="color:var(--accent)">${Math.max(0,FEEDER_NEED-s.prog)}歩</b>。</p>`;
+    h=`<h3>餌台</h3><div class="meta">${S.sel+1}番目の巣</div><p>北の国から冬鳥がやって来るのを待っています。あと <b style="color:var(--green-soft)">${Math.max(0,FEEDER_NEED-s.prog)}歩</b>。</p>`;
   }else if(s.k==='visitor'){
     const b=SP[s.sp];
-    h=`<h3>${b.n}（冬鳥${s.again?'・おなじみ':''}）</h3><p>${b.d}<br>日本では卵を産まず、春になると北の国へ帰ります。</p><p>♥なかよし ${pct(s.friend,FRIEND_NEED)}%　大好物：${ITEMS[b.fav].ico}${ITEMS[b.fav].n}</p>`;
-    if(s.friend>=FRIEND_NEED)h+=`<div class="row"><button class="btn primary" id="seeoffBtn">👋 北へ見送る</button></div>`;
+    h=`<h3>${b.n}</h3><div class="meta">冬鳥${s.again?' ・ おなじみ':''}</div><p>${b.d}日本では卵を産まず、春になると北の国へ帰ります。</p><div class="chips"><span class="chip ok">♥ なかよし ${pct(s.friend,FRIEND_NEED)}%</span><span class="chip">大好物 ${ITEMS[b.fav].ico}${ITEMS[b.fav].n}</span></div>`;
+    if(s.friend>=FRIEND_NEED)h+=`<div class="row"><button type="button" class="primary" id="seeoffBtn">北へ見送る</button></div>`;
     h+=`<div class="row">${feedBtns(['bug','berry','fish','mouse'])}</div>`;
   }
-  document.getElementById('panel').innerHTML=h;
+  $('panel').innerHTML=h;
 
-  // shop
-  document.getElementById('shop').innerHTML=Object.entries(ITEMS).map(([id,it])=>`<div class="item"><div class="ico">${it.ico}</div><div class="meta"><b>${it.n} <span class="muted">×${S.inv[id]}</span></b><small>${it.t}</small></div><button data-buy="${id}" ${S.wallet<it.cost?'disabled':''}>${it.cost}歩</button></div>`).join('');
+  // お店
+  $('shop').innerHTML=Object.entries(ITEMS).map(([id,it])=>`<div class="item"><div class="ico">${it.ico}</div><div class="m"><b>${it.n} <span style="color:var(--muted);font-weight:400;font-size:12px">×${S.inv[id]}</span></b><small>${it.t}</small></div><button type="button" data-buy="${id}" ${S.wallet<it.cost?'disabled':''}>${it.cost}歩</button></div>`).join('');
 
-  // forest
-  document.getElementById('forestBirds').innerHTML=S.forest.length?S.forest.slice(-24).map(f=>`<div class="fb"><div class="sprite bob" style="${spriteStyle(f.sp,.4)};animation-delay:${(f.ring%5)*.3}s"></div><span class="ring">No.${f.ring}${f.gen>1?` ${f.gen}世`:''}</span></div>`).join(''):'<p class="empty-mark" style="align-self:center">まだ森に還した鳥はいません</p>';
+  // 森
+  $('forestBirds').innerHTML=S.forest.length?S.forest.slice(-24).map(f=>`<div class="fb"><div class="sprite bob" style="${spriteStyle(f.sp,.4)};animation-delay:${(f.ring%5)*.3}s"></div><span class="ring">No.${f.ring}${f.gen>1?` ${f.gen}世`:''}</span></div>`).join(''):'<p class="empty-mark" style="align-self:center">まだ森に還した鳥はいません</p>';
   const kinds=new Set(S.forest.map(f=>f.sp)).size;
-  document.getElementById('forestInfo').textContent=`還した鳥 ${S.forest.length}羽・${kinds}種${S.forest.some(f=>f.sp==='kumagera')?'・クマゲラの巣穴あり':''}`;
-  document.getElementById('log').innerHTML=S.log.map(l=>`<li>${l}</li>`).join('')||'<li>まだなにもありません</li>';
+  $('forestInfo').textContent=`${S.forest.length}羽・${kinds}種${S.forest.some(f=>f.sp==='kumagera')?'・クマゲラの巣穴あり':''}`;
+  $('log').innerHTML=S.log.map(l=>`<li>${l}</li>`).join('')||'<li>まだなにもありません</li>';
 
-  // zukan
+  // 図鑑
   const keys=Object.keys(SP);let got=0;
-  document.getElementById('zukan').innerHTML=keys.map(k=>{const b=SP[k],z=S.zukan[k]||{};const has=z.raised||z.friend;if(has)got++;
-    return `<div class="zk ${has?'':'locked'}"><div class="sprite" style="${spriteStyle(k,.45)}"></div><div>${has?b.n:'？？？'}</div><span class="tag">${b.type}</span>${b.type==='冬鳥'?`<span class="tag ${z.friend?'v':''}">仲良し${z.friend?'×'+z.friend:''}</span>`:`<span class="tag ${z.raised?'on':''}">育てた${z.raised?'×'+z.raised:''}</span>`}</div>`}).join('');
-  document.getElementById('zkCount').textContent=`${got} / ${keys.length}`;
+  $('zukan').innerHTML=keys.map(k=>{const b=SP[k],z=S.zukan[k]||{};const has=z.raised||z.friend;if(has)got++;
+    const tag=b.type==='冬鳥'?`<span class="chip ${z.friend?'ok':''}">仲良し${z.friend?'×'+z.friend:''}</span>`:`<span class="chip ${z.raised?'ok':''}">育てた${z.raised?'×'+z.raised:''}</span>`;
+    return `<div class="zk ${has?'':'locked'}"><div class="thumb"><div class="sprite" style="${spriteStyle(k,.4)}"></div></div><b>${has?b.n:'？？？'}</b><span class="chip">${b.type}</span>${tag}</div>`}).join('');
+  $('zkCount').textContent=`${got} / ${keys.length}種`;
 }
 
 // ---------- UI ----------
-let toastT;function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),2200)}
-function showDlg(html){document.getElementById('dlgBody').innerHTML=html;const d=document.getElementById('dlg');if(!d.open)d.showModal()}
-document.getElementById('dlgOk').onclick=()=>document.getElementById('dlg').close();
+let toastT;function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2400)}
+function showDlg(html){$('dlgBody').innerHTML=html;const d=$('dlg');if(!d.open)d.showModal()}
+$('dlgOk').onclick=()=>$('dlg').close();
 
 document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
@@ -567,11 +597,11 @@ document.addEventListener('click',e=>{
   else if(t.dataset.buy)buy(t.dataset.buy);
   else if(t.dataset.feed)feed(t.dataset.feed);
   else if(t.dataset.inbox!=null)placeInbox(+t.dataset.inbox);
-  else if(t.dataset.tab){document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b===t));
+  else if(t.dataset.tab){document.querySelectorAll('.bottom button').forEach(b=>b.classList.toggle('on',b===t));
     document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.id==='tab-'+t.dataset.tab));window.scrollTo(0,0)}
   else if(t.dataset.dbg){const v=t.dataset.dbg;
     if(v==='steps500')walk(500);if(v==='steps3000')walk(3000);
-    if(v==='day1'||v==='day30'){S.offset+=v==='day1'?1:30;tick();save();render();toast('時間がすすんだ')}
+    if(v==='day1'||v==='day30'){S.offset+=v==='day1'?1:30;tick();save();render();toast('時間がすすみました')}
     if(v==='checkin')checkin(true);
     if(v==='reset'&&confirm('データをすべて消しますか？')){S=fresh();save();render()}}
   else if(t.id==='eggBtn')searchEgg();
