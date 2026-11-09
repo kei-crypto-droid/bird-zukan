@@ -131,6 +131,32 @@ details summary{cursor:pointer;color:var(--muted);font-size:13px}
 .bottom button.on{border:0;background:linear-gradient(135deg,#67ad67,#3a7d48);color:#fff;box-shadow:0 10px 26px #1f59388a}
 .tab{display:none}.tab.on{display:block}
 
+/* 地図・イベント */
+.event{border:1px solid #e9ca7655;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#1d2219,#0f1310 60%);box-shadow:var(--shadow)}
+.event-head{padding:16px 16px 6px}
+.event-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:#e9ca761f;border:1px solid #e9ca7666;color:var(--gold);font-size:11px;font-weight:700;letter-spacing:.12em;padding:3px 10px}
+.event h2{margin:10px 0 0;font-size:clamp(24px,6.6vw,32px);line-height:1.25;font-weight:780;letter-spacing:.02em}
+.event h2 em{font-style:normal;color:var(--gold)}
+.event .period{color:#c3c7be;font-size:12px;margin-top:4px}
+.map{display:block;width:100%;height:auto}
+.map .ctx{fill:#1b1f1d;stroke:#3a403b;stroke-width:1.5}
+.map .town{fill:#22412a;stroke:#9cc89a;stroke-width:2}
+.map .town.hot{fill:url(#hotFill);stroke:#f7e3a3;stroke-width:4;filter:url(#glow)}
+.map .town.here{stroke:#7cc4e4;stroke-width:5}
+.map text{font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;paint-order:stroke;stroke:#090b0d;stroke-width:6px;stroke-linejoin:round}
+.map .lbl{fill:#eef3ea;font-size:30px;font-weight:700}
+.map .lbl.hot{fill:#2a1f05;stroke:#f7e3a3;font-size:38px}
+.map .ctxlbl{fill:#7d847b;font-size:24px}
+.map .pref{fill:#5d655c;font-size:30px;letter-spacing:.3em;font-weight:700}
+.map .mt{fill:#e8ebe6;font-size:24px;font-weight:600}
+.event-foot{display:flex;flex-wrap:wrap;gap:6px;padding:4px 16px 14px}
+.event-foot .chip.hot{background:#e9ca7626;border-color:#e9ca7699;color:var(--gold);font-weight:700}
+.credit{font-size:9px;color:#6f766d;padding:0 16px 12px}
+.here-line{font-size:12px;color:#c3c7be;margin-top:8px}
+/* 地図タブはスクショしやすいよう、ヘッダーを短くする */
+body.compact .subtitle,body.compact .stats{display:none}
+body.compact header{padding-bottom:14px}
+
 .toast{position:fixed;z-index:10;left:50%;bottom:86px;transform:translate(-50%,12px);opacity:0;pointer-events:none;
   background:#e8f0e4;color:#1c2c1e;padding:10px 15px;border-radius:12px;box-shadow:var(--shadow);font-size:12px;transition:.2s;max-width:calc(100% - 36px);text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -150,9 +176,9 @@ dialog .primary{min-width:140px}
 <div id="app">
   <header>
     <div class="brand"><div class="mark" aria-label="鳥のアイコン"></div><div><div class="eyebrow">SHIRAKAMI NEST WALK</div><h1>白神<br>巣立ちの森</h1></div></div>
-    <p class="subtitle">歩いて卵を温め、育てた鳥を白神の森へ還そう。</p>
+    <p class="subtitle">1歩で1ポイント。歩いて卵を温め、育てた鳥を白神の森へ還そう。</p>
     <div class="stats">
-      <div class="stat"><strong id="wallet">0</strong><span>つかえる歩数</span></div>
+      <div class="stat"><strong id="wallet">0</strong><span>ポイント</span></div>
       <div class="stat"><strong id="today">0</strong><span>きょう歩いた</span></div>
       <div class="stat"><strong id="forestCount">0</strong><span>森へ還した</span></div>
       <div class="stat season"><strong id="season"></strong></div>
@@ -168,7 +194,7 @@ dialog .primary{min-width:140px}
     <section class="card panel" id="panel"></section>
 
     <section>
-      <div class="section-head"><h2>歩数でかう</h2><span id="pedoState"></span></div>
+      <div class="section-head"><h2>ポイントでかう</h2><span id="pedoState"></span></div>
       <div class="shop" id="shop"></div>
     </section>
 
@@ -190,6 +216,32 @@ dialog .primary{min-width:140px}
       <div class="card">
         <p class="note" style="margin:0;font-size:12px;color:#c3c7be">ビジターセンターの近くでチェックインすると、白神の特別な卵がもらえます。</p>
         <div class="row"><button class="primary" id="checkinBtn" type="button">📍 チェックイン</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 地図 -->
+  <div class="tab" id="tab-map">
+    <section>
+      <div class="event">
+        <div class="event-head">
+          <span class="event-badge">★ 今週のイベント</span>
+          <h2><em id="evTown"></em>は今週<br>ポイント<em id="evMult"></em>倍！</h2>
+          <div class="period" id="evPeriod"></div>
+        </div>
+        <svg class="map" id="map" role="img" aria-label="白神山地周辺の市町村の地図"></svg>
+        <div class="event-foot" id="evTowns"></div>
+        <div class="credit">地図：国土数値情報（行政区域データ）を加工して作成</div>
+      </div>
+    </section>
+    <section>
+      <div class="section-head"><h2>ポイント2倍のしくみ</h2></div>
+      <div class="card">
+        <p class="note" style="margin:0;font-size:12px;color:#c3c7be;line-height:1.8">
+          ・ふだんは1歩で1ポイント。イベントの町の中で歩くと、1歩で2ポイントになります。<br>
+          ・「巣」タブの歩数計をONにすると、位置情報から今いる町を判定します。<br>
+          ・ヘルスケアから入れた歩数は、どこで歩いたか分からないので1倍です。</p>
+        <div class="here-line" id="hereLine"></div>
       </div>
     </section>
   </div>
@@ -231,6 +283,7 @@ dialog .primary{min-width:140px}
           <button class="small" type="button" data-dbg="day1">1日すすめる</button>
           <button class="small" type="button" data-dbg="day30">30日すすめる</button>
           <button class="small" type="button" data-dbg="checkin">チェックインしたことにする</button>
+          <button class="small" type="button" data-dbg="here">イベントの町にいることにする</button>
           <button class="small" type="button" data-dbg="reset" style="color:var(--danger)">データを消す</button>
         </div>
         <p class="note" id="dbgDate"></p>
@@ -241,6 +294,7 @@ dialog .primary{min-width:140px}
 
 <div class="bottom"><div class="bottom-inner">
   <button type="button" data-tab="nest" class="on">巣</button>
+  <button type="button" data-tab="map">地図</button>
   <button type="button" data-tab="forest">森</button>
   <button type="button" data-tab="zukan">図鑑</button>
 </div></div>
@@ -248,6 +302,7 @@ dialog .primary{min-width:140px}
 <dialog id="dlg"><div id="dlgBody"></div><div class="row"><button class="primary" id="dlgOk" type="button">OK</button></div></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="map-data.js"></script>
 <script>
 // ---------- データ ----------
 // r,c: スプライトシート(10列×5段, 1マス160×200px)の位置
@@ -279,7 +334,9 @@ const ITEMS = {
   berry:{n:'木の実',ico:'🫐',cost:60,t:'おなか +30／餌台にも'},
   fish:{n:'小魚',ico:'🐟',cost:120,t:'おなか +40'},
   mouse:{n:'ネズミ',ico:'🐭',cost:150,t:'おなか +45'},
+  down:{n:'羽毛ぶとん',ico:'🪶',cost:200,t:'卵が300歩ぶん温まる'},
 };
+const DOWN_STEPS = 300;
 const FOOD = {bug:35,berry:30,fish:40,mouse:45};
 const HATCH = {1:600,2:1000,3:1500,4:2000};   // 孵るまでの歩数
 const GROW  = {1:1500,2:2500,3:3500,4:5000};  // 成鳥までの成長ポイント
@@ -292,17 +349,22 @@ const SPOTS = [
   {n:'十二湖ビジターセンター',lat:40.556,lng:139.965},
 ];
 const CHECKIN_KM = 5;
+// 今週のポイント倍率イベント（町の名前は map-data.js の towns と同じ表記）
+const EVENT = {town:'藤里町', mult:2};
+let here = null;          // いま居る町（位置情報から判定。保存しない）
+let fakeHere = false;     // テスト用：イベントの町にいることにする
 
 // ---------- 状態 ----------
 // 図鑑アプリ（shiratsuchi_sightings_v1）とは別の保存場所を使う
 const KEY='shirakami-nest-v1';
 function fresh(){return{wallet:500,todayDate:'',today:0,manual:{date:'',total:0},
-  inv:{water:2,bug:2,berry:2,fish:0,mouse:0},
+  inv:{water:2,bug:2,berry:2,fish:0,mouse:0,down:0},
   slots:[{k:'empty'},{k:'empty'},{k:'empty'}],sel:0,
   zukan:{},forest:[],visitors:[],inbox:[],nextRing:1,checkin:'',offset:0,
   last:Date.now(),log:[]}}
 let S;
 try{S=JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){S=fresh()}
+if(S.inv.down==null)S.inv.down=0;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
 const now=()=>Date.now()+S.offset*864e5;
@@ -341,9 +403,13 @@ function nextApril(){const d=gdate();let y=d.getFullYear();if(d.getMonth()+1>=4)
 function nextOctober(){const d=gdate();let y=d.getFullYear();if(d.getMonth()+1>=10)y++;return new Date(y,9,1).getTime()}
 
 // ---------- 歩く ----------
-function walk(n){
+const curTown=()=>fakeHere?EVENT.town:here;
+const multNow=()=>curTown()===EVENT.town?EVENT.mult:1;
+// mult: ポイント倍率（位置が分からない歩数は1倍）
+function walk(n,mult=1){
   if(n<=0)return; tick();
-  S.wallet+=n; S.today+=n;
+  S.wallet+=n*mult; S.today+=n;
+  if(mult>1)toast(`${curTown()}で歩いたのでポイント${mult}倍！ +${n*mult}pt`);
   for(const s of S.slots){
     if(s.k==='egg'){s.prog+=n;if(s.prog>=s.need)hatch(s)}
     else if(s.k==='bird'&&s.stage<2){ if(s.hunger>20&&s.thirst>20)grow(s,n) }
@@ -384,7 +450,14 @@ function pick(keys){
 }
 
 // ---------- 行動 ----------
-function buy(id){const it=ITEMS[id];if(S.wallet<it.cost)return toast('歩数が足りません');
+function warmEgg(){
+  const s=S.slots[S.sel];if(s.k!=='egg')return;
+  if(!S.inv.down)return toast('羽毛ぶとんがありません');
+  S.inv.down--;s.prog+=DOWN_STEPS;toast(`羽毛ぶとんで温めた（+${DOWN_STEPS}歩ぶん）`);
+  if(s.prog>=s.need)hatch(s);
+  save();render();
+}
+function buy(id){const it=ITEMS[id];if(S.wallet<it.cost)return toast('ポイントが足りません');
   S.wallet-=it.cost;S.inv[id]++;save();render();toast(`${it.n}をかいました`)}
 function feed(id){
   const s=S.slots[S.sel];if(!S.inv[id])return toast(`${ITEMS[id].n}がありません`);
@@ -404,7 +477,7 @@ function feed(id){
 }
 function searchEgg(){
   if(!breeding())return toast('卵が見つかるのは繁殖期（4〜8月）です');
-  if(S.wallet<EGG_COST)return toast('歩数が足りません');
+  if(S.wallet<EGG_COST)return toast('ポイントが足りません');
   const s=S.slots[S.sel];if(s.k!=='empty')return;
   const pool=Object.keys(SP).filter(k=>{const b=SP[k];
     if(b.type==='冬鳥'||b.rar===4)return false;
@@ -464,7 +537,7 @@ function checkin(force){
 }
 function checkinReward(where){
   S.checkin=ymd(gdate());S.wallet+=500;
-  let msg=`<h3>チェックイン</h3><p>${where}<br>ボーナス +500歩</p>`;
+  let msg=`<h3>チェックイン</h3><p>${where}<br>ボーナス +500pt</p>`;
   if(breeding()){
     const sp=(S.forest.length>=10&&Math.random()<.3)?'inuwashi':'kumagera';
     S.inbox.push({sp,gen:1,special:true});
@@ -482,9 +555,22 @@ function onMotion(e){
   if(!above&&m>avg+1.8&&t-lastStep>300){above=true;lastStep=t;pending++}
   else if(above&&m<avg)above=false;
 }
-setInterval(()=>{if(pending){const n=pending;pending=0;walk(n)}},1500);
+setInterval(()=>{if(pending){const n=pending;pending=0;walk(n,multNow())}},1500);
+
+// 位置情報 → いま居る町（点が多角形の中にあるか）
+function inRing(x,y,ring){let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const[xi,yi]=ring[i],[xj,yj]=ring[j];
+  if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c}return c}
+function townAt(lat,lng){const t=MAP.towns.find(t=>t.poly.some(r=>inRing(lng,lat,r)));return t?t.n:null}
+let geoWatch=null;
+function startGeo(){
+  if(!navigator.geolocation||geoWatch!=null)return;
+  geoWatch=navigator.geolocation.watchPosition(p=>{here=townAt(p.coords.latitude,p.coords.longitude);render()},
+    ()=>{here=null;render()},{enableHighAccuracy:false,maximumAge:60000,timeout:20000});
+}
+function stopGeo(){if(geoWatch!=null){navigator.geolocation.clearWatch(geoWatch);geoWatch=null}here=null}
 async function togglePedo(){
-  if(pedoOn){window.removeEventListener('devicemotion',onMotion);pedoOn=false;render();return}
+  if(pedoOn){window.removeEventListener('devicemotion',onMotion);pedoOn=false;stopGeo();render();return}
+  startGeo();
   try{
     if(typeof DeviceMotionEvent!=='undefined'&&DeviceMotionEvent.requestPermission){
       const r=await DeviceMotionEvent.requestPermission();if(r!=='granted')return toast('センサーの許可が必要です')}
@@ -519,7 +605,9 @@ function render(){
   $('forestCount').textContent=S.forest.length;
   $('season').textContent=seasonLabel();
   $('pedoBtn').textContent=pedoOn?'⏸ 歩数計をOFF':'📱 歩数計をON';
-  $('pedoState').textContent=pedoOn?'● 歩数計うごいています':'';
+  const town=curTown();
+  $('pedoState').textContent=pedoOn?`● 歩数計ON${town?` ・ ${town}${multNow()>1?'（2倍中）':''}`:''}`:'';
+  renderMap();
   $('scene').classList.toggle('winter',!breeding());
   $('forestScene').classList.toggle('winter',!breeding());
   const d=gdate();$('dbgDate').textContent=`ゲーム内の日付：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
@@ -549,10 +637,10 @@ function render(){
   if(s.k==='empty'){
     h=`<h3>${S.sel+1}番目の巣</h3><div class="meta">からっぽ</div>`;
     if(S.inbox.length){h+=`<p>届いている卵があります。この巣に置けます。</p><div class="row">${S.inbox.map((e,i)=>`<button type="button" class="primary" data-inbox="${i}">🥚 ${e.special?'白神の特別な卵':e.parent?`No.${e.parent}の${SP[e.sp].n}の卵（${e.gen}世）`:'卵'}</button>`).join('')}</div>`}
-    if(breeding()){h+=`<p>森で卵をさがします。${summerOK()?'今は夏鳥の卵も見つかります。':''}</p><div class="row"><button type="button" class="primary" id="eggBtn" ${S.wallet<EGG_COST?'disabled':''}>卵をさがす（${EGG_COST}歩）</button></div>`}
+    if(breeding()){h+=`<p>森で卵をさがします。${summerOK()?'今は夏鳥の卵も見つかります。':''}</p><div class="row"><button type="button" class="primary" id="eggBtn" ${S.wallet<EGG_COST?'disabled':''}>卵をさがす（${EGG_COST}pt）</button></div>`}
     else{h+=`<p>今は繁殖期ではないので卵は見つかりません。木の実を置いて餌台にすると、北の国から冬鳥が来ます（${FEEDER_NEED}歩で到着）。</p><div class="row"><button type="button" class="primary" id="feederBtn" ${S.inv.berry?'':'disabled'}>餌台を置く（木の実×1）</button></div>`}
   }else if(s.k==='egg'){
-    h=`<h3>${s.parent?`足環No.${s.parent}の子どもの卵`:SP[s.sp].rar===4?'白神の特別な卵':'なにかの卵'}</h3><div class="meta">${S.sel+1}番目の巣</div><p>歩くと温まります。あと <b style="color:var(--green-soft)">${Math.max(0,s.need-s.prog).toLocaleString()}歩</b> で孵ります。</p><div class="row"><button type="button" class="secondary" id="letgoBtn">森に戻す</button></div>`;
+    h=`<h3>${s.parent?`足環No.${s.parent}の子どもの卵`:SP[s.sp].rar===4?'白神の特別な卵':'なにかの卵'}</h3><div class="meta">${S.sel+1}番目の巣</div><p>歩くと温まります。あと <b style="color:var(--green-soft)">${Math.max(0,s.need-s.prog).toLocaleString()}歩</b> で孵ります。</p><div class="row"><button type="button" class="small" id="warmBtn" ${S.inv.down?'':'disabled'}>🪶 羽毛ぶとんで温める<span class="cnt">${S.inv.down}</span></button><button type="button" class="small" id="letgoBtn">森に戻す</button></div><p class="note">羽毛ぶとんは「ポイントでかう」で買えます。</p>`;
   }else if(s.k==='bird'){
     const b=SP[s.sp],need=GROW[b.rar],hungry=s.hunger<=20||s.thirst<=20;
     h=`<h3>${b.n}</h3><div class="meta">${stageName[s.stage]} ・ ${b.type}${s.gen>1?` ・ ${s.gen}世`:''}</div><p>${b.d}</p>
@@ -570,7 +658,7 @@ function render(){
   $('panel').innerHTML=h;
 
   // お店
-  $('shop').innerHTML=Object.entries(ITEMS).map(([id,it])=>`<div class="item"><div class="ico">${it.ico}</div><div class="m"><b>${it.n} <span style="color:var(--muted);font-weight:400;font-size:12px">×${S.inv[id]}</span></b><small>${it.t}</small></div><button type="button" data-buy="${id}" ${S.wallet<it.cost?'disabled':''}>${it.cost}歩</button></div>`).join('');
+  $('shop').innerHTML=Object.entries(ITEMS).map(([id,it])=>`<div class="item"><div class="ico">${it.ico}</div><div class="m"><b>${it.n} <span style="color:var(--muted);font-weight:400;font-size:12px">×${S.inv[id]}</span></b><small>${it.t}</small></div><button type="button" data-buy="${id}" ${S.wallet<it.cost?'disabled':''}>${it.cost}pt</button></div>`).join('');
 
   // 森
   $('forestBirds').innerHTML=S.forest.length?S.forest.slice(-24).map(f=>`<div class="fb"><div class="sprite bob" style="${spriteStyle(f.sp,.4)};animation-delay:${(f.ring%5)*.3}s"></div><span class="ring">No.${f.ring}${f.gen>1?` ${f.gen}世`:''}</span></div>`).join(''):'<p class="empty-mark" style="align-self:center">まだ森に還した鳥はいません</p>';
@@ -586,6 +674,34 @@ function render(){
   $('zkCount').textContent=`${got} / ${keys.length}種`;
 }
 
+// ---------- 地図 ----------
+const CTX_LABELS=['深浦町','西目屋村','弘前市','三種町','大鰐町'];
+function weekRange(){const d=gdate();const day=(d.getDay()+6)%7;const a=new Date(d);a.setDate(d.getDate()-day);const b=new Date(a);b.setDate(a.getDate()+6);
+  const f=x=>`${x.getMonth()+1}/${x.getDate()}`;const wd='日月火水木金土';return `${f(a)}（${wd[a.getDay()]}）〜 ${f(b)}（${wd[b.getDay()]}）`}
+let mapKey='';
+function renderMap(){
+  const town=curTown(),key=EVENT.town+'|'+town+'|'+weekRange();
+  $('evTown').textContent=EVENT.town;$('evMult').textContent=EVENT.mult;
+  $('evPeriod').innerHTML=`${weekRange()}<br>${EVENT.town}の中で歩くと、1歩で${EVENT.mult}ポイント`;
+  $('hereLine').textContent=town?`いまいる町：${town}${town===EVENT.town?'（ポイント2倍中！）':''}`:(pedoOn?'いまいる町：対象エリアの外か、位置を確認中です':'歩数計をONにすると、いまいる町を表示します');
+  if(key===mapKey)return;mapKey=key;
+  const m=$('map');m.setAttribute('viewBox',`0 0 ${MAP.w} ${MAP.h}`);
+  let h=`<defs><linearGradient id="hotFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3d98a"/><stop offset="1" stop-color="#d9a93e"/></linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  for(const c of MAP.ctx)h+=`<path class="ctx" d="${c.d}"/>`;
+  const hot=MAP.towns.find(t=>t.n===EVENT.town);
+  for(const t of MAP.towns)if(t!==hot)h+=`<path class="town ${t.n===town?'here':''}" d="${t.d}"/>`;
+  if(hot)h+=`<path class="town hot ${hot.n===town?'here':''}" d="${hot.d}"/>`;
+  for(const c of MAP.ctx)if(CTX_LABELS.includes(c.n))h+=`<text class="ctxlbl" x="${c.lx}" y="${c.ly}" text-anchor="middle">${c.n}</text>`;
+  h+=`<text class="pref" x="${MAP.w-40}" y="70" text-anchor="end">青森県</text><text class="pref" x="${MAP.w-40}" y="${MAP.h-40}" text-anchor="end">秋田県</text>`;
+  const sx=MAP.shirakami.x,sy=MAP.shirakami.y;
+  h+=`<path d="M${sx-26},${sy+14} L${sx-6},${sy-18} L${sx+4},${sy-4} L${sx+12},${sy-14} L${sx+30},${sy+14}Z" fill="#9cc89a" stroke="#090b0d" stroke-width="3"/><text class="mt" x="${sx}" y="${sy-28}" text-anchor="middle">白神山地</text>`;
+  for(const t of MAP.towns)if(t!==hot)h+=`<text class="lbl" x="${t.lx}" y="${t.ly}" text-anchor="middle">${t.n}</text>`;
+  if(hot)h+=`<text class="lbl hot" x="${hot.lx}" y="${hot.ly-8}" text-anchor="middle">${hot.n}</text><text class="lbl hot" x="${hot.lx}" y="${hot.ly+36}" text-anchor="middle" style="font-size:30px">×${EVENT.mult}</text>`;
+  m.innerHTML=h;
+  $('evTowns').innerHTML=MAP.towns.map(t=>`<span class="chip ${t.n===EVENT.town?'hot':''}">${t.n}${t.n===EVENT.town?` ×${EVENT.mult}`:''}</span>`).join('');
+}
+
 // ---------- UI ----------
 let toastT;function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2400)}
 function showDlg(html){$('dlgBody').innerHTML=html;const d=$('dlg');if(!d.open)d.showModal()}
@@ -598,9 +714,11 @@ document.addEventListener('click',e=>{
   else if(t.dataset.feed)feed(t.dataset.feed);
   else if(t.dataset.inbox!=null)placeInbox(+t.dataset.inbox);
   else if(t.dataset.tab){document.querySelectorAll('.bottom button').forEach(b=>b.classList.toggle('on',b===t));
-    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.id==='tab-'+t.dataset.tab));window.scrollTo(0,0)}
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.id==='tab-'+t.dataset.tab));
+    document.body.classList.toggle('compact',t.dataset.tab==='map');window.scrollTo(0,0)}
   else if(t.dataset.dbg){const v=t.dataset.dbg;
-    if(v==='steps500')walk(500);if(v==='steps3000')walk(3000);
+    if(v==='steps500')walk(500,multNow());if(v==='steps3000')walk(3000,multNow());
+    if(v==='here'){fakeHere=!fakeHere;t.textContent=fakeHere?'イベントの町にいることをやめる':'イベントの町にいることにする';render();toast(fakeHere?`${EVENT.town}にいることにしました`:'もとに戻しました')}
     if(v==='day1'||v==='day30'){S.offset+=v==='day1'?1:30;tick();save();render();toast('時間がすすみました')}
     if(v==='checkin')checkin(true);
     if(v==='reset'&&confirm('データをすべて消しますか？')){S=fresh();save();render()}}
@@ -609,6 +727,7 @@ document.addEventListener('click',e=>{
   else if(t.id==='releaseBtn')release();
   else if(t.id==='seeoffBtn')seeOff();
   else if(t.id==='letgoBtn')letGo();
+  else if(t.id==='warmBtn')warmEgg();
   else if(t.id==='pedoBtn')togglePedo();
   else if(t.id==='manualBtn')manualSync();
   else if(t.id==='checkinBtn')checkin(false);
