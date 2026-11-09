@@ -194,7 +194,7 @@ dialog .primary{min-width:140px}
     <section class="card panel" id="panel"></section>
 
     <section>
-      <div class="section-head"><h2>ポイントでかう</h2><span id="pedoState"></span></div>
+      <div class="section-head"><h2>ポイントで交換</h2><span id="pedoState"></span></div>
       <div class="shop" id="shop"></div>
     </section>
 
@@ -310,6 +310,7 @@ dialog .primary{min-width:140px}
 const SP = {
   kumagera:{n:'クマゲラ',r:5,c:8,type:'留鳥',rar:4,fav:'bug',d:'白神のシンボル。国の天然記念物。大きなブナの幹に巣穴を掘る。'},
   inuwashi:{n:'イヌワシ',r:5,c:6,type:'留鳥',rar:4,fav:'mouse',d:'白神の稜線を舞う大型のワシ。とても数が少ない。'},
+  yamagara:{n:'ヤマガラ',r:2,c:1,type:'留鳥',rar:1,fav:'berry',d:'木の実を足でおさえ、くちばしでつついて割って食べる。人なつこい。'},
   akagera:{n:'アカゲラ',r:3,c:8,type:'留鳥',rar:2,fav:'bug',d:'白黒もようのキツツキ。ドラミングの音が森にひびく。'},
   aogera:{n:'アオゲラ',r:3,c:9,type:'留鳥',rar:2,fav:'bug',d:'日本にだけすむ緑色のキツツキ。'},
   fukuro:{n:'フクロウ',r:2,c:8,type:'留鳥',rar:3,fav:'mouse',d:'大木の洞（うろ）を巣にする夜の狩人。',unlock:'kumagera'},
@@ -458,7 +459,7 @@ function warmEgg(){
   save();render();
 }
 function buy(id){const it=ITEMS[id];if(S.wallet<it.cost)return toast('ポイントが足りません');
-  S.wallet-=it.cost;S.inv[id]++;save();render();toast(`${it.n}をかいました`)}
+  S.wallet-=it.cost;S.inv[id]++;save();render();toast(`${it.n}と交換しました`)}
 function feed(id){
   const s=S.slots[S.sel];if(!S.inv[id])return toast(`${ITEMS[id].n}がありません`);
   tick();
@@ -640,7 +641,7 @@ function render(){
     if(breeding()){h+=`<p>森で卵をさがします。${summerOK()?'今は夏鳥の卵も見つかります。':''}</p><div class="row"><button type="button" class="primary" id="eggBtn" ${S.wallet<EGG_COST?'disabled':''}>卵をさがす（${EGG_COST}pt）</button></div>`}
     else{h+=`<p>今は繁殖期ではないので卵は見つかりません。木の実を置いて餌台にすると、北の国から冬鳥が来ます（${FEEDER_NEED}歩で到着）。</p><div class="row"><button type="button" class="primary" id="feederBtn" ${S.inv.berry?'':'disabled'}>餌台を置く（木の実×1）</button></div>`}
   }else if(s.k==='egg'){
-    h=`<h3>${s.parent?`足環No.${s.parent}の子どもの卵`:SP[s.sp].rar===4?'白神の特別な卵':'なにかの卵'}</h3><div class="meta">${S.sel+1}番目の巣</div><p>歩くと温まります。あと <b style="color:var(--green-soft)">${Math.max(0,s.need-s.prog).toLocaleString()}歩</b> で孵ります。</p><div class="row"><button type="button" class="small" id="warmBtn" ${S.inv.down?'':'disabled'}>🪶 羽毛ぶとんで温める<span class="cnt">${S.inv.down}</span></button><button type="button" class="small" id="letgoBtn">森に戻す</button></div><p class="note">羽毛ぶとんは「ポイントでかう」で買えます。</p>`;
+    h=`<h3>${s.parent?`足環No.${s.parent}の子どもの卵`:SP[s.sp].rar===4?'白神の特別な卵':'なにかの卵'}</h3><div class="meta">${S.sel+1}番目の巣</div><p>歩くと温まります。あと <b style="color:var(--green-soft)">${Math.max(0,s.need-s.prog).toLocaleString()}歩</b> で孵ります。</p><div class="row"><button type="button" class="small" id="warmBtn" ${S.inv.down?'':'disabled'}>🪶 羽毛ぶとんで温める<span class="cnt">${S.inv.down}</span></button><button type="button" class="small" id="letgoBtn">森に戻す</button></div><p class="note">羽毛ぶとんは「ポイントで交換」で手に入ります。</p>`;
   }else if(s.k==='bird'){
     const b=SP[s.sp],need=GROW[b.rar],hungry=s.hunger<=20||s.thirst<=20;
     h=`<h3>${b.n}</h3><div class="meta">${stageName[s.stage]} ・ ${b.type}${s.gen>1?` ・ ${s.gen}世`:''}</div><p>${b.d}</p>
