@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f8a3a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Zen+Maru+Gothic:wght@700;900&display=swap" rel="stylesheet">
+<title>白神ウォーキングクエスト</title>
+<link rel="icon" href="icon.jpg">
+<style>
+:root{color-scheme:light;
+  --bg:#2f8a3a;--bg-d:#24702e;--field:#a6dd88;--field-2:#86cc69;
+  --card:#ffffff;--cream:#fdf8e3;--lav:#b9a6ec;--lav-d:#8e7bd0;--lav-2:#e8e1fd;--lav-ink:#3b3360;
+  --ink:#1f2a1f;--ink-2:#5d6a5b;--outline:#173f1c;--navy:#25243f;
+  --green:#4cb84f;--green-d:#2b7a31;--yellow:#ffd93b;--yellow-d:#e2a800;--danger:#e2342b;
+  --water:#47aee8;--food:#f0a13a;--love:#f07fae;--green-soft:#2b8a33;--blue-em:#2f3fd6;
+  --sprite:url(bird-sprites.png)}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);min-height:100vh;
+  font:700 15px/1.6 "M PLUS Rounded 1c","Zen Maru Gothic",system-ui,-apple-system,"Noto Sans JP",sans-serif;
+  background:repeating-linear-gradient(180deg,#ffffff07 0 2px,transparent 2px 6px),linear-gradient(180deg,#358f3f,#2a7d33 50%,#246f2d) fixed,var(--bg)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+#app{width:min(100%,720px);margin:auto;padding:0 14px calc(104px + env(safe-area-inset-bottom))}
+.outline{color:#fff;-webkit-text-stroke:0;paint-order:stroke fill;
+  text-shadow:3px 0 0 var(--outline),-3px 0 0 var(--outline),0 3px 0 var(--outline),0 -3px 0 var(--outline),3px 3px 0 var(--outline),-3px 3px 0 var(--outline),3px -3px 0 var(--outline),-3px -3px 0 var(--outline),0 6px 0 var(--outline)}
+
+/* ヘッダー */
+header{position:relative;margin:0 -14px;padding:14px 14px 12px;overflow:hidden;
+  background:repeating-conic-gradient(from 0deg at 50% -10%,#ffffff14 0 5deg,transparent 5deg 12deg),linear-gradient(180deg,#45a24c,#2f8a3a)}
+.eyebrow{display:table;margin:0 auto 8px;background:var(--lav-2);color:var(--lav-ink);border:3px solid var(--lav-d);border-radius:999px;font-size:12px;letter-spacing:.2em;font-weight:800;padding:1px 16px;box-shadow:0 3px 0 #3b336055}
+.brand{position:relative;display:flex;align-items:center;gap:10px;z-index:1}
+.mark{width:64px;height:64px;flex:0 0 64px;border-radius:50%;background:#fff url(icon-pixel.png) center/86% no-repeat;image-rendering:pixelated;border:5px solid var(--lav);box-shadow:0 0 0 3px var(--lav-ink),0 4px 0 3px #0003}
+h1{margin:0;font-size:clamp(19px,5.7vw,40px);line-height:1.15;font-weight:900;letter-spacing:.01em}
+h1 .y{color:var(--yellow)}
+h1 span,h1 b{white-space:nowrap;font-weight:inherit}
+.subtitle{position:relative;z-index:1;font-size:12px;margin:8px 0 10px;font-weight:800;color:#fff;
+  text-shadow:2px 0 0 var(--outline),-2px 0 0 var(--outline),0 2px 0 var(--outline),0 -2px 0 var(--outline)}
+.deco{position:absolute;right:6px;top:34px;width:120px;height:70px;opacity:.95;z-index:0}
+.stats{display:flex;gap:7px;overflow:auto;padding:2px 0 6px;scrollbar-width:none;align-items:center;position:relative;z-index:1}
+.stats::-webkit-scrollbar{display:none}
+.stat{display:flex;align-items:baseline;gap:6px;white-space:nowrap;padding:3px 12px;border-radius:999px;background:#ffffffe8;border:3px solid var(--lav);color:var(--lav-ink)}
+.stat strong{font-size:15px;font-weight:900;font-variant-numeric:tabular-nums}
+.stat span{font-size:11px;color:var(--ink-2)}
+.stat:first-child{padding:4px 20px;background:#fff6b8;border:4px solid var(--yellow);box-shadow:0 0 0 2px #fff6,0 4px 0 var(--yellow-d)}
+.stat:first-child strong{font-size:26px;color:#3a3200}
+.stat:first-child span{font-size:13px;color:#3a3200;font-weight:900}
+.stat.season strong{font-size:12px;color:var(--green-d)}
+
+/* セクション見出し */
+section{margin-top:16px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 8px}
+.section-head h2{display:inline-block;margin:0;font-size:15px;font-weight:900;color:#3a3200;background:#fff6b8;border:3px solid var(--yellow);border-radius:999px;padding:1px 14px;box-shadow:0 3px 0 var(--yellow-d)}
+.section-head h2:before{content:"★ ";color:#3a3200}
+.section-head span{font-size:11px;color:#e8f6e2;font-weight:800}
+.card{border:5px solid var(--lav);border-radius:22px;background:var(--card);box-shadow:0 5px 0 #0003;padding:14px}
+.note{font-size:11px;color:var(--ink-2);margin:6px 0 0;font-weight:700}
+
+/* 巣：ラベンダー枠の中の草原パネル */
+.scene{position:relative;border:5px solid var(--lav);border-radius:24px;padding:10px;background:#5cbf4a;box-shadow:0 0 0 3px #ffffff40 inset,0 5px 0 #0003}
+.nests{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.nest{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:190px;padding:8px 4px 8px;border:4px solid #fff;border-radius:16px;
+  background:
+    radial-gradient(ellipse 13px 7px at 20% 30%,var(--field-2) 70%,transparent 74%) 0 0/60px 44px,
+    radial-gradient(ellipse 11px 6px at 75% 70%,var(--field-2) 70%,transparent 74%) 0 0/52px 40px,var(--field)}
+.nest.sel{box-shadow:0 0 0 4px var(--yellow),0 0 18px #fff8}
+.nest .stage{flex:none;height:112px;display:flex;align-items:flex-end;justify-content:center;position:relative;width:100%;z-index:1}
+.nest .stump{flex:none;width:92%;max-width:120px;height:24px;margin-top:-12px;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 45%,#f2c27a 0 30%,#e1a65a 31% 46%,#f0bd72 47% 60%,#d39448 61% 100%);
+  border:3px solid #9a5e25;box-shadow:0 3px 0 #7a4519}
+.nest .name{font-size:15px;margin-top:6px;text-align:center;min-height:19px;line-height:1.25;font-weight:900;color:var(--ink)}
+.nest .name small{display:block;font-weight:800;color:var(--ink-2);font-size:10px}
+.bars{width:88%;margin-top:4px;display:grid;gap:3px}
+.bar{height:5px;background:#ffffff99;border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px}
+.bar.w i{background:var(--water)}.bar.f i{background:var(--food)}.bar.g i{background:var(--green-d)}.bar.h i{background:var(--love)}
+.empty-mark{color:#fff;font-size:13px;font-weight:900;padding-bottom:16px;text-shadow:0 2px 0 #3f8a2f}
+.hungry{position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap;background:#fff;color:var(--danger);padding:1px 10px;border-radius:999px;border:3px solid var(--danger);font-weight:900;z-index:2}
+
+.sprite{background-image:var(--sprite);background-repeat:no-repeat;image-rendering:pixelated;flex:none}
+.bob{animation:pico .8s steps(1,end) infinite}
+@keyframes pico{0%{transform:translateY(-4%)}10%,100%{transform:none}}
+.egg.pico{display:inline-block;animation:pico .8s steps(1,end) infinite;transform-origin:50% 100%}
+.egg.warm{animation:wobble .8s steps(1,end) infinite}
+@keyframes wobble{0%{transform:translateY(-4%) rotate(-6deg)}10%{transform:none}50%{transform:rotate(6deg)}60%,100%{transform:none}}
+
+/* ガイド（探検家）と吹き出し */
+.guide{display:flex;align-items:center;gap:6px;margin-top:12px}
+.guide .who{position:relative;flex:none;width:88px;height:88px;background:url(guide.png) center bottom/contain no-repeat;image-rendering:pixelated;animation:pico .8s steps(1,end) infinite;animation-delay:-.4s}
+.guide .who:after{content:"";position:absolute;right:-8px;top:2px;width:22px;height:22px;
+  background:linear-gradient(60deg,transparent 45%,var(--yellow) 45% 60%,transparent 60%) 0 0/10px 10px no-repeat,
+             linear-gradient(90deg,transparent 40%,var(--yellow) 40% 60%,transparent 60%) 8px 4px/10px 10px no-repeat,
+             linear-gradient(120deg,transparent 45%,var(--yellow) 45% 60%,transparent 60%) 12px 12px/10px 10px no-repeat}
+@keyframes nod{50%{transform:translateY(-2px)}}
+.bubble{position:relative;flex:1;background:#fff;border:4px solid var(--navy);border-radius:999px;padding:10px 18px;font-size:13px;line-height:1.55;font-weight:800;box-shadow:0 4px 0 #0003}
+.bubble:before{content:"";position:absolute;left:-15px;top:50%;transform:translateY(-50%);border:11px solid transparent;border-right-color:var(--navy);border-left:0}
+.bubble:after{content:"";position:absolute;left:-9px;top:50%;transform:translateY(-50%);border:8px solid transparent;border-right-color:#fff;border-left:0}
+.bubble em{font-style:normal;color:var(--blue-em)}
+
+/* 選んだ巣の詳細 */
+.panel h3{margin:0;font-size:19px;font-weight:900}
+.panel .meta{color:var(--ink-2);font-size:11px;margin-top:2px}
+.panel p{margin:8px 0 0;font-size:13px;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;background:var(--lav-2);border:2px solid var(--lav);color:var(--lav-ink);padding:1px 9px;font-size:11px;font-weight:800}
+.chip.ok{background:#dcf5d6;color:#1f6b27;border-color:#7fcc80}
+.chip.warn{background:#ffe6e3;color:#b62d24;border-color:#f0a39b}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.primary,.secondary,.small{min-height:46px;border-radius:14px;padding:9px 16px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .05s}
+.primary{border:3px solid var(--outline);background:linear-gradient(180deg,#6fd36f,#3fae45);color:#fff;box-shadow:0 4px 0 var(--outline);text-shadow:0 2px 0 var(--green-d)}
+.secondary{border:3px solid var(--lav-d);background:#fff;color:var(--lav-ink);box-shadow:0 4px 0 var(--lav-d)}
+.small{min-height:40px;padding:5px 12px;font-size:13px;border:3px solid var(--lav-d);background:#fff;color:var(--lav-ink);box-shadow:0 3px 0 var(--lav-d)}
+.primary:active,.secondary:active,.small:active{transform:translateY(3px);box-shadow:none}
+.small .cnt{font-size:10px;background:var(--lav-2);border-radius:999px;padding:0 6px;color:var(--lav-ink)}
+button:disabled{opacity:.45;cursor:not-allowed}
+
+/* ポイントで交換 */
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:8px}
+.item{display:flex;align-items:center;gap:10px;border:4px solid var(--lav);border-radius:18px;background:var(--cream);padding:8px;box-shadow:0 4px 0 #0003}
+.item .ico{width:40px;height:40px;flex:none;border-radius:12px;background:var(--field);border:3px solid #fff;display:grid;place-items:center;font-size:21px}
+.item .m{flex:1;min-width:0;line-height:1.35}
+.item .m b{display:block;font-weight:900;font-size:14px}
+.item .m small{color:var(--ink-2);font-size:10px}
+.item button{border:3px solid var(--outline);background:#4cb84f;color:#fff;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:900;white-space:nowrap;box-shadow:0 3px 0 var(--outline)}
+
+input[type=number]{background:#fff;border:3px solid var(--lav);border-radius:14px;padding:9px 12px;width:140px;color:var(--ink)}
+
+/* 森・図鑑 */
+.forestScene{min-height:170px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;justify-content:center}
+.fb{display:flex;flex-direction:column;align-items:center}
+.ring{font-size:10px;color:var(--lav-ink);background:#fff;border:2px solid var(--lav);border-radius:999px;padding:0 6px;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:9px}
+.zk{border:4px solid var(--lav);border-radius:18px;background:#fff;padding:8px 6px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;box-shadow:0 4px 0 #0003}
+.zk .thumb{width:84px;height:84px;border-radius:14px;background:radial-gradient(ellipse 11px 6px at 25% 30%,var(--field-2) 70%,transparent 74%) 0 0/42px 34px,var(--field);border:3px solid #fff;outline:2px solid #86cc69;display:grid;place-items:center;overflow:hidden}
+.zk b{font-size:13px;font-weight:900}
+.zk.locked .thumb{background:#eceaf3;outline-color:#d6d0ea}
+.zk.locked .sprite{filter:brightness(0) opacity(.25)}
+.zk.locked b{color:var(--ink-2)}
+.zk .chip{font-size:10px;padding:0 7px}
+.log{font-size:12px;max-height:180px;overflow:auto;margin:0;padding-left:18px}
+.log li{margin:2px 0}
+details summary{cursor:pointer;color:var(--lav-ink);font-size:13px;font-weight:800}
+
+/* 下のバー */
+.bottom{position:fixed;z-index:4;bottom:0;left:0;right:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:5px solid var(--lav);box-shadow:0 -4px 0 #0002}
+.bottom-inner{width:min(100%,644px);margin:auto;display:flex;gap:7px}
+.bottom button{flex:1;height:48px;border-radius:14px;border:3px solid var(--lav-d);background:#fff;color:var(--lav-ink);font-weight:900;font-size:14px;box-shadow:0 3px 0 var(--lav-d)}
+.bottom button.on{border-color:var(--outline);background:linear-gradient(180deg,#6fd36f,#3fae45);color:#fff;box-shadow:0 3px 0 var(--outline);text-shadow:0 2px 0 var(--green-d)}
+.tab{display:none}.tab.on{display:block}
+
+/* 地図・イベント */
+.event{border:5px solid var(--lav);border-radius:24px;overflow:hidden;background:#5cbf4a;box-shadow:0 5px 0 #0003;padding:10px;display:grid;gap:10px}
+@media(min-width:600px){.legend{position:absolute;right:12px;bottom:12px;margin:0;background:#fdf8e3ee;font-size:9px}.event{grid-template-columns:236px 1fr}.ev-title h2{font-size:25px}.event .side{display:flex;flex-direction:column;gap:10px}}
+.side{display:grid;gap:10px}
+.event-badge{display:inline-flex;align-self:flex-start;justify-self:start;align-items:center;gap:6px;border-radius:999px;background:#fff6b8;border:4px solid var(--yellow);color:#3a3200;font-size:14px;font-weight:900;letter-spacing:.06em;padding:1px 14px;box-shadow:0 3px 0 var(--yellow-d)}
+.ev-title{background:#2f8a3a;border-radius:16px;padding:10px 12px 12px;box-shadow:inset 0 0 0 3px #ffffff26}
+.ev-title h2{margin:0;font-size:clamp(24px,6.8vw,30px);line-height:1.3;font-weight:900}
+.ev-title h2 .y{color:var(--yellow)}
+.period{color:#fff;font-size:11px;margin-top:6px;font-weight:800}
+.berry-box{display:flex;align-items:center;gap:10px;background:var(--cream);border:4px solid #a6dd88;border-radius:16px;padding:8px 10px;font-size:12px;line-height:1.55;font-weight:800}
+.berry-box .b{font-size:30px;flex:none}
+.mapbox{position:relative;border-radius:18px;overflow:hidden;background:#fff;padding:4px}
+.map{display:block;width:100%;height:auto;border-radius:14px;background:#4fb0e8}
+.map .ctx,.map .town{fill:#cdeaab;stroke:#ffffff;stroke-width:3}
+.map .town.hot{fill:var(--yellow);stroke:#fff6c8;stroke-width:5;filter:url(#glow)}
+.map .town.here{stroke:#2f3fd6;stroke-width:7}
+.map text{font-family:"M PLUS Rounded 1c","Zen Maru Gothic",system-ui,sans-serif;paint-order:stroke;stroke:#ffffff;stroke-width:9px;stroke-linejoin:round;font-weight:900}
+.map .lbl{fill:#1f4d22;font-size:34px}
+.map .lbl.small{font-size:28px}
+.map .pref{fill:#1f4d22;font-size:36px;letter-spacing:.1em}
+.legend{margin:6px 2px 2px;background:#fdf8e3;border:3px solid #a6dd88;border-radius:12px;padding:4px 8px;font-size:9px;line-height:1.65;font-weight:800}
+.legend i{display:inline-block;width:22px;text-align:center;font-style:normal}
+.event-foot{display:flex;flex-wrap:wrap;gap:6px}
+.event-foot .chip{background:#fff;border-color:#fff}
+.event-foot .chip.hot{background:#fff6b8;border-color:var(--yellow);color:#3a3200}
+.credit{font-size:9px;color:#eaf6e4;font-weight:700}
+.here-line{font-size:12px;color:var(--lav-ink);margin-top:8px;font-weight:800}
+body.compact .subtitle,body.compact .stats{display:none}
+
+.toast{position:fixed;z-index:10;left:50%;bottom:86px;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:#fff;color:var(--ink);border:4px solid var(--navy);padding:8px 16px;border-radius:999px;box-shadow:0 4px 0 #0003;font-size:13px;font-weight:900;transition:.2s;max-width:calc(100% - 36px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+dialog{border:5px solid var(--lav);border-radius:24px;background:#fff;color:var(--ink);max-width:340px;width:calc(100% - 36px);text-align:center;padding:0 0 18px;box-shadow:0 6px 0 #0004;overflow:hidden}
+dialog::backdrop{background:#0f2a12aa}
+#dlgBody{padding:16px 18px 0;background:repeating-conic-gradient(from 0deg at 50% 0%,#ffffff22 0 5deg,transparent 5deg 12deg),linear-gradient(180deg,#5cbf4a,#a6dd88 60%,#fff 100%)}
+dialog h3{margin:6px 0 4px;font-size:28px;font-weight:900;color:#fff;
+  text-shadow:3px 0 0 var(--outline),-3px 0 0 var(--outline),0 3px 0 var(--outline),0 -3px 0 var(--outline),3px 3px 0 var(--outline),-3px 3px 0 var(--outline),3px -3px 0 var(--outline),-3px -3px 0 var(--outline),0 5px 0 var(--outline)}
+dialog p{font-size:13px;margin:6px 0;font-weight:700}
+dialog .row{justify-content:center;padding:0 18px}
+dialog .primary{min-width:140px}
+
+@media(min-width:600px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:min(100%,720px);border-left:5px solid var(--lav);border-right:5px solid var(--lav);border-radius:20px 20px 0 0}}
+@media(max-width:480px){.deco{display:none}}
+@media(max-width:380px){#app{padding-left:10px;padding-right:10px}header{margin:0 -10px}.mark{width:52px;height:52px;flex-basis:52px}.nest{min-height:178px}.deco{display:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="eyebrow">SHIRAKAMI NETWORK</div>
+    <svg class="deco" viewBox="0 0 60 35" shape-rendering="crispEdges" aria-hidden="true">
+      <path d="M4 34 L18 10 L32 34Z" fill="#2b7a31"/><path d="M14 17 L18 10 L22 17Z" fill="#fff"/>
+      <path d="M20 34 L34 6 L48 34Z" fill="#358f3b"/><path d="M30 14 L34 6 L38 14Z" fill="#fff"/>
+      <path d="M44 34 L50 22 L56 34Z M46 28 L50 18 L54 28Z M47 23 L50 15 L53 23Z" fill="#1f5e25"/><rect x="49" y="33" width="2" height="2" fill="#6b4a2c"/>
+    </svg>
+    <div class="brand"><div class="mark" aria-label="鳥のアイコン"></div><h1 class="outline"><b>白神</b><span class="y">ウォーキング</span><b>クエスト</b></h1></div>
+    <p class="subtitle">1歩で1ポイント。歩いて卵を温め、育てた鳥を白神の森へ還そう。</p>
+    <div class="stats">
+      <div class="stat"><strong id="wallet">0</strong><span>ポイント</span></div>
+    </div>
+  </header>
+
+  <!-- 巣 -->
+  <div class="tab on" id="tab-nest">
+    <section>
+      <div class="scene" id="scene"><div class="nests" id="nests"></div></div>
+      <div class="guide"><div class="who" role="img" aria-label="ガイドの探検家"></div><div class="bubble" id="guide"></div></div>
+    </section>
+    <section>
+      <div class="event">
+        <div class="side">
+          <span class="event-badge">★ 今週のイベント</span>
+          <div class="ev-title"><h2 class="outline"><span class="y">黄色</span>のエリアを<br>歩くと<br><span class="y">ポイント<span id="evMult"></span>倍！</span></h2><div class="period" id="evPeriod"></div></div>
+          <div class="berry-box"><span class="b" aria-hidden="true">🍒</span><div>森で見つけた木の実は、歩くだけでアイテムに自動で入るよ！</div></div>
+        </div>
+        <div>
+          <div class="mapbox"><svg class="map" id="map" role="img" aria-label="白神山地周辺の地図。黄色のエリアがポイント2倍"></svg>
+            <div class="legend">
+              <div><i style="color:#fff;text-shadow:0 0 2px #2b7a31">○○○</i>…ウォーキングコース</div>
+              <div><i><span style="display:inline-block;width:18px;height:9px;border-radius:5px;background:#ffd93b;vertical-align:middle"></span></i>…ポイント2倍エリア</div>
+              <div><i>🥚</i>…卵（レア・各町1〜2か所）</div>
+              <div><i>🍒</i>…木の実（歩くと自動入手）</div>
+              <div><i style="color:#e2342b">▶</i>…スタート　<i style="color:#2f6fe0">▶</i>…ゴール</div>
+            </div>
+          </div>
+          <div class="event-foot" id="evTowns" style="margin-top:8px"></div>
+          <div class="credit">地図：国土数値情報（行政区域データ）を加工して作成</div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="section-head"><h2>ポイント2倍のしくみ</h2></div>
+      <div class="card">
+        <p class="note" style="margin:0;font-size:12px;color:var(--ink);line-height:1.8">
+          ・ふだんは1歩で1ポイント。イベントの町の中で歩くと、1歩で2ポイントになります。<br>
+          ・「巣」タブの歩数計をONにすると、位置情報から今いる町を判定します。<br>
+          ・ヘルスケアから入れた歩数は、どこで歩いたか分からないので1倍です。</p>
+        <div class="here-line" id="hereLine"></div>
+      </div>
+    </section>
+    <section class="card panel" id="panel"></section>
+
+    <section>
+      <div class="section-head"><h2>ポイントで交換</h2><span id="pedoState"></span></div>
+      <div class="shop" id="shop"></div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>歩く</h2></div>
+      <div class="card">
+        <div class="chips" style="margin:0 0 4px"><span class="chip">きょう歩いた <b id="today">0</b>歩</span><span class="chip">森へ還した <b id="forestCount">0</b>羽</span><span class="chip ok" id="season"></span></div>
+        <div class="row" style="margin-top:0"><button class="secondary" id="pedoBtn" type="button">📱 歩数計をON</button></div>
+        <p class="note">画面を開いたまま歩くと、スマホの動きから歩数を数えます。</p>
+        <div class="row" style="align-items:center">
+          <input type="number" id="manual" min="0" inputmode="numeric" placeholder="今日の歩数" aria-label="今日の合計歩数">
+          <button class="secondary" id="manualBtn" type="button">ヘルスケアの歩数を反映</button>
+        </div>
+        <p class="note">ヘルスケアやGoogle Fitの「今日の合計歩数」を入れると、前回からふえた分だけ加算されます。</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>白神山地でチェックイン</h2><span>1日1回</span></div>
+      <div class="card">
+        <p class="note" style="margin:0;font-size:12px;color:var(--ink)">ビジターセンターの近くでチェックインすると、白神の特別な卵がもらえます。</p>
+        <div class="row"><button class="primary" id="checkinBtn" type="button">📍 チェックイン</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 森 -->
+  <div class="tab" id="tab-forest">
+    <section>
+      <div class="section-head"><h2>白神の森</h2><span id="forestInfo"></span></div>
+      <div class="scene" id="forestScene"><div class="forestScene" id="forestBirds"></div></div>
+    </section>
+    <section>
+      <div class="section-head"><h2>森のしくみ</h2></div>
+      <div class="card"><p class="note" style="margin:0;font-size:12px;color:var(--ink);line-height:1.8">
+        ・還した鳥は、足環つきで図鑑に残ります。<br>
+        ・留鳥と夏鳥は、次の繁殖期（4月）にペアで戻って卵を産みます。<br>
+        ・クマゲラを還すと森に巣穴ができ、フクロウの卵が見つかるようになります。<br>
+        ・10羽還して森がにぎやかになると、チェックインでイヌワシの卵が出ることがあります。<br>
+        ・冬鳥は北へ見送ると、次の冬にまた餌台へ来てくれます。</p></div>
+    </section>
+    <section>
+      <div class="section-head"><h2>観察ノート</h2></div>
+      <div class="card"><ul class="log" id="log"></ul></div>
+    </section>
+  </div>
+
+  <!-- 図鑑 -->
+  <div class="tab" id="tab-zukan">
+    <section>
+      <div class="section-head"><h2>巣立ち図鑑</h2><span id="zkCount"></span></div>
+      <div class="grid" id="zukan"></div>
+      <p class="note">絵と種名の対応は仮のものです。</p>
+    </section>
+    <section class="card">
+      <details>
+        <summary>テスト用の操作</summary>
+        <div class="row">
+          <button class="small" type="button" data-dbg="steps500">+500歩 歩く</button>
+          <button class="small" type="button" data-dbg="steps3000">+3000歩 歩く</button>
+          <button class="small" type="button" data-dbg="day1">1日すすめる</button>
+          <button class="small" type="button" data-dbg="day30">30日すすめる</button>
+          <button class="small" type="button" data-dbg="checkin">チェックインしたことにする</button>
+          <button class="small" type="button" data-dbg="here">イベントの町にいることにする</button>
+          <button class="small" type="button" data-dbg="reset" style="color:var(--danger)">データを消す</button>
+        </div>
+        <p class="note" id="dbgDate"></p>
+      </details>
+    </section>
+  </div>
+</div>
+
+<div class="bottom"><div class="bottom-inner">
+  <button type="button" data-tab="nest" class="on">巣</button>
+  <button type="button" data-tab="forest">森</button>
+  <button type="button" data-tab="zukan">図鑑</button>
+</div></div>
+
+<dialog id="dlg"><div id="dlgBody"></div><div class="row"><button class="primary" id="dlgOk" type="button">OK</button></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="map-data.js"></script>
+<script>
+// ---------- データ ----------
+// r,c: スプライトシート(10列×5段, 1マス160×200px)の位置
+// type: 留鳥 / 夏鳥 / 冬鳥（冬鳥は日本で繁殖しないので卵にならない）
+const SP = {
+  kumagera:{n:'クマゲラ',r:5,c:8,type:'留鳥',rar:4,fav:'bug',d:'白神のシンボル。国の天然記念物。大きなブナの幹に巣穴を掘る。'},
+  inuwashi:{n:'イヌワシ',r:5,c:6,type:'留鳥',rar:4,fav:'mouse',d:'白神の稜線を舞う大型のワシ。とても数が少ない。'},
+  yamagara:{n:'ヤマガラ',r:2,c:1,type:'留鳥',rar:1,fav:'berry',d:'木の実を足でおさえ、くちばしでつついて割って食べる。人なつこい。'},
+  akagera:{n:'アカゲラ',r:3,c:8,type:'留鳥',rar:2,fav:'bug',d:'白黒もようのキツツキ。ドラミングの音が森にひびく。'},
+  aogera:{n:'アオゲラ',r:3,c:9,type:'留鳥',rar:2,fav:'bug',d:'日本にだけすむ緑色のキツツキ。'},
+  fukuro:{n:'フクロウ',r:2,c:8,type:'留鳥',rar:3,fav:'mouse',d:'大木の洞（うろ）を巣にする夜の狩人。',unlock:'kumagera'},
+  kakesu:{n:'カケス',r:2,c:9,type:'留鳥',rar:2,fav:'berry',d:'ドングリを貯めておく。ものまねが上手。'},
+  suzume:{n:'スズメ',r:3,c:1,type:'留鳥',rar:1,fav:'berry',d:'人里でおなじみの鳥。'},
+  hiyodori:{n:'ヒヨドリ',r:3,c:7,type:'留鳥',rar:1,fav:'berry',d:'にぎやかな声。木の実や花の蜜が好き。'},
+  kawarahiwa:{n:'カワラヒワ',r:3,c:4,type:'留鳥',rar:1,fav:'berry',d:'飛ぶと翼の黄色が目立つ。草の種が好き。'},
+  kisekirei:{n:'キセキレイ',r:1,c:7,type:'留鳥',rar:2,fav:'bug',d:'渓流の石の上で尾を振る。'},
+  kiji:{n:'キジ',r:5,c:1,type:'留鳥',rar:2,fav:'berry',d:'日本の国鳥。オスは顔が赤い。'},
+  kawasemi:{n:'カワセミ',r:5,c:9,type:'留鳥',rar:3,fav:'fish',d:'「渓流の宝石」。水に飛びこんで小魚をとる。'},
+  ruribitaki:{n:'ルリビタキ',r:4,c:2,type:'留鳥',rar:2,fav:'bug',d:'夏は山の上、冬はふもとへ移動する。'},
+  kibitaki:{n:'キビタキ',r:4,c:3,type:'夏鳥',rar:2,fav:'bug',d:'ブナ林を彩る黄色い夏鳥。東南アジアで冬を越す。'},
+  ooruri:{n:'オオルリ',r:4,c:4,type:'夏鳥',rar:3,fav:'bug',d:'渓流沿いで美しくさえずる青い夏鳥。'},
+  komadori:{n:'コマドリ',r:4,c:8,type:'夏鳥',rar:3,fav:'bug',d:'「ヒンカラララ」と馬のいななきのように鳴く。'},
+  tsugumi:{n:'ツグミ',r:4,c:1,type:'冬鳥',rar:1,fav:'berry',d:'シベリアで繁殖し、冬に日本へ来る。'},
+  atori:{n:'アトリ',r:3,c:6,type:'冬鳥',rar:2,fav:'berry',d:'冬に群れでやって来る。ブナの実が好き。'},
+  joubitaki:{n:'ジョウビタキ',r:4,c:6,type:'冬鳥',rar:2,fav:'bug',d:'冬になるとやって来る。おじぎをするしぐさがかわいい。'},
+};
+const ITEMS = {
+  water:{n:'水',ico:'💧',cost:30,t:'のど +40'},
+  bug:{n:'虫',ico:'🐛',cost:80,t:'おなか +35'},
+  berry:{n:'木の実',ico:'🍒',cost:60,t:'おなか +30／餌台にも'},
+  fish:{n:'小魚',ico:'🐟',cost:120,t:'おなか +40'},
+  mouse:{n:'ネズミ',ico:'🐭',cost:150,t:'おなか +45'},
+  down:{n:'羽毛ぶとん',ico:'🪶',cost:200,t:'卵が300歩ぶん温まる'},
+};
+const DOWN_STEPS = 300;
+const BERRY_STEPS = 500;   // 何歩ごとに木の実が1つ手に入るか
+const FOOD = {bug:35,berry:30,fish:40,mouse:45};
+const HATCH = {1:600,2:1000,3:1500,4:2000};   // 孵るまでの歩数
+const GROW  = {1:1500,2:2500,3:3500,4:5000};  // 成鳥までの成長ポイント
+const EGG_COST = 300, FEEDER_NEED = 400, FRIEND_NEED = 100;
+const DECAY_H = 5, DECAY_W = 7;               // 1時間あたりの減り方
+// ビジターセンター（座標はおおよそ。公開前に要確認）
+const SPOTS = [
+  {n:'白神山地ビジターセンター（西目屋村）',lat:40.575,lng:140.297},
+  {n:'白神山地世界遺産センター藤里館',lat:40.333,lng:140.273},
+  {n:'十二湖ビジターセンター',lat:40.556,lng:139.965},
+];
+const CHECKIN_KM = 5;
+// 今週のポイント倍率イベント（町の名前は map-data.js の towns と同じ表記）
+const EVENT = {town:'藤里町', mult:2};
+let here = null;          // いま居る町（位置情報から判定。保存しない）
+let fakeHere = false;     // テスト用：イベントの町にいることにする
+
+// ---------- 状態 ----------
+// 図鑑アプリ（shiratsuchi_sightings_v1）とは別の保存場所を使う
+const KEY='shirakami-nest-v1';
+function fresh(){return{wallet:500,todayDate:'',today:0,manual:{date:'',total:0},
+  inv:{water:2,bug:2,berry:2,fish:0,mouse:0,down:0},
+  slots:[{k:'empty'},{k:'empty'},{k:'empty'}],sel:0,
+  zukan:{},forest:[],visitors:[],inbox:[],nextRing:1,checkin:'',offset:0,
+  last:Date.now(),log:[]}}
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){S=fresh()}
+if(S.inv.down==null)S.inv.down=0;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+const now=()=>Date.now()+S.offset*864e5;
+const gdate=()=>new Date(now());
+const ymd=d=>`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+const month=()=>gdate().getMonth()+1;
+const breeding=()=>month()>=4&&month()<=8;
+const summerOK=()=>month()>=5&&month()<=7;
+function seasonLabel(){const m=month();
+  if(m>=4&&m<=5)return'春・繁殖期'; if(m>=6&&m<=8)return'夏・繁殖期';
+  if(m>=9&&m<=11)return'秋・冬鳥がくる'; return'冬・冬鳥の季節'}
+function addLog(t){S.log.unshift(`${gdate().getMonth()+1}/${gdate().getDate()}　${t}`);S.log=S.log.slice(0,60)}
+function zk(sp){return S.zukan[sp]||(S.zukan[sp]={raised:0,friend:0})}
+
+// ---------- 時間経過 ----------
+function tick(){
+  const t=now(), hrs=Math.max(0,(t-S.last)/36e5); S.last=t;
+  for(const s of S.slots){
+    if(s.k==='bird'||s.k==='visitor'){
+      s.hunger=Math.max(0,s.hunger-DECAY_H*hrs);
+      if(s.k==='bird')s.thirst=Math.max(0,s.thirst-DECAY_W*hrs);
+    }
+  }
+  if(S.todayDate!==ymd(gdate())){S.todayDate=ymd(gdate());S.today=0}
+  // 還した鳥が戻ってくる
+  for(const f of S.forest){
+    if(!f.back&&t>=f.returnAt){
+      f.back=true;
+      S.inbox.push({sp:f.sp,gen:f.gen+1,parent:f.ring});
+      addLog(`足環No.${f.ring}の${SP[f.sp].n}がペアで戻り、卵を産みました`);
+      toast(`No.${f.ring}の${SP[f.sp].n}が戻ってきた！`);
+    }
+  }
+}
+function nextApril(){const d=gdate();let y=d.getFullYear();if(d.getMonth()+1>=4)y++;return new Date(y,3,1).getTime()}
+function nextOctober(){const d=gdate();let y=d.getFullYear();if(d.getMonth()+1>=10)y++;return new Date(y,9,1).getTime()}
+
+// ---------- 歩く ----------
+const curTown=()=>fakeHere?EVENT.town:here;
+const multNow=()=>curTown()===EVENT.town?EVENT.mult:1;
+// mult: ポイント倍率（位置が分からない歩数は1倍）
+function walk(n,mult=1){
+  if(n<=0)return; tick();
+  S.wallet+=n*mult; S.today+=n;
+  // 歩くと森の木の実が自動で手に入る（500歩ごとに1つ）
+  S.berryProg=(S.berryProg||0)+n;
+  while(S.berryProg>=BERRY_STEPS){S.berryProg-=BERRY_STEPS;S.inv.berry++;toast('🍒 木の実を見つけた！')}
+  if(mult>1)toast(`${curTown()}で歩いたのでポイント${mult}倍！ +${n*mult}pt`);
+  for(const s of S.slots){
+    if(s.k==='egg'){s.prog+=n;if(s.prog>=s.need)hatch(s)}
+    else if(s.k==='bird'&&s.stage<2){ if(s.hunger>20&&s.thirst>20)grow(s,n) }
+    else if(s.k==='feeder'){s.prog+=n;if(s.prog>=FEEDER_NEED)arrive(s)}
+  }
+  save();render();
+}
+function hatch(s){
+  const sp=s.sp, g=s.gen||1;
+  Object.assign(s,{k:'bird',stage:0,growth:0,hunger:70,thirst:70,gen:g});
+  delete s.prog;delete s.need;
+  addLog(`${SP[sp].n}のヒナが孵った`);
+  showDlg(`<div class="sprite bob" style="${spriteStyle(sp,.7)};margin:0 auto"></div><h3>孵った！</h3><p>${SP[sp].n}のヒナです${g>1?`（${g}世）`:''}。<br>水とエサをあげて、歩いて育てよう。</p>`);
+}
+function grow(s,pts){
+  const need=GROW[SP[s.sp].rar];
+  s.growth=Math.min(need,s.growth+pts);
+  const st=s.growth>=need?2:s.growth>=need*.4?1:0;
+  if(st>s.stage){s.stage=st;
+    if(st===1){addLog(`${SP[s.sp].n}が若鳥になった`);toast(`${SP[s.sp].n}が若鳥になった！`)}
+    if(st===2){addLog(`${SP[s.sp].n}が成鳥になった`);toast(`${SP[s.sp].n}が巣立てるようになった！`)}}
+}
+function arrive(s){
+  const pool=Object.keys(SP).filter(k=>SP[k].type==='冬鳥');
+  // 前の冬に仲良くなった鳥が優先して戻る
+  const back=S.visitors.find(v=>!v.back&&now()>=v.returnAt);
+  let sp, again=false;
+  if(back){sp=back.sp;back.back=true;again=true}
+  else sp=pick(pool);
+  Object.assign(s,{k:'visitor',sp,friend:again?50:0,hunger:50,again});
+  delete s.prog;
+  addLog(`餌台に${SP[sp].n}が${again?'また来てくれた':'やって来た'}`);
+  showDlg(`<div class="sprite bob" style="${spriteStyle(sp,.7)};margin:0 auto"></div><h3>${again?'おかえり！':'冬のお客さん！'}</h3><p>${SP[sp].n}が餌台に来ました。<br>エサをあげて仲良くなろう。</p>`);
+}
+function pick(keys){
+  const w={1:6,2:3,3:1,4:.3};let tot=0;for(const k of keys)tot+=w[SP[k].rar];
+  let r=Math.random()*tot;for(const k of keys){r-=w[SP[k].rar];if(r<=0)return k}return keys[0];
+}
+
+// ---------- 行動 ----------
+function warmEgg(){
+  const s=S.slots[S.sel];if(s.k!=='egg')return;
+  if(!S.inv.down)return toast('羽毛ぶとんがありません');
+  S.inv.down--;s.prog+=DOWN_STEPS;toast(`羽毛ぶとんで温めた（+${DOWN_STEPS}歩ぶん）`);
+  if(s.prog>=s.need)hatch(s);
+  save();render();
+}
+function buy(id){const it=ITEMS[id];if(S.wallet<it.cost)return toast('ポイントが足りません');
+  S.wallet-=it.cost;S.inv[id]++;save();render();toast(`${it.n}と交換しました`)}
+function feed(id){
+  const s=S.slots[S.sel];if(!S.inv[id])return toast(`${ITEMS[id].n}がありません`);
+  tick();
+  const fav=SP[s.sp].fav===id;
+  if(s.k==='bird'){
+    if(id==='water'){if(s.thirst>=100)return toast('のどはかわいていないみたい');s.thirst=Math.min(100,s.thirst+40)}
+    else{if(s.hunger>=100)return toast('おなかいっぱいみたい');
+      s.hunger=Math.min(100,s.hunger+FOOD[id]+(fav?10:0));
+      if(s.stage<2)grow(s,fav?150:60)}
+  }else if(s.k==='visitor'){
+    if(id!=='water'){s.hunger=Math.min(100,s.hunger+FOOD[id]);s.friend=Math.min(FRIEND_NEED,s.friend+(fav?30:15))}
+  }
+  S.inv[id]--;
+  toast(fav?`♥ ${SP[s.sp].n}の大好物！`:`${ITEMS[id].n}をあげました`);
+  save();render();
+}
+function searchEgg(){
+  if(!breeding())return toast('卵が見つかるのは繁殖期（4〜8月）です');
+  if(S.wallet<EGG_COST)return toast('ポイントが足りません');
+  const s=S.slots[S.sel];if(s.k!=='empty')return;
+  const pool=Object.keys(SP).filter(k=>{const b=SP[k];
+    if(b.type==='冬鳥'||b.rar===4)return false;
+    if(b.type==='夏鳥'&&!summerOK())return false;
+    if(b.unlock&&!S.forest.some(f=>f.sp===b.unlock))return false;
+    return true});
+  S.wallet-=EGG_COST;
+  const sp=pick(pool);
+  S.slots[S.sel]={k:'egg',sp,gen:1,prog:0,need:HATCH[SP[sp].rar]};
+  addLog('森で卵を見つけた');
+  save();render();toast('卵を見つけた！歩いて温めよう');
+}
+function placeInbox(i){const e=S.inbox[i];const s=S.slots[S.sel];if(s.k!=='empty')return;
+  S.slots[S.sel]={k:'egg',sp:e.sp,gen:e.gen,prog:0,need:HATCH[SP[e.sp].rar],parent:e.parent};
+  S.inbox.splice(i,1);save();render()}
+function setFeeder(){
+  if(breeding())return toast('冬鳥が来るのは9〜3月です');
+  if(!S.inv.berry)return toast('木の実が1つ必要です');
+  S.inv.berry--;S.slots[S.sel]={k:'feeder',prog:0};save();render();toast('餌台に木の実を置きました');
+}
+function release(){
+  const s=S.slots[S.sel];const b=SP[s.sp];const ring=S.nextRing++;
+  zk(s.sp).raised++;
+  S.forest.push({sp:s.sp,ring,gen:s.gen||1,at:now(),returnAt:nextApril(),back:false});
+  S.slots[S.sel]={k:'empty'};
+  addLog(`${b.n}に足環No.${ring}をつけて白神の森へ還した`);
+  let extra='';
+  if(s.sp==='kumagera'&&S.forest.filter(f=>f.sp==='kumagera').length===1)extra='<p>森に大きな巣穴ができた！<br>フクロウの卵が見つかるようになりました。</p>';
+  if(S.forest.length===10)extra+='<p>森がにぎやかになってきた。<br>チェックインでイヌワシの卵が出るかも。</p>';
+  showDlg(`<div class="sprite bob" style="${spriteStyle(s.sp,.8)};margin:0 auto"></div><h3>巣立ち！</h3><p>${b.n}は足環No.${ring}をつけて森へ飛んでいきました。</p><p>${b.type==='夏鳥'?'秋には南へ渡り、':''}次の春（4月）にペアで戻って卵を産みます。</p>${extra}`);
+  save();render();
+}
+function seeOff(){
+  const s=S.slots[S.sel];zk(s.sp).friend++;
+  S.visitors.push({sp:s.sp,returnAt:nextOctober(),back:false});
+  S.slots[S.sel]={k:'empty'};
+  addLog(`${SP[s.sp].n}を北へ見送った`);
+  showDlg(`<div class="sprite bob" style="${spriteStyle(s.sp,.8)};margin:0 auto"></div><h3>またね！</h3><p>${SP[s.sp].n}は北の国へ帰っていきました。<br>次の冬（10月〜）にまた餌台へ来てくれます。</p>`);
+  save();render();
+}
+function letGo(){
+  if(!confirm('この卵を森に戻しますか？'))return;
+  S.slots[S.sel]={k:'empty'};save();render()}
+
+function distKm(a,b,c,d){const R=6371,r=Math.PI/180;const x=(c-a)*r,y=(d-b)*r;
+  const h=Math.sin(x/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function checkin(force){
+  if(S.checkin===ymd(gdate()))return toast('今日はもうチェックインしました');
+  if(force)return checkinReward('テスト');
+  if(!navigator.geolocation)return toast('位置情報が使えません');
+  toast('位置を確認しています…');
+  navigator.geolocation.getCurrentPosition(p=>{
+    let best=null;for(const s of SPOTS){const d=distKm(p.coords.latitude,p.coords.longitude,s.lat,s.lng);if(!best||d<best.d)best={...s,d}}
+    if(best.d<=CHECKIN_KM)checkinReward(best.n);
+    else toast(`いちばん近いビジターセンターまで約${Math.round(best.d)}kmです`);
+  },()=>toast('位置情報を取得できませんでした'),{enableHighAccuracy:true,timeout:15000});
+}
+function checkinReward(where){
+  S.checkin=ymd(gdate());S.wallet+=500;
+  let msg=`<h3>チェックイン</h3><p>${where}<br>ボーナス +500pt</p>`;
+  if(breeding()){
+    const sp=(S.forest.length>=10&&Math.random()<.3)?'inuwashi':'kumagera';
+    S.inbox.push({sp,gen:1,special:true});
+    msg+=`<div class="sprite" style="${spriteStyle(sp,.6)};margin:0 auto;filter:brightness(0) opacity(.5)"></div><p>白神の特別な卵をもらいました！<br>空いている巣に置こう。</p>`;
+  }else{S.inv.berry+=5;msg+='<p>木の実×5 をもらいました。<br>（特別な卵は繁殖期にもらえます）</p>'}
+  addLog(`${where}でチェックイン`);save();render();showDlg(msg);
+}
+
+// ---------- 歩数計（加速度センサー） ----------
+let pedoOn=false,lastStep=0,avg=9.8,above=false,pending=0;
+function onMotion(e){
+  const a=e.accelerationIncludingGravity;if(!a||a.x==null)return;
+  const m=Math.hypot(a.x,a.y,a.z);avg=avg*.9+m*.1;
+  const t=performance.now();
+  if(!above&&m>avg+1.8&&t-lastStep>300){above=true;lastStep=t;pending++}
+  else if(above&&m<avg)above=false;
+}
+setInterval(()=>{if(pending){const n=pending;pending=0;walk(n,multNow())}},1500);
+
+// 位置情報 → いま居る町（点が多角形の中にあるか）
+function inRing(x,y,ring){let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const[xi,yi]=ring[i],[xj,yj]=ring[j];
+  if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c}return c}
+function townAt(lat,lng){const t=MAP.towns.find(t=>t.poly.some(r=>inRing(lng,lat,r)));return t?t.n:null}
+let geoWatch=null;
+function startGeo(){
+  if(!navigator.geolocation||geoWatch!=null)return;
+  geoWatch=navigator.geolocation.watchPosition(p=>{here=townAt(p.coords.latitude,p.coords.longitude);render()},
+    ()=>{here=null;render()},{enableHighAccuracy:false,maximumAge:60000,timeout:20000});
+}
+function stopGeo(){if(geoWatch!=null){navigator.geolocation.clearWatch(geoWatch);geoWatch=null}here=null}
+async function togglePedo(){
+  if(pedoOn){window.removeEventListener('devicemotion',onMotion);pedoOn=false;stopGeo();render();return}
+  startGeo();
+  try{
+    if(typeof DeviceMotionEvent!=='undefined'&&DeviceMotionEvent.requestPermission){
+      const r=await DeviceMotionEvent.requestPermission();if(r!=='granted')return toast('センサーの許可が必要です')}
+    window.addEventListener('devicemotion',onMotion);pedoOn=true;render();toast('歩数計ON：画面を開いたまま歩いてね');
+  }catch(e){toast('この端末では歩数計を使えません')}
+}
+function manualSync(){
+  const v=parseInt(document.getElementById('manual').value,10);if(!(v>=0))return toast('歩数を入れてください');
+  const d=ymd(gdate());if(S.manual.date!==d)S.manual={date:d,total:0};
+  const diff=v-S.manual.total;if(diff<=0)return toast('前回より増えた歩数がありません');
+  S.manual.total=v;document.getElementById('manual').value='';walk(diff);toast(`+${diff}歩 反映しました`);
+}
+
+// ---------- 描画 ----------
+function spriteStyle(sp,s){const b=SP[sp];
+  return `width:${160*s}px;height:${200*s}px;background-size:${1600*s}px ${1000*s}px;background-position:${-(b.c-1)*160*s}px ${-(b.r-1)*200*s}px`}
+function eggSVG(special){
+  const base=special?'#f1dfa0':'#eeebdf', dot=special?'#b8862c':'#8f8a78';
+  const rows=['....XXXX....','...XXXXXX...','..XXXXXXXX..','..XXXXXXXX..','.XXXXXXXXXX.','.XXXXXXXXXX.','.XXXXXXXXXX.','.XXXXXXXXXX.','..XXXXXXXX..','...XXXXXX...'];
+  const spots=[[5,2],[3,5],[8,4],[6,7],[4,8],[8,7]];
+  let r='';rows.forEach((row,y)=>[...row].forEach((ch,x)=>{if(ch==='X')r+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${base}"/>`}));
+  spots.forEach(([x,y])=>r+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${dot}"/>`);
+  return `<svg viewBox="0 0 12 10" width="60" height="50" shape-rendering="crispEdges" style="margin-bottom:-4px">${r}<rect x="2" y="2" width="1" height="2" fill="#fff"/></svg>`;
+}
+const pct=(a,b)=>Math.max(0,Math.min(100,a/b*100)).toFixed(0);
+const stageName=['ヒナ','若鳥','成鳥'];
+const $=id=>document.getElementById(id);
+
+function render(){
+  $('wallet').textContent=Math.floor(S.wallet).toLocaleString();
+  $('today').textContent=S.today.toLocaleString();
+  $('forestCount').textContent=S.forest.length;
+  $('season').textContent=seasonLabel();
+  $('pedoBtn').textContent=pedoOn?'⏸ 歩数計をOFF':'📱 歩数計をON';
+  const town=curTown();
+  $('pedoState').textContent=pedoOn?`● 歩数計ON${town?` ・ ${town}${multNow()>1?'（2倍中）':''}`:''}`:'';
+  renderMap();
+  $('guide').innerHTML=guideText();
+  $('scene').classList.toggle('winter',!breeding());
+  $('forestScene').classList.toggle('winter',!breeding());
+  const d=gdate();$('dbgDate').textContent=`ゲーム内の日付：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+
+  // 巣
+  $('nests').innerHTML=S.slots.map((s,i)=>{
+    let stage='',name='',bars='';
+    if(s.k==='empty'){stage=`<div class="empty-mark">からっぽ</div>`}
+    else if(s.k==='egg'){const p=s.prog/s.need;
+      stage=`<div class="egg ${p>.7?'warm':'pico'}" style="animation-delay:${i*.08}s">${eggSVG(SP[s.sp].rar===4)}</div>`;
+      name=s.parent?`No.${s.parent}の卵`:(SP[s.sp].rar===4?'白神の特別な卵':'？の卵');
+      bars=`<div class="bar g"><i style="width:${pct(s.prog,s.need)}%"></i></div>`}
+    else if(s.k==='bird'){const sc=[.42,.56,.66][s.stage];const hungry=s.hunger<=20||s.thirst<=20;
+      stage=`<div class="sprite bob" style="${spriteStyle(s.sp,sc)};animation-delay:${i*.08}s"></div>${hungry?'<span class="hungry">おなかすいた</span>':''}`;
+      name=`${SP[s.sp].n}<small>${stageName[s.stage]}</small>`;
+      bars=`<div class="bar w"><i style="width:${pct(s.thirst,100)}%"></i></div><div class="bar f"><i style="width:${pct(s.hunger,100)}%"></i></div><div class="bar g"><i style="width:${pct(s.growth,GROW[SP[s.sp].rar])}%"></i></div>`}
+    else if(s.k==='feeder'){stage=`<div style="font-size:32px;padding-bottom:6px">🪵🫐</div>`;name='餌台<small>冬鳥を待っています</small>';
+      bars=`<div class="bar g"><i style="width:${pct(s.prog,FEEDER_NEED)}%"></i></div>`}
+    else if(s.k==='visitor'){stage=`<div class="sprite bob" style="${spriteStyle(s.sp,.6)};animation-delay:${i*.08}s"></div>`;name=`${SP[s.sp].n}<small>冬鳥</small>`;
+      bars=`<div class="bar h"><i style="width:${pct(s.friend,FRIEND_NEED)}%"></i></div><div class="bar f"><i style="width:${pct(s.hunger,100)}%"></i></div>`}
+    return `<button type="button" class="nest ${S.sel===i?'sel':''}" data-slot="${i}" aria-label="${i+1}番目の巣"><div class="stage">${stage}</div>${s.k==='feeder'?'':'<div class="stump"></div>'}<div class="name">${name}</div><div class="bars">${bars}</div></button>`;
+  }).join('');
+
+  // 選んだ巣の詳細
+  const s=S.slots[S.sel];let h='';
+  const feedBtns=ids=>ids.map(id=>`<button type="button" class="small" data-feed="${id}" ${S.inv[id]?'':'disabled'}>${ITEMS[id].ico} ${ITEMS[id].n}<span class="cnt">${S.inv[id]}</span></button>`).join('');
+  if(s.k==='empty'){
+    h=`<h3>${S.sel+1}番目の巣</h3><div class="meta">からっぽ</div>`;
+    if(S.inbox.length){h+=`<p>届いている卵があります。この巣に置けます。</p><div class="row">${S.inbox.map((e,i)=>`<button type="button" class="primary" data-inbox="${i}">🥚 ${e.special?'白神の特別な卵':e.parent?`No.${e.parent}の${SP[e.sp].n}の卵（${e.gen}世）`:'卵'}</button>`).join('')}</div>`}
+    if(breeding()){h+=`<p>森で卵をさがします。${summerOK()?'今は夏鳥の卵も見つかります。':''}</p><div class="row"><button type="button" class="primary" id="eggBtn" ${S.wallet<EGG_COST?'disabled':''}>卵をさがす（${EGG_COST}pt）</button></div>`}
+    else{h+=`<p>今は繁殖期ではないので卵は見つかりません。木の実を置いて餌台にすると、北の国から冬鳥が来ます（${FEEDER_NEED}歩で到着）。</p><div class="row"><button type="button" class="primary" id="feederBtn" ${S.inv.berry?'':'disabled'}>餌台を置く（木の実×1）</button></div>`}
+  }else if(s.k==='egg'){
+    h=`<h3>${s.parent?`足環No.${s.parent}の子どもの卵`:SP[s.sp].rar===4?'白神の特別な卵':'なにかの卵'}</h3><div class="meta">${S.sel+1}番目の巣</div><p>歩くと温まります。あと <b style="color:var(--green-soft)">${Math.max(0,s.need-s.prog).toLocaleString()}歩</b> で孵ります。</p><div class="row"><button type="button" class="small" id="warmBtn" ${S.inv.down?'':'disabled'}>🪶 羽毛ぶとんで温める<span class="cnt">${S.inv.down}</span></button><button type="button" class="small" id="letgoBtn">森に戻す</button></div><p class="note">羽毛ぶとんは「ポイントで交換」で手に入ります。</p>`;
+  }else if(s.k==='bird'){
+    const b=SP[s.sp],need=GROW[b.rar],hungry=s.hunger<=20||s.thirst<=20;
+    h=`<h3>${b.n}</h3><div class="meta">${stageName[s.stage]} ・ ${b.type}${s.gen>1?` ・ ${s.gen}世`:''}</div><p>${b.d}</p>
+      <div class="chips"><span class="chip">💧 のど ${pct(s.thirst,100)}%</span><span class="chip">🐛 おなか ${pct(s.hunger,100)}%</span><span class="chip ok">成長 ${pct(s.growth,need)}%</span><span class="chip">大好物 ${ITEMS[b.fav].ico}${ITEMS[b.fav].n}</span>${hungry?'<span class="chip warn">おなかがすくと、歩いても育ちません</span>':''}</div>`;
+    if(s.stage===2)h+=`<div class="row"><button type="button" class="primary" id="releaseBtn">足環をつけて森へ還す</button></div><p class="note">還すと図鑑に残り、次の春にペアで戻って卵を産みます。</p>`;
+    h+=`<div class="row">${feedBtns(['water','bug','berry','fish','mouse'])}</div>`;
+  }else if(s.k==='feeder'){
+    h=`<h3>餌台</h3><div class="meta">${S.sel+1}番目の巣</div><p>北の国から冬鳥がやって来るのを待っています。あと <b style="color:var(--green-soft)">${Math.max(0,FEEDER_NEED-s.prog)}歩</b>。</p>`;
+  }else if(s.k==='visitor'){
+    const b=SP[s.sp];
+    h=`<h3>${b.n}</h3><div class="meta">冬鳥${s.again?' ・ おなじみ':''}</div><p>${b.d}日本では卵を産まず、春になると北の国へ帰ります。</p><div class="chips"><span class="chip ok">♥ なかよし ${pct(s.friend,FRIEND_NEED)}%</span><span class="chip">大好物 ${ITEMS[b.fav].ico}${ITEMS[b.fav].n}</span></div>`;
+    if(s.friend>=FRIEND_NEED)h+=`<div class="row"><button type="button" class="primary" id="seeoffBtn">北へ見送る</button></div>`;
+    h+=`<div class="row">${feedBtns(['bug','berry','fish','mouse'])}</div>`;
+  }
+  $('panel').innerHTML=h;
+
+  // お店
+  $('shop').innerHTML=Object.entries(ITEMS).map(([id,it])=>`<div class="item"><div class="ico">${it.ico}</div><div class="m"><b>${it.n} <span style="color:var(--muted);font-weight:400;font-size:12px">×${S.inv[id]}</span></b><small>${it.t}</small></div><button type="button" data-buy="${id}" ${S.wallet<it.cost?'disabled':''}>${it.cost}pt</button></div>`).join('');
+
+  // 森
+  $('forestBirds').innerHTML=S.forest.length?S.forest.slice(-24).map(f=>`<div class="fb"><div class="sprite bob" style="${spriteStyle(f.sp,.4)};animation-delay:${(f.ring%10)*.08}s"></div><span class="ring">No.${f.ring}${f.gen>1?` ${f.gen}世`:''}</span></div>`).join(''):'<p class="empty-mark" style="align-self:center">まだ森に還した鳥はいません</p>';
+  const kinds=new Set(S.forest.map(f=>f.sp)).size;
+  $('forestInfo').textContent=`${S.forest.length}羽・${kinds}種${S.forest.some(f=>f.sp==='kumagera')?'・クマゲラの巣穴あり':''}`;
+  $('log').innerHTML=S.log.map(l=>`<li>${l}</li>`).join('')||'<li>まだなにもありません</li>';
+
+  // 図鑑
+  const keys=Object.keys(SP);let got=0;
+  $('zukan').innerHTML=keys.map(k=>{const b=SP[k],z=S.zukan[k]||{};const has=z.raised||z.friend;if(has)got++;
+    const tag=b.type==='冬鳥'?`<span class="chip ${z.friend?'ok':''}">仲良し${z.friend?'×'+z.friend:''}</span>`:`<span class="chip ${z.raised?'ok':''}">育てた${z.raised?'×'+z.raised:''}</span>`;
+    return `<div class="zk ${has?'':'locked'}"><div class="thumb"><div class="sprite ${has?'bob':''}" style="${spriteStyle(k,.4)};animation-delay:${(keys.indexOf(k)%10)*.08}s"></div></div><b>${has?b.n:'？？？'}</b><span class="chip">${b.type}</span>${tag}</div>`}).join('');
+  $('zkCount').textContent=`${got} / ${keys.length}種`;
+}
+
+// ---------- ガイドのひとこと ----------
+function guideText(){
+  const s=S.slots[S.sel];
+  if(S.inbox.length)return '届いた卵があるよ！<br><em>空いている巣</em>に置いてあげてね。';
+  if(s.k==='bird'&&(s.hunger<=20||s.thirst<=20))return `${SP[s.sp].n}がおなかをすかせてるよ。<br><em>水とエサ</em>をあげてね。`;
+  if(s.k==='bird'&&s.stage===2)return `${SP[s.sp].n}はもう巣立てるよ！<br><em>足環をつけて森へ還そう。</em>`;
+  if(s.k==='egg')return `卵はあと<em>${Math.max(0,s.need-s.prog).toLocaleString()}歩</em>で孵るよ。<br>いっしょに歩こう！`;
+  if(curTown()===EVENT.town)return `いま${EVENT.town}にいるね！<br><em>1歩で${EVENT.mult}ポイント</em>たまるよ。`;
+  if(!pedoOn)return `今週は<em>${EVENT.town}で歩くとポイント${EVENT.mult}倍</em>！<br>歩数計をONにして出かけよう。`;
+  if(s.k==='empty')return breeding()?'森で<em>卵をさがして</em>みよう！':'冬は<em>餌台に木の実</em>を置くと、北から冬鳥が来るよ。';
+  return '今日もたくさん歩こうね！';
+}
+
+// ---------- 地図 ----------
+function weekRange(){const d=gdate();const day=(d.getDay()+6)%7;const a=new Date(d);a.setDate(d.getDate()-day);const b=new Date(a);b.setDate(a.getDate()+6);
+  const f=x=>`${x.getMonth()+1}/${x.getDate()}`;const wd='日月火水木金土';return `${f(a)}（${wd[a.getDay()]}）〜 ${f(b)}（${wd[b.getDay()]}）`}
+// 地図の上の小物（座標は map-data.js の地図座標）
+const COURSE=['M215,445 Q275,470 330,410 C365,378 425,368 462,382 C482,390 490,396 496,402 Q600,445 715,440',
+              'M378,392 C356,430 368,472 400,482 C432,492 458,462 452,430 C447,405 442,390 440,383'];
+const EGGS=[[215,445],[400,482],[715,440]], BERRIES=[[432,334],[452,428],[384,526]];
+const svgEgg=(x,y)=>`<g transform="translate(${x},${y})"><ellipse cx="0" cy="16" rx="30" ry="11" fill="#ffe680" opacity=".9"/><ellipse cx="0" cy="0" rx="17" ry="21" fill="#fffdf2" stroke="#3a3200" stroke-width="4"/><circle cx="-5" cy="-4" r="2.5" fill="#a89c78"/><circle cx="6" cy="4" r="2.5" fill="#a89c78"/><circle cx="-2" cy="9" r="2" fill="#a89c78"/></g>`;
+const svgBerry=(x,y)=>`<g transform="translate(${x},${y})"><path d="M-6,-14 L0,-22 L8,-14 L0,-10Z" fill="#3fa043" stroke="#1f5e25" stroke-width="2"/><circle cx="-8" cy="2" r="10" fill="#e2342b" stroke="#7a1410" stroke-width="3"/><circle cx="8" cy="0" r="10" fill="#e2342b" stroke="#7a1410" stroke-width="3"/><circle cx="-11" cy="-1" r="2.5" fill="#fff"/><circle cx="5" cy="-3" r="2.5" fill="#fff"/></g>`;
+const svgFlag=(x,y,c)=>`<g transform="translate(${x},${y})"><rect x="-3" y="-40" width="6" height="44" fill="#3a3200"/><path d="M3,-40 L34,-28 L3,-16Z" fill="${c}" stroke="#3a3200" stroke-width="3"/></g>`;
+const svgTree=(x,y)=>`<g transform="translate(${x},${y})"><path d="M0,-34 L14,-12 L7,-12 L18,4 L-18,4 L-7,-12 L-14,-12Z" fill="#2b7a31" stroke="#173f1c" stroke-width="3"/><rect x="-3" y="4" width="6" height="8" fill="#6b4a2c"/></g>`;
+const svgMt=(x,y)=>`<g transform="translate(${x},${y})"><path d="M-46,20 L-16,-26 L4,4 L18,-16 L46,20Z" fill="#4cb84f" stroke="#1f5e25" stroke-width="4"/></g>`;
+let mapKey='';
+function renderMap(){
+  const town=curTown(),key=EVENT.town+'|'+town+'|'+weekRange();
+  $('evMult').textContent=EVENT.mult;
+  $('evPeriod').innerHTML=`${weekRange()}<br>今週の黄色のエリア：${EVENT.town}`;
+  $('hereLine').textContent=town?`いまいる町：${town}${town===EVENT.town?'（ポイント2倍中！）':''}`:(pedoOn?'いまいる町：対象エリアの外か、位置を確認中です':'歩数計をONにすると、いまいる町を表示します');
+  if(key===mapKey)return;mapKey=key;
+  const m=$('map');m.setAttribute('viewBox',`0 0 ${MAP.w} ${MAP.h}`);
+  let h=`<defs><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  for(const c of MAP.ctx)h+=`<path class="ctx" d="${c.d}"/>`;
+  const hot=MAP.towns.find(t=>t.n===EVENT.town);
+  for(const t of MAP.towns)if(t!==hot)h+=`<path class="town ${t.n===town?'here':''}" d="${t.d}"/>`;
+  if(hot)h+=`<path class="town hot ${hot.n===town?'here':''}" d="${hot.d}"/>`;
+  // ウォーキングコース（白い点線）
+  for(const d of COURSE)h+=`<path d="${d}" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-dasharray="1 17"/>`;
+  [[130,330],[160,316],[190,332],[850,470],[880,456]].forEach(([x,y])=>h+=svgTree(x,y));
+  const sx=MAP.shirakami.x,sy=MAP.shirakami.y;h+=svgMt(sx,sy+6);
+  BERRIES.forEach(([x,y])=>h+=svgBerry(x,y));EGGS.forEach(([x,y])=>h+=svgEgg(x,y));
+  h+=svgFlag(330,410,'#e2342b')+svgFlag(496,404,'#2f6fe0');
+  // 地名
+  const lbl=(t,x,y,c='lbl')=>`<text class="${c}" x="${x}" y="${y}" text-anchor="middle">${t}</text>`;
+  const ctx=n=>MAP.ctx.find(c=>c.n===n);
+  for(const n of ['深浦町','弘前市','三種町']){const c=ctx(n);if(c)h+=lbl(n,c.lx,Math.max(60,c.ly),'lbl small')}
+  h+=lbl('西目屋村',sx,sy-76,'lbl small')+lbl('白神山地',sx,sy-36);
+  const LBL_POS={'北秋田市':[470,760]};  // 凡例と重ならない位置（北秋田市の内側）
+  for(const t of MAP.towns)if(t!==hot){const[x,y]=LBL_POS[t.n]||[t.lx,t.ly];h+=lbl(t.n,x,y)}
+  h+=`<text class="pref" x="${MAP.w-30}" y="60" text-anchor="end">青森県</text>`;
+  m.innerHTML=h;
+  $('evTowns').innerHTML=MAP.towns.map(t=>`<span class="chip ${t.n===EVENT.town?'hot':''}">${t.n}${t.n===EVENT.town?` ×${EVENT.mult}`:''}</span>`).join('');
+}
+
+// ---------- UI ----------
+let toastT;function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2400)}
+function showDlg(html){$('dlgBody').innerHTML=html;const d=$('dlg');if(!d.open)d.showModal()}
+$('dlgOk').onclick=()=>$('dlg').close();
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.slot!=null){S.sel=+t.dataset.slot;save();render();$('panel').scrollIntoView({behavior:'smooth',block:'nearest'})}
+  else if(t.dataset.buy)buy(t.dataset.buy);
+  else if(t.dataset.feed)feed(t.dataset.feed);
+  else if(t.dataset.inbox!=null)placeInbox(+t.dataset.inbox);
+  else if(t.dataset.tab){document.querySelectorAll('.bottom button').forEach(b=>b.classList.toggle('on',b===t));
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.id==='tab-'+t.dataset.tab));
+    document.body.classList.toggle('compact',t.dataset.tab==='map');window.scrollTo(0,0)}
+  else if(t.dataset.dbg){const v=t.dataset.dbg;
+    if(v==='steps500')walk(500,multNow());if(v==='steps3000')walk(3000,multNow());
+    if(v==='here'){fakeHere=!fakeHere;t.textContent=fakeHere?'イベントの町にいることをやめる':'イベントの町にいることにする';render();toast(fakeHere?`${EVENT.town}にいることにしました`:'もとに戻しました')}
+    if(v==='day1'||v==='day30'){S.offset+=v==='day1'?1:30;tick();save();render();toast('時間がすすみました')}
+    if(v==='checkin')checkin(true);
+    if(v==='reset'&&confirm('データをすべて消しますか？')){S=fresh();save();render()}}
+  else if(t.id==='eggBtn')searchEgg();
+  else if(t.id==='feederBtn')setFeeder();
+  else if(t.id==='releaseBtn')release();
+  else if(t.id==='seeoffBtn')seeOff();
+  else if(t.id==='letgoBtn')letGo();
+  else if(t.id==='warmBtn')warmEgg();
+  else if(t.id==='pedoBtn')togglePedo();
+  else if(t.id==='manualBtn')manualSync();
+  else if(t.id==='checkinBtn')checkin(false);
+});
+
+tick();save();render();
+setInterval(()=>{tick();save();render()},30000);
+</script>
+</body>
+</html>
