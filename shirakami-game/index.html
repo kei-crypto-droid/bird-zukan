@@ -219,6 +219,20 @@ dialog .primary{min-width:140px}
 .m-say.two{font-size:calc(var(--u)*23);white-space:normal;line-height:1.08}
 .m-say em{font-style:normal;color:#2f3fd6}
 #evPeriod{color:#fff;font-size:12px;font-weight:800;margin-top:6px}
+.talk{display:flex;gap:12px;align-items:flex-start;border:5px solid var(--lav);border-radius:22px;background:var(--cream);box-shadow:0 5px 0 #0003;padding:14px}
+.talk-who{flex:none;width:72px;height:72px;background:url(guide.png) center bottom/contain no-repeat;image-rendering:pixelated;animation:pico .8s steps(1,end) infinite}
+.talk-body{flex:1;min-width:0}
+.talk-bird{display:inline-block;font-size:12px;font-weight:900;color:var(--green-d);background:#dcf5d6;border:2px solid #7fcc80;border-radius:999px;padding:0 10px}
+.talk-text{margin:8px 0 10px;font-size:15px;line-height:1.75;font-weight:800;color:var(--ink)}
+.talk-text b{color:var(--blue-em)}
+.news p{margin:0;font-size:14px;line-height:1.8;font-weight:800}
+.news .note{margin-top:8px;font-size:12px}
+select{font:inherit;background:#fff;border:3px solid var(--lav);border-radius:14px;padding:9px 10px;color:var(--ink);max-width:100%;min-width:0}
+.about{margin:24px 2px 8px;color:#e8f6e2;font-size:11px;line-height:1.7;font-weight:700}
+.about p{margin:0 0 6px}
+.about b{color:#fff;font-size:12px}
+.m-guide{position:absolute;left:calc(var(--u)*92);top:calc(var(--u)*560);width:calc(var(--u)*160);height:calc(var(--u)*135);border:0;padding:0;background:none;border-radius:calc(var(--u)*20);-webkit-tap-highlight-color:transparent}
+.m-guide:focus-visible{outline:calc(var(--u)*6) solid var(--yellow)}
 #tab-nest .event-foot{display:flex;flex-wrap:wrap;gap:6px}
 @media(prefers-reduced-motion:reduce){.m-sp img,.m-sheet{animation:none}}
 
@@ -237,6 +251,7 @@ dialog .primary{min-width:140px}
       <div class="m-pts"><strong id="wallet">0</strong></div>
       <div id="nests"></div>
       <div class="m-say" id="guide"></div>
+      <button type="button" class="m-guide" id="guideBtn" aria-label="ピピ隊長に話しかける"></button>
     </div>
   </div>
 
@@ -245,27 +260,31 @@ dialog .primary{min-width:140px}
     <section style="margin-top:10px">
       <div class="event-foot" id="evTowns"></div>
       <div class="period" id="evPeriod"></div>
-      <div class="credit">町の判定：国土数値情報（行政区域データ）を加工して作成</div>
     </section>
-    <section>
-      <div class="section-head"><h2>ポイント2倍のしくみ</h2></div>
-      <div class="card">
-        <p class="note" style="margin:0;font-size:12px;color:var(--ink);line-height:1.8">
-          ・ふだんは1歩で1ポイント。イベントの町の中で歩くと、1歩で2ポイントになります。<br>
-          ・「巣」タブの歩数計をONにすると、位置情報から今いる町を判定します。<br>
-          ・ヘルスケアから入れた歩数は、どこで歩いたか分からないので1倍です。</p>
-        <div class="here-line" id="hereLine"></div>
-      </div>
-    </section>
+
     <section class="card panel" id="panel"></section>
 
+    <!-- ピピ隊長の鳥ばなし：このアプリのいちばんの持ち味 -->
     <section>
-      <div class="section-head"><h2>ポイントで交換</h2><span id="pedoState"></span></div>
-      <div class="shop" id="shop"></div>
+      <div class="section-head"><h2>ピピ隊長の鳥ばなし</h2><span id="talkNo"></span></div>
+      <div class="talk">
+        <div class="talk-who" role="img" aria-label="ピピ隊長"></div>
+        <div class="talk-body">
+          <div class="talk-bird" id="talkBird"></div>
+          <p class="talk-text" id="talkText"></p>
+          <button class="small" id="talkNext" type="button">ほかの話も聞く</button>
+        </div>
+      </div>
+      <p class="note" style="color:#e8f6e2">上の隊長をタップしても、ひとこと話してくれます。</p>
     </section>
 
     <section>
-      <div class="section-head"><h2>歩く</h2></div>
+      <div class="section-head"><h2 id="newsHead">白神の鳥だより</h2></div>
+      <div class="card news"><p id="newsText"></p><p class="note" id="newsTip"></p></div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>歩く</h2><span id="pedoState"></span></div>
       <div class="card">
         <div class="chips" style="margin:0 0 4px"><span class="chip">きょう歩いた <b id="today">0</b>歩</span><span class="chip">森へ還した <b id="forestCount">0</b>羽</span><span class="chip ok" id="season"></span></div>
         <div class="row" style="margin-top:0"><button class="secondary" id="pedoBtn" type="button">📱 歩数計をON</button></div>
@@ -275,16 +294,44 @@ dialog .primary{min-width:140px}
           <button class="secondary" id="manualBtn" type="button">ヘルスケアの歩数を反映</button>
         </div>
         <p class="note">ヘルスケアやGoogle Fitの「今日の合計歩数」を入れると、前回からふえた分だけ加算されます。</p>
+        <div class="here-line" id="hereLine"></div>
       </div>
     </section>
 
     <section>
-      <div class="section-head"><h2>白神山地でチェックイン</h2><span>1日1回</span></div>
+      <div class="section-head"><h2>お世話グッズ</h2><span>歩いてためたポイントで用意</span></div>
+      <div class="shop" id="shop"></div>
+    </section>
+
+    <!-- 本物の鳥を見つけたら報告：ゲームと実際の観察をつなぐ -->
+    <section>
+      <div class="section-head"><h2>見つけたよ報告</h2><span>1日1回</span></div>
       <div class="card">
-        <p class="note" style="margin:0;font-size:12px;color:var(--ink)">ビジターセンターの近くでチェックインすると、白神の特別な卵がもらえます。</p>
-        <div class="row"><button class="primary" id="checkinBtn" type="button">📍 チェックイン</button></div>
+        <p class="note" style="margin:0;font-size:12px;color:var(--ink)">散歩の途中で本物の鳥を見つけたら、教えてね。図鑑にその鳥がのります。5回報告するごとに、白神の特別な卵が届きます（繁殖期の4〜8月）。</p>
+        <div class="row" style="align-items:center">
+          <select id="reportSp" aria-label="見つけた鳥"></select>
+          <button class="primary" id="reportBtn" type="button">🔭 見つけた！</button>
+        </div>
+        <p class="note" id="reportInfo"></p>
       </div>
     </section>
+
+    <section>
+      <div class="section-head"><h2>おすすめ散歩エリアのしくみ</h2></div>
+      <div class="card">
+        <p class="note" style="margin:0;font-size:12px;color:var(--ink);line-height:1.8">
+          ・ふだんは1歩で1ポイント。地図の黄色のエリアで歩くと、1歩で2ポイントになります。<br>
+          ・歩数計をONにすると、位置情報から今いる町を判定します。位置は保存も送信もしません。<br>
+          ・ヘルスケアから入れた歩数は、どこで歩いたか分からないので1倍です。</p>
+        <p class="credit" style="color:var(--ink-2);margin:6px 0 0">町の判定：国土数値情報（行政区域データ）を加工して作成</p>
+      </div>
+    </section>
+
+    <footer class="about">
+      <p><b>このアプリについて</b></p>
+      <p>鳥が好きな個人が、趣味で作った非公式のファンアプリです。自治体・施設・団体とは関係ありません。ポイントはゲームの中だけのもので、お金や商品には換えられません。</p>
+      <p>鳥の話はできるだけ確かなものを選んでいますが、まちがいを見つけたら教えてください。いっしょに使ってみたい方も、お気軽にどうぞ。</p>
+    </footer>
   </div>
 
   <!-- 森 -->
@@ -299,7 +346,7 @@ dialog .primary{min-width:140px}
         ・還した鳥は、足環つきで図鑑に残ります。<br>
         ・留鳥と夏鳥は、次の繁殖期（4月）にペアで戻って卵を産みます。<br>
         ・クマゲラを還すと森に巣穴ができ、フクロウの卵が見つかるようになります。<br>
-        ・10羽還して森がにぎやかになると、チェックインでイヌワシの卵が出ることがあります。<br>
+        ・10羽還して森がにぎやかになると、見つけたよ報告のお礼にイヌワシの卵が届くことがあります。<br>
         ・冬鳥は北へ見送ると、次の冬にまた餌台へ来てくれます。</p></div>
     </section>
     <section>
@@ -323,7 +370,7 @@ dialog .primary{min-width:140px}
           <button class="small" type="button" data-dbg="steps3000">+3000歩 歩く</button>
           <button class="small" type="button" data-dbg="day1">1日すすめる</button>
           <button class="small" type="button" data-dbg="day30">30日すすめる</button>
-          <button class="small" type="button" data-dbg="checkin">チェックインしたことにする</button>
+          <button class="small" type="button" data-dbg="report">報告の回数を1日ぶん戻す</button>
           <button class="small" type="button" data-dbg="here">イベントの町にいることにする</button>
           <button class="small" type="button" data-dbg="reset" style="color:var(--danger)">データを消す</button>
         </div>
@@ -384,17 +431,51 @@ const HATCH = {1:600,2:1000,3:1500,4:2000};   // 孵るまでの歩数
 const GROW  = {1:1500,2:2500,3:3500,4:5000};  // 成鳥までの成長ポイント
 const EGG_COST = 300, FEEDER_NEED = 400, FRIEND_NEED = 100;
 const DECAY_H = 5, DECAY_W = 7;               // 1時間あたりの減り方
-// ビジターセンター（座標はおおよそ。公開前に要確認）
-const SPOTS = [
-  {n:'白神山地ビジターセンター（西目屋村）',lat:40.575,lng:140.297},
-  {n:'白神山地世界遺産センター藤里館',lat:40.333,lng:140.273},
-  {n:'十二湖ビジターセンター',lat:40.556,lng:139.965},
-];
-const CHECKIN_KM = 5;
 // 今週のポイント倍率イベント（町の名前は map-data.js の towns と同じ表記）
 const EVENT = {town:'藤里町', mult:2};
 let here = null;          // いま居る町（位置情報から判定。保存しない）
 let fakeHere = false;     // テスト用：イベントの町にいることにする
+
+// ---------- ピピ隊長の鳥ばなし（ゲームの持ち味。事実だけを書く） ----------
+const TALK={
+  kumagera:['日本でいちばん大きなキツツキ。本州では白神山地のあたりなど、ごく限られた森でしか子育てが見つかっていないんだ。','巣穴の入り口は、ほかのキツツキとちがって縦長のだ円形。見つけたら、それはたぶんクマゲラの仕事だよ。'],
+  inuwashi:['つばさを広げると2m近くになる大きなワシ。日本では数がとても少なく、絶滅のおそれがある鳥なんだ。','山の上をゆったり輪をえがいて飛ぶよ。白神の稜線で見られたら、その日はかなりの幸運！'],
+  yamagara:['昔はお祭りで「おみくじ引き」の芸をしていたほど、人になつきやすい鳥なんだ。','木の実を足でしっかりおさえて、くちばしでコツコツ割って食べるよ。冬にそなえて、木の実をかくしておくこともあるんだ。'],
+  akagera:['くちばしで木をたたく「ドラミング」は、なわばりの宣言。1秒に十回以上もたたくことがあるよ。','頭が痛くならないのは、長い舌を支える骨が頭の後ろをぐるっと回って、クッションみたいになっているからなんだ。'],
+  aogera:['日本にしかいない緑色のキツツキ。世界中のバードウォッチャーがあこがれる鳥なんだ。','「ピョー、ピョー」と口笛みたいな声で鳴くよ。森でこの声がしたら、幹を見上げてみて。'],
+  fukuro:['首がぐるっと約270度も回るよ。目玉が動かせないぶん、首で見る方向を変えているんだ。','羽のふちがギザギザのくしみたいになっていて、ほとんど音を立てずに飛べるんだ。'],
+  kakesu:['ものまねの名人！ タカの声までまねすることがあるよ。','ドングリを地面にうめて貯めておくんだ。食べ忘れたドングリが芽を出して、森を育てることもあるよ。'],
+  suzume:['じつは人の住むところが大好き。人がいなくなった村からは、スズメもいなくなってしまうんだ。','砂の上で体をこすりつける「砂あび」で、羽の手入れをするよ。'],
+  hiyodori:['日本ではおなじみだけど、世界で見るとすんでいる場所がかなりせまい鳥。海外から来たバードウォッチャーには人気者なんだ。','花のみつが大好きで、顔に花粉をつけていることがあるよ。'],
+  kawarahiwa:['くちばしが太くてじょうぶ。かたい草の種もパチンと割って食べるよ。','飛ぶと、つばさの黄色いもようがパッと目立つんだ。'],
+  kisekirei:['名前は「黄色いセキレイ」。黄色いのはおなかのほうだよ。','止まっているあいだも、長い尾を上下にふりふりしているんだ。'],
+  kiji:['日本の国鳥。桃太郎のお話に出てくる鳥でもあるね。','昔から「キジが鳴くと地震が来る」という言い伝えがあるんだ。'],
+  kawasemi:['新幹線500系の先頭の形は、カワセミのくちばしがヒントになったんだ。水に飛びこんでも、しぶきが少ないからね。','青く見える羽は、色のもとではなく、光の反射で青く見えているんだ。'],
+  ruribitaki:['オスがきれいな青になるまで、2〜3年かかるよ。若いオスは、メスと同じおちついた色なんだ。','夏は山の上、冬はふもとへと、季節で住む高さを変えるよ。'],
+  kibitaki:['オスはのどがオレンジ、体は黄色と黒のおしゃれさん。冬は東南アジアですごすよ。','ほかの鳥の声をまぜて鳴くこともあるんだ。'],
+  ooruri:['ウグイス・コマドリとならぶ「日本三鳴鳥」のひとつ。渓流ぞいの高い木の上で歌うよ。','冬は東南アジアですごして、春に日本へもどってくるんだ。'],
+  komadori:['「ヒンカラララ」という声が、馬（駒）のいななきに聞こえるから「コマドリ」。日本三鳴鳥のひとつだよ。','ササやぶの中にいることが多くて、声は聞こえても姿はなかなか見えないんだ。'],
+  tsugumi:['冬のあいだは、ほとんど鳴かないよ。口をつぐむから「ツグミ」、という説があるんだ。','地面を「タタタッ」と走っては止まり、胸をはるポーズをするよ。'],
+  atori:['冬に群れでやってくるよ。年によっては、ものすごい大群で来ることもあるんだ。','ブナの実が大好物。ブナの実がたくさんなった年は要チェック！'],
+  joubitaki:['「ヒッヒッ、カッカッ」という声が、火打ち石の音みたいだから「ヒタキ（火焼き）」という説があるよ。','おじぎをするように、ぺこぺこ体を動かすしぐさがかわいいんだ。'],
+};
+function talkOf(sp,n){const t=TALK[sp];return t?t[n%t.length]:''}
+// 季節の鳥だより（月ごと。どの町もひいきしない、白神全体の季節の話）
+const NEWS={
+  1:['冬鳥の季節。ツグミやアトリが、木の実をさがして里までおりてくるよ。','雪の上の足あとを見てみよう。2本の足でそろえて跳ねる鳥と、交互に歩く鳥がいるよ。'],
+  2:['木の葉が落ちて、キツツキが見つけやすい季節。コツコツという音をたよりにさがしてみよう。','寒い日は、羽をふくらませて丸くなった「ふくら鳥」に会えるかも。'],
+  3:['冬鳥が北へ帰るじゅんびを始めるよ。ウグイスが、さえずりの練習を始めるころ。','まだ上手に鳴けない練習中の声も、春の音だよ。'],
+  4:['南から夏鳥が到着しはじめる。繁殖期のスタートだよ。','このゲームでも、森で卵が見つかるようになるよ。'],
+  5:['オオルリやキビタキなど、夏鳥のさえずりがいちばんにぎやかな季節。','朝早い時間ほど、たくさんの声が聞こえるよ。'],
+  6:['ヒナが巣立つ季節。地面にいる巣立ちビナを見つけても、近くで親が見守っているからそっとしておいてね。','ひろって連れて帰らないのが、いちばんの手助けだよ。'],
+  7:['子育てがいちばんいそがしい季節。親鳥が何度もエサを運んでいるよ。','巣に近づきすぎないように、遠くから見守ろう。'],
+  8:['ひとり立ちした若い鳥が、あちこちで練習中。','まだ色が地味な若い鳥は、図鑑の絵とちがって見えることがあるよ。'],
+  9:['夏鳥が南へ旅立つ季節。タカの仲間が群れで渡っていくのが見られることも。','空を見上げる散歩もおすすめだよ。'],
+  10:['冬鳥がやってくる季節。ジョウビタキの「ヒッヒッ」が聞こえたら冬の始まり。','このゲームでは、餌台に木の実を置くと冬鳥が来るよ。'],
+  11:['木の実の季節。実のなる木に、いろいろな鳥が集まってくるよ。','赤い実の木の近くで少し待ってみよう。'],
+  12:['冬鳥の季節。葉が落ちた林は、鳥を見つけやすいよ。','このゲームでは、餌台に木の実を置くと冬鳥が来るよ。'],
+};
+let talkN=0, sayOverride=null, sayTimer=null;
 
 // ---------- 状態 ----------
 // 図鑑アプリ（shiratsuchi_sightings_v1）とは別の保存場所を使う
@@ -503,7 +584,7 @@ function warmEgg(){
   save();render();
 }
 function buy(id){const it=ITEMS[id];if(S.wallet<it.cost)return toast('ポイントが足りません');
-  S.wallet-=it.cost;S.inv[id]++;save();render();toast(`${it.n}と交換しました`)}
+  S.wallet-=it.cost;S.inv[id]++;save();render();toast(`${it.n}を用意しました`)}
 function feed(id){
   const s=S.slots[S.sel];if(!S.inv[id])return toast(`${ITEMS[id].n}がありません`);
   tick();
@@ -551,7 +632,7 @@ function release(){
   addLog(`${b.n}に足環No.${ring}をつけて白神の森へ還した`);
   let extra='';
   if(s.sp==='kumagera'&&S.forest.filter(f=>f.sp==='kumagera').length===1)extra='<p>森に大きな巣穴ができた！<br>フクロウの卵が見つかるようになりました。</p>';
-  if(S.forest.length===10)extra+='<p>森がにぎやかになってきた。<br>チェックインでイヌワシの卵が出るかも。</p>';
+  if(S.forest.length===10)extra+='<p>森がにぎやかになってきた。<br>見つけたよ報告のお礼に、イヌワシの卵が届くかも。</p>';
   showDlg(`<div class="sprite bob" style="${spriteStyle(s.sp,.8)};margin:0 auto"></div><h3>巣立ち！</h3><p>${b.n}は足環No.${ring}をつけて森へ飛んでいきました。</p><p>${b.type==='夏鳥'?'秋には南へ渡り、':''}次の春（4月）にペアで戻って卵を産みます。</p>${extra}`);
   save();render();
 }
@@ -567,28 +648,36 @@ function letGo(){
   if(!confirm('この卵を森に戻しますか？'))return;
   S.slots[S.sel]={k:'empty'};save();render()}
 
-function distKm(a,b,c,d){const R=6371,r=Math.PI/180;const x=(c-a)*r,y=(d-b)*r;
-  const h=Math.sin(x/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
-function checkin(force){
-  if(S.checkin===ymd(gdate()))return toast('今日はもうチェックインしました');
-  if(force)return checkinReward('テスト');
-  if(!navigator.geolocation)return toast('位置情報が使えません');
-  toast('位置を確認しています…');
-  navigator.geolocation.getCurrentPosition(p=>{
-    let best=null;for(const s of SPOTS){const d=distKm(p.coords.latitude,p.coords.longitude,s.lat,s.lng);if(!best||d<best.d)best={...s,d}}
-    if(best.d<=CHECKIN_KM)checkinReward(best.n);
-    else toast(`いちばん近いビジターセンターまで約${Math.round(best.d)}kmです`);
-  },()=>toast('位置情報を取得できませんでした'),{enableHighAccuracy:true,timeout:15000});
+// 上の隊長をタップ：吹き出しで鳥の話をひとつ（最初の1文だけ）
+function guideTalk(){
+  const cur=S.slots[S.sel], keysT=Object.keys(TALK);
+  talkN++;
+  const sp=(cur.k==='bird'||cur.k==='visitor')?cur.sp:keysT[Math.floor(Math.random()*keysT.length)];
+  const first=talkOf(sp,talkN).split('。')[0]+'。';
+  const head=`ピピッ！<em>${SP[sp].n}</em>の話。`;
+  sayOverride=(SP[sp].n.length+first.length>52?'ピピッ！':head)+first;
+  clearTimeout(sayTimer);sayTimer=setTimeout(()=>{sayOverride=null;render()},9000);
+  render();
 }
-function checkinReward(where){
-  S.checkin=ymd(gdate());S.wallet+=500;
-  let msg=`<h3>チェックイン</h3><p>${where}<br>ボーナス +500pt</p>`;
-  if(breeding()){
-    const sp=(S.forest.length>=10&&Math.random()<.3)?'inuwashi':'kumagera';
-    S.inbox.push({sp,gen:1,special:true});
-    msg+=`<div class="sprite" style="${spriteStyle(sp,.6)};margin:0 auto;filter:brightness(0) opacity(.5)"></div><p>白神の特別な卵をもらいました！<br>空いている巣に置こう。</p>`;
-  }else{S.inv.berry+=5;msg+='<p>木の実×5 をもらいました。<br>（特別な卵は繁殖期にもらえます）</p>'}
-  addLog(`${where}でチェックイン`);save();render();showDlg(msg);
+
+// ---------- 見つけたよ報告（本物の鳥を見たら1日1回） ----------
+const REPORT_EVERY=5;
+function report(){
+  if(S.reportDate===ymd(gdate()))return toast('今日はもう報告したよ。また明日ね');
+  const sp=$('reportSp').value;if(!SP[sp])return toast('見つけた鳥をえらんでね');
+  S.reportDate=ymd(gdate());S.reports=(S.reports||0)+1;
+  const z=zk(sp);z.seen=(z.seen||0)+1;
+  S.wallet+=100;
+  addLog(`本物の${SP[sp].n}を見つけた`);
+  let msg=`<div class="sprite bob" style="${spriteStyle(sp,.7)};margin:0 auto"></div><h3>見つけた！</h3><p>${SP[sp].n}を図鑑にのせました。ボーナス +100pt</p><p style="text-align:left;background:#fff;border-radius:14px;padding:8px 12px">ピピッ！${talkOf(sp,S.reports)}</p>`;
+  if(S.reports%REPORT_EVERY===0){
+    if(breeding()){
+      const egg=(S.forest.length>=10&&Math.random()<.3)?'inuwashi':'kumagera';
+      S.inbox.push({sp:egg,gen:1,special:true});
+      msg+='<p><b>報告'+S.reports+'回目のお礼に、白神の特別な卵が届きました！</b><br>空いている巣に置こう。</p>';
+    }else{S.inv.berry+=5;msg+=`<p>報告${S.reports}回目のお礼に、木の実×5 が届きました。<br>（特別な卵は繁殖期に届きます）</p>`}
+  }
+  save();render();showDlg(msg);
 }
 
 // ---------- 歩数計（加速度センサー） ----------
@@ -693,7 +782,7 @@ function render(){
   const town=curTown();
   $('pedoState').textContent=pedoOn?`● 歩数計ON${town?` ・ ${town}${multNow()>1?'（2倍中）':''}`:''}`:'';
   renderMap();
-  const gt=guideText().replace(/<br>/g,'');$('guide').innerHTML=gt;
+  const gt=(sayOverride||guideText()).replace(/<br>/g,'');$('guide').innerHTML=`<span>${gt}</span>`;
   $('guide').classList.toggle('two',gt.replace(/<[^>]+>/g,'').length>27);
   $('forestScene').classList.toggle('winter',!breeding());
   const d=gdate();$('dbgDate').textContent=`ゲーム内の日付：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
@@ -732,6 +821,24 @@ function render(){
   // お店
   $('shop').innerHTML=Object.entries(ITEMS).map(([id,it])=>`<div class="item"><div class="ico">${it.ico}</div><div class="m"><b>${it.n} <span style="color:var(--muted);font-weight:400;font-size:12px">×${S.inv[id]}</span></b><small>${it.t}</small></div><button type="button" data-buy="${id}" ${S.wallet<it.cost?'disabled':''}>${it.cost}pt</button></div>`).join('');
 
+  // ピピ隊長の鳥ばなし：選んでいる巣の鳥の話。いなければ日替わり
+  const cur=S.slots[S.sel], keysT=Object.keys(TALK);
+  const dayN=Math.floor(now()/864e5);
+  const tsp=(cur.k==='bird'||cur.k==='visitor')&&talkN===0?cur.sp:keysT[(dayN+talkN)%keysT.length];
+  $('talkBird').textContent=`${SP[tsp].n}の話`;
+  $('talkText').textContent='ピピッ！'+talkOf(tsp,dayN+talkN);
+  // 季節の鳥だより
+  const mo=month(),nw=NEWS[mo];
+  $('newsHead').textContent=`白神の鳥だより（${mo}月）`;$('newsText').textContent=nw[0];$('newsTip').textContent=nw[1];
+  // 見つけたよ報告
+  const sel=$('reportSp');
+  if(!sel.options.length){const groups={'留鳥':[],'夏鳥':[],'冬鳥':[]};
+    for(const[k,b]of Object.entries(SP))groups[b.type].push(`<option value="${k}">${b.n}</option>`);
+    sel.innerHTML='<option value="">見つけた鳥をえらぶ</option>'+Object.entries(groups).map(([g,o])=>`<optgroup label="${g}">${o.join('')}</optgroup>`).join('')}
+  const doneToday=S.reportDate===ymd(gdate()), nrep=S.reports||0;
+  $('reportBtn').disabled=doneToday;
+  $('reportInfo').textContent=doneToday?`今日は報告ずみ。これまで${nrep}回（つぎのお礼まであと${REPORT_EVERY-nrep%REPORT_EVERY}回）`:`これまで${nrep}回。つぎのお礼まであと${REPORT_EVERY-nrep%REPORT_EVERY}回`;
+
   // 森
   $('forestBirds').innerHTML=S.forest.length?S.forest.slice(-24).map(f=>`<div class="fb"><div class="sprite bob" style="${spriteStyle(f.sp,.4)};animation-delay:${(f.ring%10)*.08}s"></div><span class="ring">No.${f.ring}${f.gen>1?` ${f.gen}世`:''}</span></div>`).join(''):'<p class="empty-mark" style="align-self:center">まだ森に還した鳥はいません</p>';
   const kinds=new Set(S.forest.map(f=>f.sp)).size;
@@ -740,9 +847,10 @@ function render(){
 
   // 図鑑
   const keys=Object.keys(SP);let got=0;
-  $('zukan').innerHTML=keys.map(k=>{const b=SP[k],z=S.zukan[k]||{};const has=z.raised||z.friend;if(has)got++;
+  $('zukan').innerHTML=keys.map(k=>{const b=SP[k],z=S.zukan[k]||{};const has=z.raised||z.friend||z.seen;if(has)got++;
     const tag=b.type==='冬鳥'?`<span class="chip ${z.friend?'ok':''}">仲良し${z.friend?'×'+z.friend:''}</span>`:`<span class="chip ${z.raised?'ok':''}">育てた${z.raised?'×'+z.raised:''}</span>`;
-    return `<div class="zk ${has?'':'locked'}"><div class="thumb"><div class="sprite ${has?'bob':''}" style="${spriteStyle(k,.4)};animation-delay:${(keys.indexOf(k)%10)*.08}s"></div></div><b>${has?b.n:'？？？'}</b><span class="chip">${b.type}</span>${tag}</div>`}).join('');
+    const seen=z.seen?`<span class="chip ok">見た×${z.seen}</span>`:'';
+    return `<div class="zk ${has?'':'locked'}"><div class="thumb"><div class="sprite ${has?'bob':''}" style="${spriteStyle(k,.4)};animation-delay:${(keys.indexOf(k)%10)*.08}s"></div></div><b>${has?b.n:'？？？'}</b><span class="chip">${b.type}</span>${tag}${seen}</div>`}).join('');
   $('zkCount').textContent=`${got} / ${keys.length}種`;
 }
 
@@ -788,7 +896,7 @@ document.addEventListener('click',e=>{
     if(v==='steps500')walk(500,multNow());if(v==='steps3000')walk(3000,multNow());
     if(v==='here'){fakeHere=!fakeHere;t.textContent=fakeHere?'イベントの町にいることをやめる':'イベントの町にいることにする';render();toast(fakeHere?`${EVENT.town}にいることにしました`:'もとに戻しました')}
     if(v==='day1'||v==='day30'){S.offset+=v==='day1'?1:30;tick();save();render();toast('時間がすすみました')}
-    if(v==='checkin')checkin(true);
+    if(v==='report'){S.reportDate='';save();render();toast('今日の報告をもう一度できます')}
     if(v==='reset'&&confirm('データをすべて消しますか？')){S=fresh();save();render()}}
   else if(t.id==='eggBtn')searchEgg();
   else if(t.id==='feederBtn')setFeeder();
@@ -798,7 +906,9 @@ document.addEventListener('click',e=>{
   else if(t.id==='warmBtn')warmEgg();
   else if(t.id==='pedoBtn')togglePedo();
   else if(t.id==='manualBtn')manualSync();
-  else if(t.id==='checkinBtn')checkin(false);
+  else if(t.id==='reportBtn')report();
+  else if(t.id==='talkNext'){talkN++;render()}
+  else if(t.id==='guideBtn')guideTalk();
 });
 
 tick();save();render();
