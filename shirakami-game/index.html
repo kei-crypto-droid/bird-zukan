@@ -191,54 +191,61 @@ dialog p{font-size:13px;margin:6px 0;font-weight:700}
 dialog .row{justify-content:center;padding:0 18px}
 dialog .primary{min-width:140px}
 
+/* ===== ホーム（見本画像そのままの見た目） ===== */
+.mockwrap{container-type:inline-size;margin:0 -14px}
+.mock{--u:calc(100cqw / 1199);position:relative;width:100%;aspect-ratio:1199/1236;overflow:hidden}
+.plate{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+.mock .abs{position:absolute}
+.m-pts{position:absolute;left:calc(var(--u)*100);top:calc(var(--u)*204);height:calc(var(--u)*62);width:calc(var(--u)*158);display:flex;align-items:center}
+.m-pts strong{font-size:calc(var(--u)*48);line-height:1;font-weight:900;color:#4b2f00;letter-spacing:-.04em;white-space:nowrap}
+.m-pts.long strong{font-size:calc(var(--u)*40)}
+/* 巣の枠（タップできる範囲 = 白い枠の外側） */
+.m-nest{position:absolute;top:calc(var(--u)*300);height:calc(var(--u)*235);border:0;padding:0;margin:0;background:none;border-radius:calc(var(--u)*30);-webkit-tap-highlight-color:transparent}
+.m-nest.sel{box-shadow:0 0 0 calc(var(--u)*7) var(--yellow),0 0 calc(var(--u)*24) #fff9}
+.m-nest:focus-visible{outline:calc(var(--u)*6) solid var(--yellow);outline-offset:calc(var(--u)*4)}
+.m-hungry{position:absolute;left:50%;top:calc(var(--u)*5);transform:translateX(-50%);height:calc(var(--u)*47);padding:0 calc(var(--u)*22);display:flex;align-items:center;white-space:nowrap;background:#fff;color:#f20d0d;border:calc(var(--u)*5) solid #f20d0d;border-radius:999px;font-size:calc(var(--u)*29);font-weight:900;line-height:1;z-index:2}
+.m-name{position:absolute;left:0;right:0;top:calc(var(--u)*178);text-align:center;font-size:calc(var(--u)*37);line-height:1.15;font-weight:900;color:#17123d;white-space:nowrap;
+  text-shadow:calc(var(--u)*2) 0 #fff,calc(var(--u)*-2) 0 #fff,0 calc(var(--u)*2) #fff,0 calc(var(--u)*-2) #fff}
+.m-empty{position:absolute;left:0;right:0;top:calc(var(--u)*72);text-align:center;color:#fff;font-size:calc(var(--u)*34);font-weight:900;text-shadow:0 calc(var(--u)*4) 0 #3f8a2f}
+.m-feeder{position:absolute;left:0;right:0;top:calc(var(--u)*80);text-align:center;font-size:calc(var(--u)*70);line-height:1}
+/* コマ送りのドット絵（横に並べたコマを steps で切り替える） */
+.m-sp{position:absolute;overflow:hidden;z-index:1;pointer-events:none}
+.m-sp img{display:block;height:100%;max-width:none;animation:frames var(--dur) steps(var(--n)) infinite;animation-delay:var(--delay,0s)}
+@keyframes frames{to{transform:translateX(-100%)}}
+.m-sp.special img{filter:sepia(.7) saturate(2.2) hue-rotate(-12deg) brightness(1.03)}
+.m-sheet{position:absolute;z-index:1;pointer-events:none;background-repeat:no-repeat;animation:pico .48s steps(1,end) infinite;animation-delay:var(--delay,0s);transform-origin:50% 100%}
+/* 吹き出しの文字 */
+.m-say{position:absolute;left:calc(var(--u)*296);top:calc(var(--u)*598);width:calc(var(--u)*816);height:calc(var(--u)*52);display:flex;align-items:center;font-size:calc(var(--u)*30);line-height:1.1;font-weight:800;color:#10103a;white-space:nowrap;letter-spacing:.02em}
+.m-say.two{font-size:calc(var(--u)*23);white-space:normal;line-height:1.08}
+.m-say em{font-style:normal;color:#2f3fd6}
+#evPeriod{color:#fff;font-size:12px;font-weight:800;margin-top:6px}
+#tab-nest .event-foot{display:flex;flex-wrap:wrap;gap:6px}
+@media(prefers-reduced-motion:reduce){.m-sp img,.m-sheet{animation:none}}
+
 @media(min-width:600px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:min(100%,720px);border-left:5px solid var(--lav);border-right:5px solid var(--lav);border-radius:20px 20px 0 0}}
 @media(max-width:480px){.deco{display:none}}
-@media(max-width:380px){#app{padding-left:10px;padding-right:10px}header{margin:0 -10px}.mark{width:52px;height:52px;flex-basis:52px}.nest{min-height:178px}.deco{display:none}}
+@media(max-width:380px){#app{padding-left:10px;padding-right:10px}header,.mockwrap{margin:0 -10px}.mark{width:52px;height:52px;flex-basis:52px}.nest{min-height:178px}.deco{display:none}}
 </style>
 </head>
 <body>
 <div id="app">
-  <header>
-    <div class="eyebrow">SHIRAKAMI NETWORK</div>
-    <svg class="deco" viewBox="0 0 60 35" shape-rendering="crispEdges" aria-hidden="true">
-      <path d="M4 34 L18 10 L32 34Z" fill="#2b7a31"/><path d="M14 17 L18 10 L22 17Z" fill="#fff"/>
-      <path d="M20 34 L34 6 L48 34Z" fill="#358f3b"/><path d="M30 14 L34 6 L38 14Z" fill="#fff"/>
-      <path d="M44 34 L50 22 L56 34Z M46 28 L50 18 L54 28Z M47 23 L50 15 L53 23Z" fill="#1f5e25"/><rect x="49" y="33" width="2" height="2" fill="#6b4a2c"/>
-    </svg>
-    <div class="brand"><div class="mark" aria-label="鳥のアイコン"></div><h1 class="outline"><b>白神</b><span class="y">ウォーキング</span><b>クエスト</b></h1></div>
-    <p class="subtitle">1歩で1ポイント。歩いて卵を温め、育てた鳥を白神の森へ還そう。</p>
-    <div class="stats">
-      <div class="stat"><strong id="wallet">0</strong><span>ポイント</span></div>
+  <!-- ホーム：見本の画像（plate.jpg）をそのまま土台にし、変わる部分だけを上に重ねる。
+       座標はすべて見本画像（1199×1236px）のピクセル。--u が画面幅に合わせた1ピクセルの大きさ -->
+  <div class="mockwrap">
+    <div class="mock" id="mock">
+      <img class="plate" src="plate.jpg" width="1199" height="1236" alt="白神ウォーキングクエスト。1歩で1ポイント。歩いて卵を温め、育てた鳥を白神の森へ還そう。今週のイベント：黄色のエリア（藤里町）を歩くとポイント2倍。森で見つけた木の実は、歩くだけでアイテムに自動で入るよ。">
+      <div class="m-pts"><strong id="wallet">0</strong></div>
+      <div id="nests"></div>
+      <div class="m-say" id="guide"></div>
     </div>
-  </header>
+  </div>
 
   <!-- 巣 -->
   <div class="tab on" id="tab-nest">
-    <section>
-      <div class="scene" id="scene"><div class="nests" id="nests"></div></div>
-      <div class="guide"><div class="who" role="img" aria-label="ガイドの探検家"></div><div class="bubble" id="guide"></div></div>
-    </section>
-    <section>
-      <div class="event">
-        <div class="side">
-          <span class="event-badge">★ 今週のイベント</span>
-          <div class="ev-title"><h2 class="outline"><span class="y">黄色</span>のエリアを<br>歩くと<br><span class="y">ポイント<span id="evMult"></span>倍！</span></h2><div class="period" id="evPeriod"></div></div>
-          <div class="berry-box"><span class="b" aria-hidden="true">🍒</span><div>森で見つけた木の実は、歩くだけでアイテムに自動で入るよ！</div></div>
-        </div>
-        <div>
-          <div class="mapbox"><svg class="map" id="map" role="img" aria-label="白神山地周辺の地図。黄色のエリアがポイント2倍"></svg>
-            <div class="legend">
-              <div><i style="color:#fff;text-shadow:0 0 2px #2b7a31">○○○</i>…ウォーキングコース</div>
-              <div><i><span style="display:inline-block;width:18px;height:9px;border-radius:5px;background:#ffd93b;vertical-align:middle"></span></i>…ポイント2倍エリア</div>
-              <div><i>🥚</i>…卵（レア・各町1〜2か所）</div>
-              <div><i>🍒</i>…木の実（歩くと自動入手）</div>
-              <div><i style="color:#e2342b">▶</i>…スタート　<i style="color:#2f6fe0">▶</i>…ゴール</div>
-            </div>
-          </div>
-          <div class="event-foot" id="evTowns" style="margin-top:8px"></div>
-          <div class="credit">地図：国土数値情報（行政区域データ）を加工して作成</div>
-        </div>
-      </div>
+    <section style="margin-top:10px">
+      <div class="event-foot" id="evTowns"></div>
+      <div class="period" id="evPeriod"></div>
+      <div class="credit">町の判定：国土数値情報（行政区域データ）を加工して作成</div>
     </section>
     <section>
       <div class="section-head"><h2>ポイント2倍のしくみ</h2></div>
@@ -637,6 +644,46 @@ const pct=(a,b)=>Math.max(0,Math.min(100,a/b*100)).toFixed(0);
 const stageName=['ヒナ','若鳥','成鳥'];
 const $=id=>document.getElementById(id);
 
+// ---------- ホームの巣（見本画像の座標で配置） ----------
+const NEST_BOX=[{l:63,w:352,cx:239},{l:434,w:341,cx:605},{l:795,w:341,cx:966}];
+const NEST_TOP=300;
+// 見本画像から切り出したコマ送りの絵（w,h:1コマの大きさ, dx:枠の中心からの左端, bottom:足元のy）
+const STRIPS={
+  akagera:{src:'akagera.png',w:134,h:116,n:2,dur:.48,dx:-64,bottom:464},
+  kawasemi:{src:'kawasemi.png',w:148,h:111,n:2,dur:.48,dx:-75,bottom:465},
+  egg:{src:'egg.png',w:109,h:84,n:16,dur:1.92,dx:-58,bottom:464},
+};
+const U=v=>`calc(var(--u)*${+v.toFixed(2)})`;
+function stripHTML(key,i,scale=1,extra=''){
+  const t=STRIPS[key],b=NEST_BOX[i];
+  const w=t.w*scale,h=t.h*scale,left=b.cx-b.l+t.dx*scale+(t.w-w)*0,top=t.bottom-NEST_TOP-h;
+  // 縮めるときは足元の中心を合わせる
+  const cxFrame=b.cx-b.l+t.dx+t.w/2, l2=cxFrame-w/2;
+  const delay=key==='egg'?0:-(i%2)*t.dur/2;
+  return `<div class="m-sp ${extra}" style="left:${U(scale===1?left:l2)};top:${U(top)};width:${U(w)};height:${U(h)}"><img src="${t.src}" alt="" style="--n:${t.n};--dur:${t.dur}s;--delay:${delay}s"></div>`;
+}
+function sheetHTML(sp,i,scale){
+  // 見本にない鳥は、今までのドット絵シートを同じくらいの大きさで立たせる
+  const b=SP[sp],box=NEST_BOX[i],H=200*scale,Wd=H*160/200;
+  const left=box.cx-box.l-Wd/2,top=466-NEST_TOP-H+H*0.06;
+  return `<div class="m-sheet" style="left:${U(left)};top:${U(top)};width:${U(Wd)};height:${U(H)};background-image:var(--sprite);background-size:${U(Wd*10)} ${U(H*5)};background-position:${U(-(b.c-1)*Wd)} ${U(-(b.r-1)*H)};--delay:${-(i%2)*.24}s"></div>`;
+}
+function birdHTML(sp,i,scale){return STRIPS[sp]?stripHTML(sp,i,scale):sheetHTML(sp,i,scale)}
+function nestHTML(s,i){
+  const box=NEST_BOX[i];let inner='',name='',label='';
+  if(s.k==='empty'){inner='<div class="m-empty">からっぽ</div>'}
+  else if(s.k==='egg'){const sp4=SP[s.sp].rar===4;inner=stripHTML('egg',i,1,sp4?'special':'');
+    name=s.parent?`No.${s.parent}の卵`:(sp4?'白神の特別な卵':'？の卵');
+    label=`${i+1}番目の巣：${name}。あと${Math.max(0,s.need-s.prog)}歩で孵る`}
+  else if(s.k==='bird'){const hungry=s.hunger<=20||s.thirst<=20;
+    inner=birdHTML(s.sp,i,[.64,.84,1][s.stage])+(hungry?'<span class="m-hungry">おなかすいた</span>':'');
+    name=SP[s.sp].n;label=`${i+1}番目の巣：${name}（${stageName[s.stage]}）${hungry?'。おなかすいた':''}`}
+  else if(s.k==='feeder'){inner='<div class="m-feeder">🪵🫐</div>';name='餌台';label=`${i+1}番目の巣：餌台`}
+  else if(s.k==='visitor'){inner=birdHTML(s.sp,i,.84);name=SP[s.sp].n;label=`${i+1}番目の巣：${name}（冬鳥）`}
+  if(!label)label=`${i+1}番目の巣：からっぽ`;
+  return `<button type="button" class="m-nest ${S.sel===i?'sel':''}" data-slot="${i}" aria-label="${label}" style="left:${U(box.l)};width:${U(box.w)}">${inner}${name?`<div class="m-name">${name}</div>`:''}</button>`;
+}
+
 function render(){
   $('wallet').textContent=Math.floor(S.wallet).toLocaleString();
   $('today').textContent=S.today.toLocaleString();
@@ -646,29 +693,15 @@ function render(){
   const town=curTown();
   $('pedoState').textContent=pedoOn?`● 歩数計ON${town?` ・ ${town}${multNow()>1?'（2倍中）':''}`:''}`:'';
   renderMap();
-  $('guide').innerHTML=guideText();
-  $('scene').classList.toggle('winter',!breeding());
+  const gt=guideText().replace(/<br>/g,'');$('guide').innerHTML=gt;
+  $('guide').classList.toggle('two',gt.replace(/<[^>]+>/g,'').length>27);
   $('forestScene').classList.toggle('winter',!breeding());
   const d=gdate();$('dbgDate').textContent=`ゲーム内の日付：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
 
-  // 巣
-  $('nests').innerHTML=S.slots.map((s,i)=>{
-    let stage='',name='',bars='';
-    if(s.k==='empty'){stage=`<div class="empty-mark">からっぽ</div>`}
-    else if(s.k==='egg'){const p=s.prog/s.need;
-      stage=`<div class="egg ${p>.7?'warm':'pico'}" style="animation-delay:${i*.08}s">${eggSVG(SP[s.sp].rar===4)}</div>`;
-      name=s.parent?`No.${s.parent}の卵`:(SP[s.sp].rar===4?'白神の特別な卵':'？の卵');
-      bars=`<div class="bar g"><i style="width:${pct(s.prog,s.need)}%"></i></div>`}
-    else if(s.k==='bird'){const sc=[.42,.56,.66][s.stage];const hungry=s.hunger<=20||s.thirst<=20;
-      stage=`<div class="sprite bob" style="${spriteStyle(s.sp,sc)};animation-delay:${i*.08}s"></div>${hungry?'<span class="hungry">おなかすいた</span>':''}`;
-      name=`${SP[s.sp].n}<small>${stageName[s.stage]}</small>`;
-      bars=`<div class="bar w"><i style="width:${pct(s.thirst,100)}%"></i></div><div class="bar f"><i style="width:${pct(s.hunger,100)}%"></i></div><div class="bar g"><i style="width:${pct(s.growth,GROW[SP[s.sp].rar])}%"></i></div>`}
-    else if(s.k==='feeder'){stage=`<div style="font-size:32px;padding-bottom:6px">🪵🫐</div>`;name='餌台<small>冬鳥を待っています</small>';
-      bars=`<div class="bar g"><i style="width:${pct(s.prog,FEEDER_NEED)}%"></i></div>`}
-    else if(s.k==='visitor'){stage=`<div class="sprite bob" style="${spriteStyle(s.sp,.6)};animation-delay:${i*.08}s"></div>`;name=`${SP[s.sp].n}<small>冬鳥</small>`;
-      bars=`<div class="bar h"><i style="width:${pct(s.friend,FRIEND_NEED)}%"></i></div><div class="bar f"><i style="width:${pct(s.hunger,100)}%"></i></div>`}
-    return `<button type="button" class="nest ${S.sel===i?'sel':''}" data-slot="${i}" aria-label="${i+1}番目の巣"><div class="stage">${stage}</div>${s.k==='feeder'?'':'<div class="stump"></div>'}<div class="name">${name}</div><div class="bars">${bars}</div></button>`;
-  }).join('');
+  // 巣（見本画像の3つの枠の上に重ねる）
+  $('nests').innerHTML=S.slots.map((s,i)=>nestHTML(s,i)).join('');
+  const w=String(Math.floor(S.wallet).toLocaleString());
+  document.querySelector('.m-pts').classList.toggle('long',w.length>5);
 
   // 選んだ巣の詳細
   const s=S.slots[S.sel];let h='';
@@ -729,44 +762,12 @@ function guideText(){
 // ---------- 地図 ----------
 function weekRange(){const d=gdate();const day=(d.getDay()+6)%7;const a=new Date(d);a.setDate(d.getDate()-day);const b=new Date(a);b.setDate(a.getDate()+6);
   const f=x=>`${x.getMonth()+1}/${x.getDate()}`;const wd='日月火水木金土';return `${f(a)}（${wd[a.getDay()]}）〜 ${f(b)}（${wd[b.getDay()]}）`}
-// 地図の上の小物（座標は map-data.js の地図座標）
-const COURSE=['M215,445 Q275,470 330,410 C365,378 425,368 462,382 C482,390 490,396 496,402 Q600,445 715,440',
-              'M378,392 C356,430 368,472 400,482 C432,492 458,462 452,430 C447,405 442,390 440,383'];
-const EGGS=[[215,445],[400,482],[715,440]], BERRIES=[[432,334],[452,428],[384,526]];
-const svgEgg=(x,y)=>`<g transform="translate(${x},${y})"><ellipse cx="0" cy="16" rx="30" ry="11" fill="#ffe680" opacity=".9"/><ellipse cx="0" cy="0" rx="17" ry="21" fill="#fffdf2" stroke="#3a3200" stroke-width="4"/><circle cx="-5" cy="-4" r="2.5" fill="#a89c78"/><circle cx="6" cy="4" r="2.5" fill="#a89c78"/><circle cx="-2" cy="9" r="2" fill="#a89c78"/></g>`;
-const svgBerry=(x,y)=>`<g transform="translate(${x},${y})"><path d="M-6,-14 L0,-22 L8,-14 L0,-10Z" fill="#3fa043" stroke="#1f5e25" stroke-width="2"/><circle cx="-8" cy="2" r="10" fill="#e2342b" stroke="#7a1410" stroke-width="3"/><circle cx="8" cy="0" r="10" fill="#e2342b" stroke="#7a1410" stroke-width="3"/><circle cx="-11" cy="-1" r="2.5" fill="#fff"/><circle cx="5" cy="-3" r="2.5" fill="#fff"/></g>`;
-const svgFlag=(x,y,c)=>`<g transform="translate(${x},${y})"><rect x="-3" y="-40" width="6" height="44" fill="#3a3200"/><path d="M3,-40 L34,-28 L3,-16Z" fill="${c}" stroke="#3a3200" stroke-width="3"/></g>`;
-const svgTree=(x,y)=>`<g transform="translate(${x},${y})"><path d="M0,-34 L14,-12 L7,-12 L18,4 L-18,4 L-7,-12 L-14,-12Z" fill="#2b7a31" stroke="#173f1c" stroke-width="3"/><rect x="-3" y="4" width="6" height="8" fill="#6b4a2c"/></g>`;
-const svgMt=(x,y)=>`<g transform="translate(${x},${y})"><path d="M-46,20 L-16,-26 L4,4 L18,-16 L46,20Z" fill="#4cb84f" stroke="#1f5e25" stroke-width="4"/></g>`;
-let mapKey='';
 function renderMap(){
-  const town=curTown(),key=EVENT.town+'|'+town+'|'+weekRange();
-  $('evMult').textContent=EVENT.mult;
-  $('evPeriod').innerHTML=`${weekRange()}<br>今週の黄色のエリア：${EVENT.town}`;
+  // 地図そのものは見本画像（plate.jpg）の絵。ここでは期間・町の一覧・いまいる町だけを書く
+  const town=curTown();
+  $('evPeriod').textContent=`今週 ${weekRange()}・${EVENT.town}で1歩${EVENT.mult}ポイント`;
   $('hereLine').textContent=town?`いまいる町：${town}${town===EVENT.town?'（ポイント2倍中！）':''}`:(pedoOn?'いまいる町：対象エリアの外か、位置を確認中です':'歩数計をONにすると、いまいる町を表示します');
-  if(key===mapKey)return;mapKey=key;
-  const m=$('map');m.setAttribute('viewBox',`0 0 ${MAP.w} ${MAP.h}`);
-  let h=`<defs><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
-  for(const c of MAP.ctx)h+=`<path class="ctx" d="${c.d}"/>`;
-  const hot=MAP.towns.find(t=>t.n===EVENT.town);
-  for(const t of MAP.towns)if(t!==hot)h+=`<path class="town ${t.n===town?'here':''}" d="${t.d}"/>`;
-  if(hot)h+=`<path class="town hot ${hot.n===town?'here':''}" d="${hot.d}"/>`;
-  // ウォーキングコース（白い点線）
-  for(const d of COURSE)h+=`<path d="${d}" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-dasharray="1 17"/>`;
-  [[130,330],[160,316],[190,332],[850,470],[880,456]].forEach(([x,y])=>h+=svgTree(x,y));
-  const sx=MAP.shirakami.x,sy=MAP.shirakami.y;h+=svgMt(sx,sy+6);
-  BERRIES.forEach(([x,y])=>h+=svgBerry(x,y));EGGS.forEach(([x,y])=>h+=svgEgg(x,y));
-  h+=svgFlag(330,410,'#e2342b')+svgFlag(496,404,'#2f6fe0');
-  // 地名
-  const lbl=(t,x,y,c='lbl')=>`<text class="${c}" x="${x}" y="${y}" text-anchor="middle">${t}</text>`;
-  const ctx=n=>MAP.ctx.find(c=>c.n===n);
-  for(const n of ['深浦町','弘前市','三種町']){const c=ctx(n);if(c)h+=lbl(n,c.lx,Math.max(60,c.ly),'lbl small')}
-  h+=lbl('西目屋村',sx,sy-76,'lbl small')+lbl('白神山地',sx,sy-36);
-  const LBL_POS={'北秋田市':[470,760]};  // 凡例と重ならない位置（北秋田市の内側）
-  for(const t of MAP.towns)if(t!==hot){const[x,y]=LBL_POS[t.n]||[t.lx,t.ly];h+=lbl(t.n,x,y)}
-  h+=`<text class="pref" x="${MAP.w-30}" y="60" text-anchor="end">青森県</text>`;
-  m.innerHTML=h;
-  $('evTowns').innerHTML=MAP.towns.map(t=>`<span class="chip ${t.n===EVENT.town?'hot':''}">${t.n}${t.n===EVENT.town?` ×${EVENT.mult}`:''}</span>`).join('');
+  $('evTowns').innerHTML=MAP.towns.map(t=>`<span class="chip ${t.n===EVENT.town?'hot':''} ${t.n===town?'ok':''}">${t.n}${t.n===EVENT.town?` ×${EVENT.mult}`:''}${t.n===town?' ・いまここ':''}</span>`).join('');
 }
 
 // ---------- UI ----------
