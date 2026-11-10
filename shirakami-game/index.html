@@ -81,14 +81,15 @@ section{margin-top:16px}
 .hungry{position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap;background:#fff;color:var(--danger);padding:1px 10px;border-radius:999px;border:3px solid var(--danger);font-weight:900;z-index:2}
 
 .sprite{background-image:var(--sprite);background-repeat:no-repeat;image-rendering:pixelated;flex:none}
-.bob{animation:bob 1.6s steps(2) infinite}
-@keyframes bob{50%{transform:translateY(-3px)}}
-.egg.warm{animation:wobble 1s ease-in-out infinite}
-@keyframes wobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+.bob{animation:pico .8s steps(1,end) infinite}
+@keyframes pico{0%{transform:translateY(-4%)}10%,100%{transform:none}}
+.egg.pico{display:inline-block;animation:pico .8s steps(1,end) infinite;transform-origin:50% 100%}
+.egg.warm{animation:wobble .8s steps(1,end) infinite}
+@keyframes wobble{0%{transform:translateY(-4%) rotate(-6deg)}10%{transform:none}50%{transform:rotate(6deg)}60%,100%{transform:none}}
 
 /* ガイド（探検家）と吹き出し */
 .guide{display:flex;align-items:center;gap:6px;margin-top:12px}
-.guide .who{position:relative;flex:none;width:88px;height:88px;background:url(guide.png) center bottom/contain no-repeat;image-rendering:pixelated;animation:nod 1.2s steps(2) infinite}
+.guide .who{position:relative;flex:none;width:88px;height:88px;background:url(guide.png) center bottom/contain no-repeat;image-rendering:pixelated;animation:pico .8s steps(1,end) infinite;animation-delay:-.4s}
 .guide .who:after{content:"";position:absolute;right:-8px;top:2px;width:22px;height:22px;
   background:linear-gradient(60deg,transparent 45%,var(--yellow) 45% 60%,transparent 60%) 0 0/10px 10px no-repeat,
              linear-gradient(90deg,transparent 40%,var(--yellow) 40% 60%,transparent 60%) 8px 4px/10px 10px no-repeat,
@@ -117,7 +118,7 @@ section{margin-top:16px}
 button:disabled{opacity:.45;cursor:not-allowed}
 
 /* ポイントで交換 */
-.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:8px}
 .item{display:flex;align-items:center;gap:10px;border:4px solid var(--lav);border-radius:18px;background:var(--cream);padding:8px;box-shadow:0 4px 0 #0003}
 .item .ico{width:40px;height:40px;flex:none;border-radius:12px;background:var(--field);border:3px solid #fff;display:grid;place-items:center;font-size:21px}
 .item .m{flex:1;min-width:0;line-height:1.35}
@@ -152,7 +153,7 @@ details summary{cursor:pointer;color:var(--lav-ink);font-size:13px;font-weight:8
 
 /* 地図・イベント */
 .event{border:5px solid var(--lav);border-radius:24px;overflow:hidden;background:#5cbf4a;box-shadow:0 5px 0 #0003;padding:10px;display:grid;gap:10px}
-@media(min-width:600px){.event{grid-template-columns:236px 1fr}.ev-title h2{font-size:25px}.event .side{display:flex;flex-direction:column;gap:10px}}
+@media(min-width:600px){.legend{position:absolute;right:12px;bottom:12px;margin:0;background:#fdf8e3ee;font-size:9px}.event{grid-template-columns:236px 1fr}.ev-title h2{font-size:25px}.event .side{display:flex;flex-direction:column;gap:10px}}
 .side{display:grid;gap:10px}
 .event-badge{display:inline-flex;align-self:flex-start;justify-self:start;align-items:center;gap:6px;border-radius:999px;background:#fff6b8;border:4px solid var(--yellow);color:#3a3200;font-size:14px;font-weight:900;letter-spacing:.06em;padding:1px 14px;box-shadow:0 3px 0 var(--yellow-d)}
 .ev-title{background:#2f8a3a;border-radius:16px;padding:10px 12px 12px;box-shadow:inset 0 0 0 3px #ffffff26}
@@ -208,50 +209,15 @@ dialog .primary{min-width:140px}
     <p class="subtitle">1歩で1ポイント。歩いて卵を温め、育てた鳥を白神の森へ還そう。</p>
     <div class="stats">
       <div class="stat"><strong id="wallet">0</strong><span>ポイント</span></div>
-      <div class="stat"><strong id="today">0</strong><span>きょう歩いた</span></div>
-      <div class="stat"><strong id="forestCount">0</strong><span>森へ還した</span></div>
-      <div class="stat season"><strong id="season"></strong></div>
     </div>
   </header>
 
   <!-- 巣 -->
   <div class="tab on" id="tab-nest">
     <section>
-      <div class="section-head"><h2>3つの巣</h2><span>タップして選ぶ</span></div>
       <div class="scene" id="scene"><div class="nests" id="nests"></div></div>
       <div class="guide"><div class="who" role="img" aria-label="ガイドの探検家"></div><div class="bubble" id="guide"></div></div>
     </section>
-    <section class="card panel" id="panel"></section>
-
-    <section>
-      <div class="section-head"><h2>ポイントで交換</h2><span id="pedoState"></span></div>
-      <div class="shop" id="shop"></div>
-    </section>
-
-    <section>
-      <div class="section-head"><h2>歩く</h2></div>
-      <div class="card">
-        <div class="row" style="margin-top:0"><button class="secondary" id="pedoBtn" type="button">📱 歩数計をON</button></div>
-        <p class="note">画面を開いたまま歩くと、スマホの動きから歩数を数えます。</p>
-        <div class="row" style="align-items:center">
-          <input type="number" id="manual" min="0" inputmode="numeric" placeholder="今日の歩数" aria-label="今日の合計歩数">
-          <button class="secondary" id="manualBtn" type="button">ヘルスケアの歩数を反映</button>
-        </div>
-        <p class="note">ヘルスケアやGoogle Fitの「今日の合計歩数」を入れると、前回からふえた分だけ加算されます。</p>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-head"><h2>白神山地でチェックイン</h2><span>1日1回</span></div>
-      <div class="card">
-        <p class="note" style="margin:0;font-size:12px;color:var(--ink)">ビジターセンターの近くでチェックインすると、白神の特別な卵がもらえます。</p>
-        <div class="row"><button class="primary" id="checkinBtn" type="button">📍 チェックイン</button></div>
-      </div>
-    </section>
-  </div>
-
-  <!-- 地図 -->
-  <div class="tab" id="tab-map">
     <section>
       <div class="event">
         <div class="side">
@@ -282,6 +248,34 @@ dialog .primary{min-width:140px}
           ・「巣」タブの歩数計をONにすると、位置情報から今いる町を判定します。<br>
           ・ヘルスケアから入れた歩数は、どこで歩いたか分からないので1倍です。</p>
         <div class="here-line" id="hereLine"></div>
+      </div>
+    </section>
+    <section class="card panel" id="panel"></section>
+
+    <section>
+      <div class="section-head"><h2>ポイントで交換</h2><span id="pedoState"></span></div>
+      <div class="shop" id="shop"></div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>歩く</h2></div>
+      <div class="card">
+        <div class="chips" style="margin:0 0 4px"><span class="chip">きょう歩いた <b id="today">0</b>歩</span><span class="chip">森へ還した <b id="forestCount">0</b>羽</span><span class="chip ok" id="season"></span></div>
+        <div class="row" style="margin-top:0"><button class="secondary" id="pedoBtn" type="button">📱 歩数計をON</button></div>
+        <p class="note">画面を開いたまま歩くと、スマホの動きから歩数を数えます。</p>
+        <div class="row" style="align-items:center">
+          <input type="number" id="manual" min="0" inputmode="numeric" placeholder="今日の歩数" aria-label="今日の合計歩数">
+          <button class="secondary" id="manualBtn" type="button">ヘルスケアの歩数を反映</button>
+        </div>
+        <p class="note">ヘルスケアやGoogle Fitの「今日の合計歩数」を入れると、前回からふえた分だけ加算されます。</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>白神山地でチェックイン</h2><span>1日1回</span></div>
+      <div class="card">
+        <p class="note" style="margin:0;font-size:12px;color:var(--ink)">ビジターセンターの近くでチェックインすると、白神の特別な卵がもらえます。</p>
+        <div class="row"><button class="primary" id="checkinBtn" type="button">📍 チェックイン</button></div>
       </div>
     </section>
   </div>
@@ -334,7 +328,6 @@ dialog .primary{min-width:140px}
 
 <div class="bottom"><div class="bottom-inner">
   <button type="button" data-tab="nest" class="on">巣</button>
-  <button type="button" data-tab="map">地図</button>
   <button type="button" data-tab="forest">森</button>
   <button type="button" data-tab="zukan">図鑑</button>
 </div></div>
@@ -663,16 +656,16 @@ function render(){
     let stage='',name='',bars='';
     if(s.k==='empty'){stage=`<div class="empty-mark">からっぽ</div>`}
     else if(s.k==='egg'){const p=s.prog/s.need;
-      stage=`<div class="egg ${p>.7?'warm':''}">${eggSVG(SP[s.sp].rar===4)}</div>`;
+      stage=`<div class="egg ${p>.7?'warm':'pico'}" style="animation-delay:${i*.08}s">${eggSVG(SP[s.sp].rar===4)}</div>`;
       name=s.parent?`No.${s.parent}の卵`:(SP[s.sp].rar===4?'白神の特別な卵':'？の卵');
       bars=`<div class="bar g"><i style="width:${pct(s.prog,s.need)}%"></i></div>`}
     else if(s.k==='bird'){const sc=[.42,.56,.66][s.stage];const hungry=s.hunger<=20||s.thirst<=20;
-      stage=`<div class="sprite bob" style="${spriteStyle(s.sp,sc)}"></div>${hungry?'<span class="hungry">おなかすいた</span>':''}`;
+      stage=`<div class="sprite bob" style="${spriteStyle(s.sp,sc)};animation-delay:${i*.08}s"></div>${hungry?'<span class="hungry">おなかすいた</span>':''}`;
       name=`${SP[s.sp].n}<small>${stageName[s.stage]}</small>`;
       bars=`<div class="bar w"><i style="width:${pct(s.thirst,100)}%"></i></div><div class="bar f"><i style="width:${pct(s.hunger,100)}%"></i></div><div class="bar g"><i style="width:${pct(s.growth,GROW[SP[s.sp].rar])}%"></i></div>`}
     else if(s.k==='feeder'){stage=`<div style="font-size:32px;padding-bottom:6px">🪵🫐</div>`;name='餌台<small>冬鳥を待っています</small>';
       bars=`<div class="bar g"><i style="width:${pct(s.prog,FEEDER_NEED)}%"></i></div>`}
-    else if(s.k==='visitor'){stage=`<div class="sprite bob" style="${spriteStyle(s.sp,.6)}"></div>`;name=`${SP[s.sp].n}<small>冬鳥</small>`;
+    else if(s.k==='visitor'){stage=`<div class="sprite bob" style="${spriteStyle(s.sp,.6)};animation-delay:${i*.08}s"></div>`;name=`${SP[s.sp].n}<small>冬鳥</small>`;
       bars=`<div class="bar h"><i style="width:${pct(s.friend,FRIEND_NEED)}%"></i></div><div class="bar f"><i style="width:${pct(s.hunger,100)}%"></i></div>`}
     return `<button type="button" class="nest ${S.sel===i?'sel':''}" data-slot="${i}" aria-label="${i+1}番目の巣"><div class="stage">${stage}</div>${s.k==='feeder'?'':'<div class="stump"></div>'}<div class="name">${name}</div><div class="bars">${bars}</div></button>`;
   }).join('');
@@ -707,7 +700,7 @@ function render(){
   $('shop').innerHTML=Object.entries(ITEMS).map(([id,it])=>`<div class="item"><div class="ico">${it.ico}</div><div class="m"><b>${it.n} <span style="color:var(--muted);font-weight:400;font-size:12px">×${S.inv[id]}</span></b><small>${it.t}</small></div><button type="button" data-buy="${id}" ${S.wallet<it.cost?'disabled':''}>${it.cost}pt</button></div>`).join('');
 
   // 森
-  $('forestBirds').innerHTML=S.forest.length?S.forest.slice(-24).map(f=>`<div class="fb"><div class="sprite bob" style="${spriteStyle(f.sp,.4)};animation-delay:${(f.ring%5)*.3}s"></div><span class="ring">No.${f.ring}${f.gen>1?` ${f.gen}世`:''}</span></div>`).join(''):'<p class="empty-mark" style="align-self:center">まだ森に還した鳥はいません</p>';
+  $('forestBirds').innerHTML=S.forest.length?S.forest.slice(-24).map(f=>`<div class="fb"><div class="sprite bob" style="${spriteStyle(f.sp,.4)};animation-delay:${(f.ring%10)*.08}s"></div><span class="ring">No.${f.ring}${f.gen>1?` ${f.gen}世`:''}</span></div>`).join(''):'<p class="empty-mark" style="align-self:center">まだ森に還した鳥はいません</p>';
   const kinds=new Set(S.forest.map(f=>f.sp)).size;
   $('forestInfo').textContent=`${S.forest.length}羽・${kinds}種${S.forest.some(f=>f.sp==='kumagera')?'・クマゲラの巣穴あり':''}`;
   $('log').innerHTML=S.log.map(l=>`<li>${l}</li>`).join('')||'<li>まだなにもありません</li>';
@@ -716,7 +709,7 @@ function render(){
   const keys=Object.keys(SP);let got=0;
   $('zukan').innerHTML=keys.map(k=>{const b=SP[k],z=S.zukan[k]||{};const has=z.raised||z.friend;if(has)got++;
     const tag=b.type==='冬鳥'?`<span class="chip ${z.friend?'ok':''}">仲良し${z.friend?'×'+z.friend:''}</span>`:`<span class="chip ${z.raised?'ok':''}">育てた${z.raised?'×'+z.raised:''}</span>`;
-    return `<div class="zk ${has?'':'locked'}"><div class="thumb"><div class="sprite" style="${spriteStyle(k,.4)}"></div></div><b>${has?b.n:'？？？'}</b><span class="chip">${b.type}</span>${tag}</div>`}).join('');
+    return `<div class="zk ${has?'':'locked'}"><div class="thumb"><div class="sprite ${has?'bob':''}" style="${spriteStyle(k,.4)};animation-delay:${(keys.indexOf(k)%10)*.08}s"></div></div><b>${has?b.n:'？？？'}</b><span class="chip">${b.type}</span>${tag}</div>`}).join('');
   $('zkCount').textContent=`${got} / ${keys.length}種`;
 }
 
@@ -769,7 +762,8 @@ function renderMap(){
   const ctx=n=>MAP.ctx.find(c=>c.n===n);
   for(const n of ['深浦町','弘前市','三種町']){const c=ctx(n);if(c)h+=lbl(n,c.lx,Math.max(60,c.ly),'lbl small')}
   h+=lbl('西目屋村',sx,sy-76,'lbl small')+lbl('白神山地',sx,sy-36);
-  for(const t of MAP.towns)if(t!==hot)h+=lbl(t.n,t.lx,t.ly);
+  const LBL_POS={'北秋田市':[470,760]};  // 凡例と重ならない位置（北秋田市の内側）
+  for(const t of MAP.towns)if(t!==hot){const[x,y]=LBL_POS[t.n]||[t.lx,t.ly];h+=lbl(t.n,x,y)}
   h+=`<text class="pref" x="${MAP.w-30}" y="60" text-anchor="end">青森県</text>`;
   m.innerHTML=h;
   $('evTowns').innerHTML=MAP.towns.map(t=>`<span class="chip ${t.n===EVENT.town?'hot':''}">${t.n}${t.n===EVENT.town?` ×${EVENT.mult}`:''}</span>`).join('');
@@ -782,7 +776,7 @@ $('dlgOk').onclick=()=>$('dlg').close();
 
 document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
-  if(t.dataset.slot!=null){S.sel=+t.dataset.slot;save();render()}
+  if(t.dataset.slot!=null){S.sel=+t.dataset.slot;save();render();$('panel').scrollIntoView({behavior:'smooth',block:'nearest'})}
   else if(t.dataset.buy)buy(t.dataset.buy);
   else if(t.dataset.feed)feed(t.dataset.feed);
   else if(t.dataset.inbox!=null)placeInbox(+t.dataset.inbox);
