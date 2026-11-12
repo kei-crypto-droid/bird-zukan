@@ -1,9 +1,10 @@
-import sys; sys.path.insert(0,'.')
+import sys, random; sys.path.insert(0,'.')
+random.seed(7)
 from PIL import Image
 from sprites import SPR
 ORDER=['hirenjaku','oowashi','miyamahoojiro','benimashiko','misosazai',
        'kibitaki','akashobin','akagera','magamo','kawasemi']
-S=5
+S=9
 def sprite(name):
     pal,txt=SPR[name]
     rows=txt.strip('\n').split('\n')
@@ -12,7 +13,7 @@ def sprite(name):
     for y,r in enumerate(rows):
         for x,c in enumerate(r):
             if c=='.': continue
-            col=pal[c]; rgb=tuple(int(col[i:i+2],16) for i in (1,3,5))
+            col=pal[c]; j=random.randint(-7,7); rgb=tuple(max(0,min(255,int(col[i:i+2],16)+j)) for i in (1,3,5))
             im.paste(rgb+(255,),(x*S,y*S,x*S+S,y*S+S))
     return im
 W,H=800,430; CW,BASE=160,[162,382]
