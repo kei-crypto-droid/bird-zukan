@@ -60,8 +60,8 @@ SPR['benimashiko'] = (dict(S='#959193',R='#e2566b',r='#b02e45',D='#6e3a42',W='#f
 ...SSSSSS...
 ..RSSSSSSR..
 ..SSeMMeSS..
-..SMMppMMS..
-..RWMppMWR..
+..SWMppMWS..
+..RWWMMWWR..
 .DRWWWWWWRD.
 DWRRRRRRRRWD
 DDWRRRRRRWDD
