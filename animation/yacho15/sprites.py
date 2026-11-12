@@ -31,10 +31,10 @@ y.yYDDDDDDDDd...
 ...DDDDDWWWDDDDd
 ...DDDDDDDDDDDDd
 ....DDDDDDDDDDWW
-....WWDDDDDDDWWW
-.....WW......WWW
-.....F.F......W.
-....FF.FF.......
+....DDDDWWDDDWWW
+........WW...WWW
+........F.F...W.
+.......FF.FF....
 """)
 
 SPR['miyamahoojiro'] = (dict(K='#1c1c1c',Y='#f5d42a',W='#f6f2e8',w='#ffffff',n='#8a8a8a',B='#8a5a35',b='#b98552',d='#4a3020',g='#6e6258',F='#d0a47a'), """
@@ -183,9 +183,9 @@ SPR['ojirowashi'] = (dict(H='#d9c9a6',D='#6a4a30',d='#4a3220',Y='#f2b716',y='#c9
 ...DDDDDDdDDDDDd
 ....DDDDDDDDDDWW
 ....DDDDDDDDDWWW
-.....DD......WWW
-.....F.F......W.
-....FF.FF.......
+........DD...WWW
+........F.F...W.
+.......FF.FF....
 """)
 
 SPR['joubitaki'] = (dict(S='#cfcfd4',K='#1c1c1c',w='#dcdcdc',n='#3a3a3a',D='#2e2a28',W='#f4f4f4',O='#e8792a',F='#3a3a3a'), """
