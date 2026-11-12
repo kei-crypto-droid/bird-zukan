@@ -33,7 +33,7 @@ y.yYDDDDDDDDd...
 ....DDDDDDDDDDWW
 ....DDDDWWDDDWWW
 ........WW...WWW
-........F.F...W.
+........F..F..W.
 .......FF.FF....
 """)
 
@@ -116,7 +116,7 @@ rrrrrOOOPPP..
 ...ooooOPTTPP
 ....ooooOPPPP
 .....ooo..PPP
-.....F.F.....
+.....F..F....
 ....FF.FF....
 """)
 
@@ -133,7 +133,7 @@ nnWWWWWKK...
 ...wwKKKKKK.
 ....wRRKKKKK
 .....RR..KKK
-.....F.F..KK
+.....F..F.KK
 ....FF.FF...
 """)
 
@@ -165,7 +165,7 @@ kkkOOWWBBK...
 ..OOOOOKBTBK.
 ...OOOOOKBBK.
 ....OOO...BB.
-....R.R......
+....R..R.....
 ...RR.RR.....
 """)
 
@@ -184,7 +184,7 @@ SPR['ojirowashi'] = (dict(H='#d9c9a6',D='#6a4a30',d='#4a3220',Y='#f2b716',y='#c9
 ....DDDDDDDDDDWW
 ....DDDDDDDDDWWW
 ........DD...WWW
-........F.F...W.
+........F..F..W.
 .......FF.FF....
 """)
 
