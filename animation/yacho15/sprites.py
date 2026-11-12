@@ -55,14 +55,14 @@ BdbWWWWWWbdB
 ..FF...FF...
 """)
 
-SPR['benimashiko'] = (dict(S='#f2dde2',R='#e2566b',r='#b02e45',D='#6e3a42',W='#f6f6f6',d='#4a2a30',e='#1a1a1a',n='#ead9b8',F='#b89a8a'), """
+SPR['benimashiko'] = (dict(S='#f2dde2',R='#e2566b',r='#b02e45',D='#6e3a42',W='#f6f6f6',d='#4a2a30',e='#111111',M='#e3132b',p='#f6c4cc',F='#b89a8a'), """
 ....SSSS....
 ...SSSSSS...
 ..RSSSSSSR..
-..SerrrreS..
-..SSrnnrSS..
-..RSSnnSSR..
-.DRRSSSSRRD.
+..SMeMMeMS..
+..SMMppMMS..
+..RWMppMWR..
+.DRWWWWWWRD.
 DWRRRRRRRRWD
 DDWRRRRRRWDD
 DWDRRRRRRDWD
