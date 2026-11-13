@@ -2,8 +2,8 @@
 
 - Reads the original sprites from source/original.gif (15 birds, side view)
 - Erases the old stubby legs and draws proper legs (tarsus + toes)
-- Replaces the Shima-enaga (row 2, col 3) with a normal Japanese Enaga
-- Swaps 5 birds for front-facing versions of the same species
+- Arranges 15 species (see LAYOUT); some reuse original sprites, others are
+  newly drawn, and 5 are front-facing
 - Writes birds.gif (animated: birds crouch/bob with feet planted on the ground)
 """
 from PIL import Image
@@ -199,22 +199,119 @@ FRONT.append((mirror_half([
 }, SLATE))
 
 
-# FRONT index -> slot (row, col) of the same species in the side-view sheet
-FRONT_POS = {
-    0: (2, 3),  # スズメ
-    1: (1, 1),  # シジュウカラ
-    2: (0, 3),  # メジロ
-    3: (1, 2),  # エナガ
-    4: (1, 0),  # ヤマガラ
+# ---------------------------------------------- newly drawn species (side)
+# (ascii rows, palette, (leg_x1, leg_x2), leg colour)
+NEW_SIDE = {}
+
+# センダイムシクイ: olive-green back, pale yellowish brow, dark eye-stripe,
+# whitish underparts, pale-yellow undertail
+NEW_SIDE["ムシクイ"] = ([
+    ".....OOOO.......",
+    "....SSSSOO......",
+    ".BBKEKKKOOO.....",
+    "...WWWWOOOOO....",
+    "...WWWwOoOOOO...",
+    "....WWwwOoOOOO..",
+    "....WWwwwoOOOoo.",
+    ".....WYYwwoooooo",
+    "......YY.....oo.",
+], {
+    "O": (122, 140, 62), "o": (88, 104, 42), "S": (236, 234, 196),
+    "K": (58, 64, 38), "E": (12, 12, 12), "W": (242, 242, 232),
+    "w": (212, 214, 200), "Y": (236, 230, 168), "B": (82, 72, 56),
+}, (6, 9), PINK_BROWN)
+
+# ヤブサメ: tiny, almost no tail, brown back, long buff-white brow,
+# dark eye-stripe
+NEW_SIDE["ヤブサメ"] = ([
+    "................",
+    ".....NNNN.......",
+    "...SSSSSSNN.....",
+    ".BBKEKKKKKNN....",
+    "...WWWWNNNNNN...",
+    "...WWWWwNnNNNN..",
+    "....WWWwwnNNNnn.",
+    ".....WWwwwnnnn..",
+    "......ww........",
+], {
+    "N": (128, 96, 62), "n": (92, 66, 40), "S": (234, 222, 188),
+    "K": (62, 44, 28), "E": (10, 10, 10), "W": (238, 232, 216),
+    "w": (214, 200, 174), "B": (84, 66, 50),
+}, (6, 9), PINK_BROWN)
+
+# ウグイス: plain olive-brown, grey-white brow, long tail
+NEW_SIDE["ウグイス"] = ([
+    ".....UUUU.......",
+    "....SSSSUU......",
+    ".BBKEKKUUUU.....",
+    "...WWWWUUUUU....",
+    "...WWWwUnUUUU...",
+    "....WWwwUnUUUU..",
+    "....WWwwwnUUUnnn",
+    ".....WwwwnnnnUnn",
+    "......ww.....nnn",
+], {
+    "U": (140, 126, 76), "n": (104, 92, 54), "S": (216, 214, 198),
+    "K": (78, 70, 46), "E": (12, 12, 12), "W": (228, 226, 214),
+    "w": (196, 190, 166), "B": (88, 78, 60),
+}, (6, 9), PINK_BROWN)
+
+# オオジュリン (breeding male): black head & throat, white moustache and
+# collar, chestnut back with dark streaks, whitish belly
+NEW_SIDE["オオジュリン"] = ([
+    ".....KKKK.......",
+    "....KKKKKK......",
+    "..bKEKKKKKC.....",
+    "...WWKKKWWCC....",
+    "...KKWWWWCcCC...",
+    "...WWWwwCcCcCC..",
+    "....WWwwBCcCccc.",
+    ".....WwwwBcccWcc",
+    "......ww.....ccW",
+], {
+    "K": (30, 28, 30), "E": (6, 6, 6), "W": (242, 240, 234),
+    "C": (156, 100, 54), "c": (72, 50, 30), "B": (212, 184, 136),
+    "w": (214, 210, 200), "b": (70, 70, 76),
+}, (6, 9), PINK_BROWN)
+
+# ホオジロ (front): chestnut crown, white brow and cheek stripe,
+# dark eye-mask, white throat, chestnut breast, buff belly
+FRONT_HOOJIRO = (mirror_half([
+    "......CC",
+    ".....CgC",
+    "....SSCC",
+    "....KEKC",
+    "....KKWB",
+    "....SWWW",
+    "...rRRRR",
+    "...rRRRb",
+    "....rbbb",
+    ".....bbb",
+]), {
+    "C": (150, 84, 44), "g": (128, 110, 92), "S": (244, 240, 232),
+    "K": (52, 36, 28), "E": (6, 6, 6), "W": (246, 244, 238),
+    "B": (90, 86, 90), "R": (190, 120, 70), "r": (118, 74, 40),
+    "b": (226, 200, 160),
+}, PINK_BROWN)
+
+# ビンズイ: re-tint the old pipit sprite to an olive-green back
+BINZUI_TINT = {
+    (173, 141, 92): (150, 148, 96),
+    (104, 81, 40): (96, 98, 54),
 }
 
-
-# slot rearrangement: front birds end up at (0,1) (0,4) (1,2) (2,0) (2,3)
-SWAP = {
-    (0, 3): (0, 1), (0, 1): (0, 3),  # メジロ <-> olive side bird
-    (1, 1): (0, 4), (0, 4): (1, 1),  # シジュウカラ <-> nuthatch
-    (1, 0): (2, 0), (2, 0): (1, 0),  # ヤマガラ <-> crested lark-ish bird
+# final 3x5 arrangement (front-facing birds kept apart from each other)
+LAYOUT = [
+    ["ヤブサメ", "メジロ", "ウグイス", "ムシクイ", "シジュウカラ"],
+    ["ヒバリ", "ゴジュウカラ", "エナガ", "コガラ", "ヒガラ"],
+    ["ヤマガラ", "タヒバリ", "ビンズイ", "ホオジロ", "オオジュリン"],
+]
+# birds taken from the original sheet (slot in the original)
+ORIGINAL_OF = {
+    "ゴジュウカラ": (0, 4), "コガラ": (1, 3), "ヒガラ": (1, 4),
+    "ヒバリ": (2, 0), "タヒバリ": (2, 1), "ビンズイ": (2, 2),
 }
+FRONT_OF = {"シジュウカラ": 1, "メジロ": 2, "エナガ": 3, "ヤマガラ": 4}
 
 
 def body_bottom(g, x):
@@ -277,6 +374,14 @@ def build_enaga(crouch):
     return draw_side_legs(g, legs, BLACK_LEG, GROUND, crouch)
 
 
+def build_new_side(spec, crouch):
+    rows, pal, legs, color = spec
+    g = from_ascii(rows, pal)
+    bottom = max(body_bottom(g, x) or 0 for x in legs)
+    dy = (GROUND - 3) - bottom + (1 if crouch else 0)
+    return draw_side_legs(shift(g, dy), legs, color, GROUND, crouch)
+
+
 def build_front(spec, crouch):
     rows, pal, color = spec
     g = from_ascii(rows, pal)
@@ -297,14 +402,21 @@ def render(crouch):
         col = tuple(round(a + (b - a) * t) for a, b in zip(BG_TOP, BG_BOTTOM))
         img.paste(col, (0, r * CELL, W, (r + 1) * CELL))
     grid = {}
-    for key, cfg in SIDE.items():
-        grid[key] = build_side(sprites[key], cfg, crouch)
-    grid[(1, 2)] = build_enaga(crouch)
-    # front-facing birds replace the side-view bird of the same species
-    for i, pos in FRONT_POS.items():
-        grid[pos] = build_front(FRONT[i], crouch)
-    # spread front-facing birds out so they don't cluster (no two side by side)
-    grid = {SWAP.get(k, k): v for k, v in grid.items()}
+    for r, row in enumerate(LAYOUT):
+        for c, name in enumerate(row):
+            if name in ORIGINAL_OF:
+                key = ORIGINAL_OF[name]
+                spr = sprites[key]
+                if name == "ビンズイ":
+                    spr = {k: BINZUI_TINT.get(v, v) for k, v in spr.items()}
+                g = build_side(spr, SIDE[key], crouch)
+            elif name in FRONT_OF:
+                g = build_front(FRONT[FRONT_OF[name]], crouch)
+            elif name == "ホオジロ":
+                g = build_front(FRONT_HOOJIRO, crouch)
+            else:
+                g = build_new_side(NEW_SIDE[name], crouch)
+            grid[(r, c)] = g
     px = img.load()
     for (r, c), g in grid.items():
         for (x, y), col in g.items():
