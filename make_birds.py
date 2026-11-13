@@ -223,18 +223,19 @@ def body_bottom(g, x):
 
 
 def draw_side_legs(g, legs, color, ground, crouch):
-    """Side view: tarsus straight down, 2 toes forward (left) + hind toe."""
+    """Side view: tarsus straight down, toes pointing forward (left).
+
+    Both legs use the same darker tone; the toes are kept 2 dots wide so a
+    gap stays between the two feet instead of merging into one bar.
+    """
     out = dict(g)
-    far, near = legs  # x1 is the far leg (darker), x2 near leg
-    for i, x in enumerate((far, near)):
-        col = shade(color) if i == 0 else color
+    col = shade(color)
+    for x in legs:
         top = body_bottom(out, x)
         top = (top + 1) if top is not None else ground - 2
         for y in range(top, ground):
             out.setdefault((x, y), col)
-        for tx in (x - 2, x - 1, x, x + 1):
-            if tx == x - 2:
-                continue
+        for tx in (x - 1, x):
             out[(tx, ground)] = col
     return out
 
