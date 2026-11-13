@@ -317,9 +317,20 @@ def render(crouch):
 
 def main():
     up, down = render(False), render(True)
-    # same rhythm as the original: hop-hop-hop, then rest
-    seq = [up, down, up, down, up, down]
-    durs = [90, 90, 90, 90, 90, 650]
+
+    def bob(columns):
+        """Frame where only the given columns are crouched."""
+        f = up.copy()
+        w = SLOT_W * CELL
+        for c in columns:
+            f.paste(down.crop((c * w, 0, (c + 1) * w, f.height)), (c * w, 0))
+        return f
+
+    # columns 1/3/5 and columns 2/4 take turns:
+    # while one group hops 3 times, the other group rests, then they swap
+    odd, even = bob((0, 2, 4)), bob((1, 3))
+    seq = [up, odd, up, odd, up, odd, up, even, up, even, up, even]
+    durs = [90] * len(seq)
     # exact shared palette (total colours < 256), so nothing gets merged
     cols = sorted({c for f in (up, down) for _, c in f.getcolors(1 << 16)})
     assert len(cols) <= 256, len(cols)
