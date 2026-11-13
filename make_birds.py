@@ -3,7 +3,7 @@
 - Reads the original sprites from source/original.gif (15 birds, side view)
 - Erases the old stubby legs and draws proper legs (tarsus + toes)
 - Replaces the Shima-enaga (row 2, col 3) with a normal Japanese Enaga
-- Adds a 4th row of front-facing birds
+- Swaps 5 birds for front-facing versions of the same species
 - Writes birds.gif (animated: birds crouch/bob with feet planted on the ground)
 """
 from PIL import Image
@@ -12,7 +12,7 @@ SRC = "source/original.gif"
 OUT = "birds.gif"
 CELL = 10            # 1 pixel-art dot = 10px
 SLOT_W, SLOT_H = 16, 20
-COLS, ROWS = 5, 4
+COLS, ROWS = 5, 3
 GROUND = 16          # toe row inside each slot
 MAGENTA = (255, 0, 255)
 
@@ -216,6 +216,16 @@ FRONT.append((mirror_half([
 }, SLATE))
 
 
+# FRONT index -> slot (row, col) of the same species in the side-view sheet
+FRONT_POS = {
+    0: (2, 3),  # スズメ
+    1: (1, 1),  # シジュウカラ
+    2: (0, 3),  # メジロ
+    3: (1, 2),  # エナガ
+    4: (1, 0),  # ヤマガラ
+}
+
+
 def body_bottom(g, x):
     ys = [y for (px, y) in g if px == x]
     return max(ys) if ys else None
@@ -291,8 +301,9 @@ def render(crouch):
     for key, cfg in SIDE.items():
         grid[key] = build_side(sprites[key], cfg, crouch)
     grid[(1, 2)] = build_enaga(crouch)
-    for c, spec in enumerate(FRONT):
-        grid[(3, c)] = build_front(spec, crouch)
+    # front-facing birds replace the side-view bird of the same species
+    for i, pos in FRONT_POS.items():
+        grid[pos] = build_front(FRONT[i], crouch)
     px = img.load()
     for (r, c), g in grid.items():
         for (x, y), col in g.items():
