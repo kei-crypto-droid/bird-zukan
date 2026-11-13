@@ -14,7 +14,9 @@ CELL = 10            # 1 pixel-art dot = 10px
 SLOT_W, SLOT_H = 16, 20
 COLS, ROWS = 5, 3
 GROUND = 16          # toe row inside each slot
-MAGENTA = (255, 0, 255)
+MAGENTA = (255, 0, 255)  # chroma key of the original sheet
+BG_TOP = (92, 96, 196)     # blue-violet
+BG_BOTTOM = (156, 132, 222)  # lighter lavender-violet
 
 # ---------------------------------------------------------------- leg colours
 PINK_BROWN = (184, 130, 110)   # sparrows, bush warbler etc.
@@ -108,22 +110,19 @@ ENAGA = [
 # Left halves (8 columns), mirrored.  Legs drawn separately.
 FRONT = []
 
+# Sized to match the side-view birds: about 8-10 dots wide, 10 dots tall.
 # スズメ (tree sparrow)
 FRONT.append((mirror_half([
-    "........",
-    "........",
-    "........",
+    "......cc",
     ".....ccc",
     "....cccc",
-    "...ccccc",
-    "..cWEccc",
-    "..cWWWWB",
-    "..cKWWWK",
-    "..bWWWKK",
-    "..bbwWww",
-    "..bbwwww",
+    "....WEcc",
+    "....WWWB",
+    "....KWWK",
+    "...bwWww",
     "...bwwww",
-    "....wwww",
+    "....bwww",
+    ".....www",
 ]), {
     "c": (140, 84, 42), "W": (240, 232, 220), "E": (20, 18, 18),
     "K": (36, 30, 28), "B": (78, 72, 70), "b": (112, 72, 38),
@@ -132,82 +131,66 @@ FRONT.append((mirror_half([
 
 # シジュウカラ (Japanese tit)
 FRONT.append((mirror_half([
-    "........",
-    "........",
     "......KK",
     ".....KKK",
     "....KKKK",
-    "...KKKKK",
-    "...WEKKK",
-    "...WWWKb",
-    "...KWWKK",
-    "...gKWWK",
+    "....WEKK",
+    "....WWWB",
+    "....KWWK",
     "...gwWWK",
-    "...ggwWK",
+    "...gwWWK",
     "....gwWK",
     ".....wwK",
 ]), {
     "K": (28, 26, 30), "W": (246, 244, 238), "E": (8, 8, 8),
-    "b": (84, 84, 90), "g": (128, 138, 96), "w": (222, 220, 212),
+    "B": (84, 84, 90), "g": (128, 138, 96), "w": (222, 220, 212),
 }, SLATE))
 
 # メジロ (Japanese white-eye)
 FRONT.append((mirror_half([
-    "........",
-    "........",
     "......GG",
     ".....GGG",
-    "....GGGG",
-    "...GWWGG",
-    "...WEWGG",
-    "...GWWGb",
-    "...GGYYY",
+    "....GWGG",
+    "....WEWG",
+    "....GWGB",
+    "....GYYY",
     "...gYYYY",
-    "...gwYYW",
-    "...ggwWW",
+    "...gwYWW",
     "....gwWW",
     ".....www",
 ]), {
     "G": (126, 150, 56), "W": (248, 246, 240), "E": (14, 14, 14),
-    "b": (50, 50, 54), "Y": (230, 210, 70), "g": (104, 124, 48),
+    "B": (50, 50, 54), "Y": (230, 210, 70), "g": (104, 124, 48),
     "w": (214, 208, 190),
 }, SLATE))
 
 # エナガ (long-tailed tit)
 FRONT.append((mirror_half([
-    "........",
-    "........",
     "......WW",
     ".....WWW",
-    "....KWWW",
-    "...KKKWW",
-    "...KEYWW",
-    "...WWWWb",
-    "...WWWWW",
+    "....KKWW",
+    "....KEYW",
+    "....WWWB",
+    "....WWWW",
     "...KWWWW",
     "...KPWWW",
-    "...KPPWW",
     "....PPPW",
     ".....PPP",
 ]), {
     "W": (246, 243, 241), "K": (30, 28, 31), "E": (14, 12, 14),
-    "Y": (236, 196, 92), "b": (36, 34, 36), "P": (232, 196, 200),
+    "Y": (236, 196, 92), "B": (36, 34, 36), "P": (232, 196, 200),
 }, BLACK_LEG))
 
 # ヤマガラ (varied tit)
 FRONT.append((mirror_half([
-    "........",
-    "........",
     "......KK",
     ".....KKK",
     "....CKKK",
-    "...CCCKK",
-    "...CECCC",
-    "...CCCCB",
-    "...CCCCK",
+    "....CECC",
+    "....CCCB",
+    "....CCCK",
     "...gOCKK",
     "...gOOOO",
-    "...ggOOO",
     "....gOOO",
     ".....OOO",
 ]), {
@@ -296,7 +279,14 @@ def build_front(spec, crouch):
 
 def render(crouch):
     sprites = load_original()
-    img = Image.new("RGB", (COLS * SLOT_W * CELL, ROWS * SLOT_H * CELL), MAGENTA)
+    W, H = COLS * SLOT_W * CELL, ROWS * SLOT_H * CELL
+    img = Image.new("RGB", (W, H))
+    # blue-violet vertical gradient, stepped per dot row to stay pixel-art
+    rows = H // CELL
+    for r in range(rows):
+        t = r / (rows - 1)
+        col = tuple(round(a + (b - a) * t) for a, b in zip(BG_TOP, BG_BOTTOM))
+        img.paste(col, (0, r * CELL, W, (r + 1) * CELL))
     grid = {}
     for key, cfg in SIDE.items():
         grid[key] = build_side(sprites[key], cfg, crouch)
@@ -319,7 +309,20 @@ def main():
     # same rhythm as the original: hop-hop-hop, then rest
     seq = [up, down, up, down, up, down]
     durs = [90, 90, 90, 90, 90, 650]
-    frames = [f.quantize(colors=256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE) for f in seq]
+    # exact shared palette (total colours < 256), so nothing gets merged
+    cols = sorted({c for f in (up, down) for _, c in f.getcolors(1 << 16)})
+    assert len(cols) <= 256, len(cols)
+    pal_img = Image.new("P", (1, 1))
+    pal_img.putpalette([v for c in cols for v in c] + [0] * (768 - 3 * len(cols)))
+    index = {c: i for i, c in enumerate(cols)}
+
+    def to_p(f):
+        p = Image.new("P", f.size)
+        p.putpalette(pal_img.getpalette())
+        p.putdata([index[c] for c in f.getdata()])
+        return p
+
+    frames = [to_p(f) for f in seq]
     frames[0].save(OUT, save_all=True, append_images=frames[1:], duration=durs, loop=0, disposal=1)
     up.save("preview.png")
     print("wrote", OUT)
