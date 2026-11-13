@@ -209,6 +209,14 @@ FRONT_POS = {
 }
 
 
+# slot rearrangement: front birds end up at (0,1) (0,4) (1,2) (2,0) (2,3)
+SWAP = {
+    (0, 3): (0, 1), (0, 1): (0, 3),  # メジロ <-> olive side bird
+    (1, 1): (0, 4), (0, 4): (1, 1),  # シジュウカラ <-> nuthatch
+    (1, 0): (2, 0), (2, 0): (1, 0),  # ヤマガラ <-> crested lark-ish bird
+}
+
+
 def body_bottom(g, x):
     ys = [y for (px, y) in g if px == x]
     return max(ys) if ys else None
@@ -294,6 +302,8 @@ def render(crouch):
     # front-facing birds replace the side-view bird of the same species
     for i, pos in FRONT_POS.items():
         grid[pos] = build_front(FRONT[i], crouch)
+    # spread front-facing birds out so they don't cluster (no two side by side)
+    grid = {SWAP.get(k, k): v for k, v in grid.items()}
     px = img.load()
     for (r, c), g in grid.items():
         for (x, y), col in g.items():
