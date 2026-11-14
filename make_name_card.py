@@ -1,33 +1,24 @@
-"""Name labels in pixel-art style under each bird (for posting on X).
+"""Name labels in coarse dot lettering under each bird (for posting on X).
 
 Writes birds_names.png (still) and birds_names.gif (animated).
-Text is drawn with anti-aliasing off at 12px, given a 1-dot outline,
-then enlarged 2x with nearest-neighbour so it looks like dot lettering.
+Letters come from the hand-made 5x7 dot katakana in dot_font.py;
+each letter dot is drawn as a 4px square.
 """
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image
 from make_birds import LAYOUT, SLOT_W, SLOT_H, CELL
+from dot_font import text_dots
 
-FONT = "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf"
-SIZE = 12          # glyph size in text dots
-SCALE = 2          # 1 text dot = 2px
+DOT = 4            # 1 letter dot = 4px
 TEXT = (255, 255, 255)
-EDGE = (52, 48, 110)
-LABEL_CY = 186     # vertical centre of the label inside each 200px slot
+LABEL_CY = 184     # vertical centre of the label inside each 200px slot
 
 
 def label(name):
-    font = ImageFont.truetype(FONT, SIZE)
-    w = int(font.getlength(name)) + 4
-    h = SIZE + 4
-    mask = Image.new("L", (w, h), 0)
-    d = ImageDraw.Draw(mask)
-    d.fontmode = "1"
-    d.text((2, 2), name, font=font, fill=255)
-    edge = mask.filter(ImageFilter.MaxFilter(3))
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    img.paste(EDGE + (255,), (0, 0), edge)
-    img.paste(TEXT + (255,), (0, 0), mask)
-    return img.resize((w * SCALE, h * SCALE), Image.NEAREST)
+    dots, w, h = text_dots(name)
+    img = Image.new("RGBA", (w * DOT, h * DOT), (0, 0, 0, 0))
+    for x, y in dots:
+        img.paste(TEXT + (255,), (x * DOT, y * DOT, (x + 1) * DOT, (y + 1) * DOT))
+    return img
 
 
 LABELS = {n: label(n) for row in LAYOUT for n in row}
