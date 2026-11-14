@@ -274,6 +274,24 @@ NEW_SIDE["オオジュリン"] = ([
     "w": (214, 210, 200), "b": (70, 70, 76),
 }, (6, 9), PINK_BROWN)
 
+# メジロ (side): olive-green back, white eye-ring, yellow throat,
+# whitish belly with brownish flanks
+NEW_SIDE["メジロ"] = ([
+    "....GGGG........",
+    "...GWGGGG.......",
+    ".BBWEWGGGG......",
+    "..YYWYGGGGG.....",
+    "..YYYYGgGGGG....",
+    "...YwwwGgGGGG...",
+    "...wwwffgGGGGgg.",
+    "....wwfffgggggg.",
+    ".....ww.....ggg.",
+], {
+    "G": (126, 150, 56), "g": (92, 112, 40), "W": (250, 250, 246),
+    "E": (10, 10, 10), "Y": (230, 210, 70), "w": (228, 226, 216),
+    "f": (200, 184, 156), "B": (60, 60, 64),
+}, (5, 8), SLATE)
+
 # ホオジロ (front): chestnut crown, white brow and cheek stripe,
 # dark eye-mask, white throat, chestnut breast, buff belly
 FRONT_HOOJIRO = (mirror_half([
@@ -311,7 +329,7 @@ ORIGINAL_OF = {
     "ゴジュウカラ": (0, 4), "コガラ": (1, 3), "ヒガラ": (1, 4),
     "ヒバリ": (2, 0), "タヒバリ": (2, 1), "ビンズイ": (2, 2),
 }
-FRONT_OF = {"シジュウカラ": 1, "メジロ": 2, "エナガ": 3, "ヤマガラ": 4}
+FRONT_OF = {"シジュウカラ": 1, "エナガ": 3, "ヤマガラ": 4}
 
 
 def body_bottom(g, x):
